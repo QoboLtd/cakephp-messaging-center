@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Model\Table;
 
+use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -14,6 +15,11 @@ use MessagingCenter\Model\Entity\Message;
  */
 class MessagesTable extends Table
 {
+    const NEW_STATUS = 'new';
+    const READ_STATUS = 'read';
+    const ARCHIVED_STATUS = 'archived';
+    const DELETED_STATUS = 'deleted';
+    const STARRED_STATUS = 'starred';
 
     /**
      * Initialize method
@@ -79,5 +85,25 @@ class MessagesTable extends Table
             ->allowEmpty('related_model');
 
         return $validator;
+    }
+
+    /**
+     * Returns string to be used as status field value when a new message is created.
+     * @return string
+     */
+    public function getNewMessageStatus()
+    {
+        return static::NEW_STATUS;
+    }
+
+    /**
+     * Returns Time object to be used as date_sent field value.
+     * @return Cake\I18n\Time
+     */
+    public function getDateSent()
+    {
+        $result = new Time();
+
+        return $result;
     }
 }
