@@ -2,6 +2,7 @@
     "name": "qobo/cakephp-messaging-center",
     "description": "Messaging Center plugin for CakePHP",
     "type": "cakephp-plugin",
+    "license": "GPL-2.0",
     "require": {
         "php": ">=5.4.16",
         "cakephp/cakephp": "~3.0",
