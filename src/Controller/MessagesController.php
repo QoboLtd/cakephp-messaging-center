@@ -16,7 +16,7 @@ class MessagesController extends AppController
      *
      * @return \Cake\Network\Response|null
      */
-    public function index()
+    public function inbox()
     {
         $this->paginate = [
             'contain' => ['Users']
@@ -49,7 +49,7 @@ class MessagesController extends AppController
      *
      * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function create()
     {
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {

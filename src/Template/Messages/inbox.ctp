@@ -6,11 +6,8 @@ use \Cake\Utility\Inflector;
     <div class="col-xs-12">
         <p class="text-right">
             <?php echo $this->Html->link(
-                __(
-                    'New {0}',
-                    Inflector::singularize(Inflector::humanize(Inflector::underscore($this->request->controller)))
-                ),
-                ['plugin' => $this->request->plugin, 'controller' => $this->request->controller, 'action' => 'add'],
+                __('Create'),
+                ['action' => 'create'],
                 ['class' => 'btn btn-primary']
             ); ?>
         </p>
