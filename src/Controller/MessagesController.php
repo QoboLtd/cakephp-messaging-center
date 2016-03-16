@@ -70,32 +70,6 @@ class MessagesController extends AppController
     }
 
     /**
-     * Edit method
-     *
-     * @param string|null $id Message id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $message = $this->Messages->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $message = $this->Messages->patchEntity($message, $this->request->data);
-            if ($this->Messages->save($message)) {
-                $this->Flash->success(__('The message has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The message could not be saved. Please, try again.'));
-            }
-        }
-        $users = $this->Messages->Users->find('list', ['limit' => 200]);
-        $this->set(compact('message', 'users'));
-        $this->set('_serialize', ['message']);
-    }
-
-    /**
      * Delete method
      *
      * @param string|null $id Message id.
