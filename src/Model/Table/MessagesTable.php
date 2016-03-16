@@ -10,7 +10,7 @@ use MessagingCenter\Model\Entity\Message;
 /**
  * Messages Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Relateds
+ * @property \Cake\ORM\Association\BelongsTo $Users
  */
 class MessagesTable extends Table
 {
@@ -31,9 +31,9 @@ class MessagesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Relateds', [
-            'foreignKey' => 'related_id',
-            'className' => 'MessagingCenter.Relateds'
+        $this->belongsTo('Users', [
+            'foreignKey' => 'from',
+            'className' => 'CakeDC/Users.Users'
         ]);
     }
 
@@ -79,18 +79,5 @@ class MessagesTable extends Table
             ->allowEmpty('related_model');
 
         return $validator;
-    }
-
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->existsIn(['related_id'], 'Relateds'));
-        return $rules;
     }
 }

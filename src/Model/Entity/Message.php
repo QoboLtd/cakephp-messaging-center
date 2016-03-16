@@ -15,7 +15,6 @@ use Cake\ORM\Entity;
  * @property string $status
  * @property string $related_model
  * @property string $related_id
- * @property \MessagingCenter\Model\Entity\Related $related
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  */
