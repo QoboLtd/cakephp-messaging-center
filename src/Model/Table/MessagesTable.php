@@ -32,7 +32,7 @@ class MessagesTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'from',
+            'foreignKey' => 'from_user',
             'className' => 'CakeDC/Users.Users'
         ]);
     }
@@ -50,14 +50,14 @@ class MessagesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->uuid('from')
-            ->requirePresence('from', 'create')
-            ->notEmpty('from');
+            ->uuid('from_user')
+            ->requirePresence('from_user', 'create')
+            ->notEmpty('from_user');
 
         $validator
-            ->uuid('to')
-            ->requirePresence('to', 'create')
-            ->notEmpty('to');
+            ->uuid('to_user')
+            ->requirePresence('to_user', 'create')
+            ->notEmpty('to_user');
 
         $validator
             ->requirePresence('subject', 'create')

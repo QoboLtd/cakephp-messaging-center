@@ -7,8 +7,8 @@ use Cake\ORM\Entity;
  * Message Entity.
  *
  * @property string $id
- * @property string $from
- * @property string $to
+ * @property string $from_user
+ * @property string $to_user
  * @property string $subject
  * @property string $content
  * @property \Cake\I18n\Time $date_sent

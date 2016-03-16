@@ -20,11 +20,11 @@ class CreateMessages extends AbstractMigration
             'default' => null,
             'null' => false,
         ]);
-        $table->addColumn('from', 'uuid', [
+        $table->addColumn('from_user', 'uuid', [
             'default' => null,
             'null' => false,
         ]);
-        $table->addColumn('to', 'uuid', [
+        $table->addColumn('to_user', 'uuid', [
             'default' => null,
             'null' => false,
         ]);
