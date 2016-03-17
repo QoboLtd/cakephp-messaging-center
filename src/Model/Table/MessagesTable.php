@@ -21,6 +21,11 @@ class MessagesTable extends Table
     const DELETED_STATUS = 'deleted';
     const STARRED_STATUS = 'starred';
 
+    const INBOX_FOLDER = 'inbox';
+    const ARCHIVED_FOLDER = 'archived';
+    const SENT_FOLDER = 'sent';
+    const TRASH_FOLDER = 'trash';
+
     /**
      * Initialize method
      *
