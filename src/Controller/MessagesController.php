@@ -45,6 +45,13 @@ class MessagesController extends AppController
             'contain' => ['Users']
         ]);
 
+        // set status to read
+        if ($this->request->is(['get']) && !$this->request->is(['json', 'ajax'])) {
+            $read = $this->Messages->getReadStatus();
+            $message = $this->Messages->patchEntity($message, ['status' => $read]);
+            $this->Messages->save($message);
+        }
+
         $this->set('message', $message);
         $this->set('_serialize', ['message']);
     }
@@ -59,7 +66,7 @@ class MessagesController extends AppController
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
             $this->request->data['from_user'] = $this->Auth->user('id');
-            $this->request->data['status'] = $this->Messages->getNewMessageStatus();
+            $this->request->data['status'] = $this->Messages->getNewStatus();
             $this->request->data['date_sent'] = $this->Messages->getDateSent();
             $message = $this->Messages->patchEntity($message, $this->request->data);
             if ($this->Messages->save($message)) {
