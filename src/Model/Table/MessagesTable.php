@@ -103,9 +103,18 @@ class MessagesTable extends Table
      * Returns string to be used as status field value when a new message is created.
      * @return string
      */
-    public function getNewMessageStatus()
+    public function getNewStatus()
     {
         return static::NEW_STATUS;
+    }
+
+    /**
+     * Returns string to be used as status field value when a message is read.
+     * @return string
+     */
+    public function getReadStatus()
+    {
+        return static::READ_STATUS;
     }
 
     /**
