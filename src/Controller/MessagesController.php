@@ -33,24 +33,30 @@ class MessagesController extends AppController
      * View method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Network\Response|null
+     * @return void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
         $message = $this->Messages->get($id, [
-            'contain' => ['Users']
+            'contain' => ['FromUser', 'ToUser']
         ]);
 
         // set status to read
-        if ($this->request->is(['get']) && !$this->request->is(['json', 'ajax'])) {
-            $read = $this->Messages->getReadStatus();
-            $message = $this->Messages->patchEntity($message, ['status' => $read]);
+        if ($this->request->is(['get']) &&
+            !$this->request->is(['json', 'ajax']) &&
+            $this->Messages->getNewStatus() === $message->status
+        ) {
+            $status = $this->Messages->getReadStatus();
+            $message = $this->Messages->patchEntity($message, ['status' => $status]);
             $this->Messages->save($message);
         }
 
+        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
+
         $this->set('message', $message);
-        $this->set('_serialize', ['message']);
+        $this->set('folder', $folder);
+        $this->set('_serialize', ['message', 'folder']);
     }
 
     /**
