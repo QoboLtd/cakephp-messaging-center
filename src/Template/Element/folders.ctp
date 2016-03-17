@@ -4,6 +4,10 @@ $actions = [
         'label' => __('Inbox'),
         'icon' => 'inbox'
     ],
+    'archived' => [
+        'label' => __('Archived'),
+        'icon' => 'archive'
+    ],
     'sent' => [
         'label' => __('Sent'),
         'icon' => 'envelope'
@@ -13,7 +17,10 @@ $actions = [
         'icon' => 'trash'
     ]
 ];
-$currAction = $this->request->params['action'];
+
+if (!isset($folder)) {
+    $folder = isset($this->request->params['pass'][0]) ? $this->request->params['pass'][0] : 'inbox';
+}
 ?>
 <div class="message-folders">
     <p class="text-uppercase text-muted">
@@ -31,8 +38,8 @@ $currAction = $this->request->params['action'];
             ?>
             <?= $this->Html->link(
                 $options['icon'] . ' ' . $options['label'],
-                ['action' => $action],
-                ['escape' => false, 'class' => 'list-group-item' . ($action === $currAction ? ' disabled' : '')]
+                ['action' => 'folder', $action],
+                ['escape' => false, 'class' => 'list-group-item' . ($action === $folder ? ' disabled' : '')]
             ); ?>
         <?php endforeach; ?>
     </div>
