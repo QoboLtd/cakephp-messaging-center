@@ -19,7 +19,12 @@ class MessagesController extends AppController
     public function inbox()
     {
         $this->paginate = [
-            'contain' => ['Users']
+            'conditions' => [
+                'to_user' => $this->Auth->user('id'),
+                'status IN' => [$this->Messages->getReadStatus(), $this->Messages->getNewStatus()]
+            ],
+            'contain' => ['Users'],
+            'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
 
