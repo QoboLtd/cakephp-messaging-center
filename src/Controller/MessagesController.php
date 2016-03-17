@@ -111,4 +111,50 @@ class MessagesController extends AppController
         }
         return $this->redirect(['action' => 'folder']);
     }
+
+    /**
+     * Archive method
+     *
+     * @param string|null $id Message id.
+     * @return \Cake\Network\Response|null Redirects to folder.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function archive($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $message = $this->Messages->get($id);
+
+        $status = $this->Messages->getArchivedStatus();
+        $message = $this->Messages->patchEntity($message, ['status' => $status]);
+
+        if ($this->Auth->user('id') === $message->to_user && $this->Messages->save($message)) {
+            $this->Flash->success(__('The message has been archived.'));
+        } else {
+            $this->Flash->error(__('The message could not be archived. Please, try again.'));
+        }
+        return $this->redirect(['action' => 'folder']);
+    }
+
+    /**
+     * Restore method
+     *
+     * @param string|null $id Message id.
+     * @return \Cake\Network\Response|null Redirects to folder.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function restore($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $message = $this->Messages->get($id);
+
+        $status = $this->Messages->getReadStatus();
+        $message = $this->Messages->patchEntity($message, ['status' => $status]);
+
+        if ($this->Auth->user('id') === $message->to_user && $this->Messages->save($message)) {
+            $this->Flash->success(__('The message has been restored.'));
+        } else {
+            $this->Flash->error(__('The message could not be restored. Please, try again.'));
+        }
+        return $this->redirect(['action' => 'folder']);
+    }
 }
