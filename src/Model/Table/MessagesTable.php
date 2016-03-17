@@ -118,6 +118,33 @@ class MessagesTable extends Table
     }
 
     /**
+     * Returns string to be used as status field value when a message is deleted.
+     * @return string
+     */
+    public function getDeletedStatus()
+    {
+        return static::DELETED_STATUS;
+    }
+
+    /**
+     * Returns string to be used as status field value when a message is archived.
+     * @return string
+     */
+    public function getArchivedStatus()
+    {
+        return static::ARCHIVED_STATUS;
+    }
+
+    /**
+     * Returns sent folder name.
+     * @return string
+     */
+    public function getSentFolder()
+    {
+        return static::SENT_FOLDER;
+    }
+
+    /**
      * Returns Time object to be used as date_sent field value.
      * @return Cake\I18n\Time
      */
