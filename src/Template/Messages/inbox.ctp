@@ -1,17 +1,11 @@
 <?php
-use \Cake\Utility\Inflector;
 echo $this->Html->css('MessagingCenter.style');
 echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
 ?>
 
 <div class="row">
     <div class="col-xs-2">
-        <?php echo $this->Html->link(
-            __('Compose'),
-            ['action' => 'create'],
-            ['class' => 'btn btn-primary btn-block']
-        ); ?>
-        <?= $this->element('MessagingCenter.folders') ?>
+        <?= $this->element('MessagingCenter.sidebar') ?>
     </div>
     <div class="col-xs-10">
         <div class="row">
@@ -34,9 +28,20 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                         <?php foreach ($messages as $message): ?>
                         <tr class="<?= 'new' !== $message->status ?: 'unread'; ?>" data-url="<?= $this->Url->build(['action' => 'view', $message->id]) ?>">
                             <td>
-                                <?= $message->has('user') ? $message->user->username : '' ?>
+                                <?= $message->has('from_user') ? $message->from_user->username : '' ?>
                             </td>
-                            <td><?= h($message->subject) ?></td>
+                            <td><?= h($message->subject) ?> -
+                                <span class="text-muted">
+                                    <?= $this->Text->truncate(
+                                        $message->content,
+                                        50,
+                                        [
+                                            'ellipsis' => '...',
+                                            'exact' => false
+                                        ]
+                                    ); ?>
+                                </span>
+                            </td>
                             <td><?= h($message->date_sent) ?></td>
                         </tr>
                         <?php endforeach; ?>
