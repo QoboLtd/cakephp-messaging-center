@@ -95,7 +95,16 @@ class MessagesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $message = $this->Messages->get($id);
-        if ($this->Messages->delete($message)) {
+
+        $status = $this->Messages->getDeletedStatus();
+
+        if ($this->Auth->user('id') !== $message->to_user || $message->status === $status) {
+            throw new \Cake\Network\Exception\ForbiddenException();
+        }
+
+        $message = $this->Messages->patchEntity($message, ['status' => $status]);
+
+        if ($this->Messages->save($message)) {
             $this->Flash->success(__('The message has been deleted.'));
         } else {
             $this->Flash->error(__('The message could not be deleted. Please, try again.'));
