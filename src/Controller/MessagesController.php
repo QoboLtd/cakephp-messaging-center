@@ -12,18 +12,15 @@ class MessagesController extends AppController
 {
 
     /**
-     * Index method
-     *
-     * @return \Cake\Network\Response|null
+     * Folder method
+     * @param string $type folder type
+     * @return void
      */
-    public function inbox()
+    public function folder($type = '')
     {
         $this->paginate = [
-            'conditions' => [
-                'to_user' => $this->Auth->user('id'),
-                'status IN' => [$this->Messages->getReadStatus(), $this->Messages->getNewStatus()]
-            ],
-            'contain' => ['Users'],
+            'conditions' => $this->Messages->getConditionsByFolderType($type, $this->Auth->user('id')),
+            'contain' => ['FromUser', 'ToUser'],
             'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
