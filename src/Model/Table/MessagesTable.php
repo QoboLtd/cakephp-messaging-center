@@ -37,9 +37,16 @@ class MessagesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Users', [
+        $this->belongsTo('FromUser', [
             'foreignKey' => 'from_user',
-            'className' => 'CakeDC/Users.Users'
+            'className' => 'CakeDC/Users.Users',
+            'propertyName' => 'fromUser'
+        ]);
+
+        $this->belongsTo('ToUser', [
+            'foreignKey' => 'to_user',
+            'className' => 'CakeDC/Users.Users',
+            'propertyName' => 'toUser'
         ]);
     }
 

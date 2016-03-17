@@ -79,7 +79,7 @@ class MessagesController extends AppController
                 $this->Flash->error(__('The message could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Messages->Users->find('list', ['limit' => 200]);
+        $users = $this->Messages->ToUser->find('list', ['limit' => 200]);
         $this->set(compact('message', 'users'));
         $this->set('_serialize', ['message']);
     }
