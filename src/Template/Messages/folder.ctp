@@ -23,12 +23,13 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
 
         <div class="row">
             <div class="col-xs-12">
-                <table id="inbox-table" class="table table-hover inbox-table">
+                <?php if (0 < $messages->count()) : ?>
+                <table id="folder-table" class="table table-hover folder-table">
                     <tbody>
                         <?php foreach ($messages as $message): ?>
                         <tr class="<?= 'new' !== $message->status ?: 'unread'; ?>" data-url="<?= $this->Url->build(['action' => 'view', $message->id]) ?>">
                             <td>
-                                <?= $message->has('from_user') ? $message->from_user->username : '' ?>
+                                <?= $message->has('fromUser') ? $message->fromUser->username : '' ?>
                             </td>
                             <td><?= h($message->subject) ?> -
                                 <span class="text-muted">
@@ -47,6 +48,11 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php else : ?>
+                <div class="well">
+                    <p class="h4 text-muted"><?= __('You don\'t have any messages here...') ?></p>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
