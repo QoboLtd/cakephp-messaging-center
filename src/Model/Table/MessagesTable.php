@@ -99,18 +99,6 @@ class MessagesTable extends Table
         return $validator;
     }
 
-    public function getUnreadCount($messages)
-    {
-        $result = 0;
-        foreach ($messages as $message) {
-            if (static::NEW_STATUS === $message->status) {
-                $result++;
-            }
-        }
-
-        return $result;
-    }
-
     /**
      * Returns string to be used as status field value when a new message is created.
      * @return string
