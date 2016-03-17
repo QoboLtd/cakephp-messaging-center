@@ -1,5 +1,7 @@
 <?php
 echo $this->Html->css('MessagingCenter.style');
+
+$toUserId = $message->has('toUser') ? h($message->toUser->id) : '';
 ?>
 
 <div class="row">
@@ -9,8 +11,39 @@ echo $this->Html->css('MessagingCenter.style');
     <div class="col-xs-10">
         <div class="row">
             <div class="col-xs-12">
-                <div class="actions text-right">
-                    <?= $this->Form->postLink('', ['action' => 'delete', $message->id], ['confirm' => __('Are you sure you want to delete # {0}?', $message->id), 'title' => __('Delete'), 'class' => 'btn btn-default glyphicon glyphicon-trash']) ?>
+                <div class="message-actions text-right">
+                <?php
+                    $deleteBtn = $this->Form->postLink(
+                        '',
+                        ['action' => 'delete', $message->id],
+                        ['title' => __('Delete'), 'class' => 'btn btn-default glyphicon glyphicon-trash']
+                    );
+                    $archiveBtn = $this->Form->postLink(
+                        '',
+                        ['action' => 'archive', $message->id],
+                        ['title' => __('Archive'), 'class' => 'btn btn-default glyphicon glyphicon-folder-open']
+                    );
+                    $restoreBtn = $this->Form->postLink(
+                        '',
+                        ['action' => 'restore', $message->id],
+                        ['title' => __('Restore'), 'class' => 'btn btn-default glyphicon glyphicon-folder-close']
+                    );
+                    switch ($folder) {
+                        case 'inbox':
+                            echo $archiveBtn;
+                            echo $deleteBtn;
+                            break;
+
+                        case 'archived':
+                            echo $deleteBtn;
+                            echo $restoreBtn;
+                            break;
+
+                        case 'trash':
+                            echo $restoreBtn;
+                            break;
+                    }
+                ?>
                 </div>
                 <hr />
                 <h2><?= h($message->subject) ?></h2>
@@ -20,8 +53,8 @@ echo $this->Html->css('MessagingCenter.style');
         <div class="row">
             <div class="col-xs-10">
                 <p>
-                    <strong><?= $message->has('from_user') ? h($message->from_user->username) : '' ?></strong> to
-                    <strong><?= $message->has('to_user') ? h($message->to_user->username) : '' ?></strong> on
+                    <strong><?= $message->has('fromUser') ? h($message->fromUser->username) : '' ?></strong> to
+                    <strong><?= $message->has('toUser') ? h($message->toUser->username) : '' ?></strong> on
                     <?= h($message->date_sent) ?>
                 </p>
                 <hr />
