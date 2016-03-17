@@ -154,4 +154,33 @@ class MessagesTable extends Table
 
         return $result;
     }
+
+    /**
+     * Get message's folder based on user id and message status.
+     * @param  \MessagingCenter\Model\Entity\Message $message Message enity
+     * @param  string $userId current user id
+     * @return string         folder name
+     */
+    public function getFolderByMessage(Message $message, $userId)
+    {
+        if ($message->from_user !== $userId) {
+            switch ($message->status) {
+                case static::DELETED_STATUS:
+                    $result = 'trash';
+                    break;
+
+                case static::ARCHIVED_STATUS:
+                    $result = 'archived';
+                    break;
+
+                default:
+                    $result = 'inbox';
+                    break;
+            }
+        } else {
+            $result = 'sent';
+        }
+
+        return $result;
+    }
 }
