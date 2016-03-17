@@ -1,8 +1,17 @@
 <?php
 $actions = [
-    'inbox' => __('Inbox'),
-    'sent' => __('Sent'),
-    'trash' => __('Trash')
+    'inbox' => [
+        'label' => __('Inbox'),
+        'icon' => 'inbox'
+    ],
+    'sent' => [
+        'label' => __('Sent'),
+        'icon' => 'envelope'
+    ],
+    'trash' => [
+        'label' => __('Trash'),
+        'icon' => 'trash'
+    ]
 ];
 $currAction = $this->request->params['action'];
 ?>
@@ -11,18 +20,20 @@ $currAction = $this->request->params['action'];
         Folder <a href="" class="pull-right"><i class="fa fa-refresh"></i></a>
     </p>
     <div class="list-group">
-        <?php foreach ($actions as $action => $label) : ?>
+        <?php foreach ($actions as $action => $options) : ?>
             <?php
                 if ('inbox' === $action) {
                     $cell = $this->cell('MessagingCenter.Inbox::unreadCount');
-                    $label .= ' ' . $cell;
+                    $options['label'] .= ' ' . $cell;
                 }
+
+                $options['icon'] = '<i class="fa fa-' .$options['icon'] . '"></i>';
             ?>
             <?= $this->Html->link(
-                $label, ['action' => $action], [
-                    'escape' => false,
-                    'class' => 'list-group-item ' . ($action !== $currAction ?: 'active')
-                ]); ?>
+                $options['icon'] . ' ' . $options['label'],
+                ['action' => $action],
+                ['escape' => false, 'class' => 'list-group-item' . ($action === $currAction ? ' disabled' : '')]
+            ); ?>
         <?php endforeach; ?>
     </div>
 </div>
