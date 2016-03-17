@@ -42,17 +42,23 @@ class MessagesController extends AppController
             'contain' => ['FromUser', 'ToUser']
         ]);
 
+        // forbid viewing of others messages
+        if ($this->Auth->user('id') !== $message->to_user && $this->Auth->user('id') !== $message->from_user) {
+            throw new \Cake\Network\Exception\ForbiddenException();
+        }
+
+        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
+
         // set status to read
         if ($this->request->is(['get']) &&
             !$this->request->is(['json', 'ajax']) &&
-            $this->Messages->getNewStatus() === $message->status
+            $this->Messages->getNewStatus() === $message->status &&
+            $this->Messages->getSentFolder() !== $folder
         ) {
             $status = $this->Messages->getReadStatus();
             $message = $this->Messages->patchEntity($message, ['status' => $status]);
             $this->Messages->save($message);
         }
-
-        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
 
         $this->set('message', $message);
         $this->set('folder', $folder);
