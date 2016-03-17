@@ -183,4 +183,43 @@ class MessagesTable extends Table
 
         return $result;
     }
+
+    /**
+     * Get query conditions based on folder type.
+     * @param  string $userId current user id
+     * @param  string $type   folder type
+     * @return array          query conditions
+     */
+    public function getConditionsByFolderType($userId, $type = '')
+    {
+        switch ($type) {
+            case 'archived':
+                $result = [
+                    'to_user' => $userId,
+                    'status' => $this->getArchivedStatus()
+                ];
+                break;
+
+            case 'sent':
+                $result = ['from_user' => $userId];
+                break;
+
+            case 'trash':
+                $result = [
+                    'to_user' => $userId,
+                    'status' => $this->getDeletedStatus()
+                ];
+                break;
+
+            case 'inbox':
+            default:
+                $result = [
+                    'to_user' => $userId,
+                    'status IN' => [$this->getReadStatus(), $this->getNewStatus()]
+                ];
+                break;
+        }
+
+        return $result;
+    }
 }
