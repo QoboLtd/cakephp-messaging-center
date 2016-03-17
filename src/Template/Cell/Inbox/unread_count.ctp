@@ -1,0 +1,1 @@
+<?= str_replace('{{text}}', $unread_count, $unread_format) ?>
