@@ -74,7 +74,7 @@ class MessagesController extends AppController
             $message = $this->Messages->patchEntity($message, $this->request->data);
             if ($this->Messages->save($message)) {
                 $this->Flash->success(__('The message has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'folder']);
             } else {
                 $this->Flash->error(__('The message could not be saved. Please, try again.'));
             }
@@ -88,7 +88,7 @@ class MessagesController extends AppController
      * Delete method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Network\Response|null Redirects to folder.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
@@ -100,6 +100,6 @@ class MessagesController extends AppController
         } else {
             $this->Flash->error(__('The message could not be deleted. Please, try again.'));
         }
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'folder']);
     }
 }

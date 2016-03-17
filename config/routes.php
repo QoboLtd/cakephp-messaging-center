@@ -5,7 +5,7 @@ Router::plugin(
     'MessagingCenter',
     ['path' => '/messaging-center'],
     function ($routes) {
-        $routes->connect('/messages/', ['controller' => 'Messages', 'action' => 'inbox']);
+        $routes->connect('/messages/', ['controller' => 'Messages', 'action' => 'folder']);
         $routes->fallbacks('DashedRoute');
     }
 );
