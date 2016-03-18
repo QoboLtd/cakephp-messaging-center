@@ -15,16 +15,16 @@ use MessagingCenter\Model\Entity\Message;
  */
 class MessagesTable extends Table
 {
-    const NEW_STATUS = 'new';
-    const READ_STATUS = 'read';
-    const ARCHIVED_STATUS = 'archived';
-    const DELETED_STATUS = 'deleted';
-    const STARRED_STATUS = 'starred';
+    const STATUS_NEW = 'new';
+    const STATUS_READ = 'read';
+    const STATUS_ARCHIVED = 'archived';
+    const STATUS_DELETED = 'deleted';
+    const STATUS_STARRED = 'starred';
 
-    const INBOX_FOLDER = 'inbox';
-    const ARCHIVED_FOLDER = 'archived';
-    const SENT_FOLDER = 'sent';
-    const TRASH_FOLDER = 'trash';
+    const FOLDER_INBOX = 'inbox';
+    const FOLDER_ARCHIVED = 'archived';
+    const FOLDER_SENT = 'sent';
+    const FOLDER_TRASH = 'trash';
 
     /**
      * Initialize method
@@ -105,7 +105,7 @@ class MessagesTable extends Table
      */
     public function getNewStatus()
     {
-        return static::NEW_STATUS;
+        return static::STATUS_NEW;
     }
 
     /**
@@ -114,7 +114,7 @@ class MessagesTable extends Table
      */
     public function getReadStatus()
     {
-        return static::READ_STATUS;
+        return static::STATUS_READ;
     }
 
     /**
@@ -123,7 +123,7 @@ class MessagesTable extends Table
      */
     public function getDeletedStatus()
     {
-        return static::DELETED_STATUS;
+        return static::STATUS_DELETED;
     }
 
     /**
@@ -132,7 +132,7 @@ class MessagesTable extends Table
      */
     public function getArchivedStatus()
     {
-        return static::ARCHIVED_STATUS;
+        return static::STATUS_ARCHIVED;
     }
 
     /**
@@ -141,7 +141,7 @@ class MessagesTable extends Table
      */
     public function getSentFolder()
     {
-        return static::SENT_FOLDER;
+        return static::FOLDER_SENT;
     }
 
     /**
@@ -157,16 +157,16 @@ class MessagesTable extends Table
 
     public function getDefaultFolder()
     {
-        return static::INBOX_FOLDER;
+        return static::FOLDER_INBOX;
     }
 
     public function getFolders()
     {
         $result = [
-            static::INBOX_FOLDER,
-            static::ARCHIVED_FOLDER,
-            static::SENT_FOLDER,
-            static::TRASH_FOLDER
+            static::FOLDER_INBOX,
+            static::FOLDER_ARCHIVED,
+            static::FOLDER_SENT,
+            static::FOLDER_TRASH
         ];
 
         return $result;
@@ -191,11 +191,11 @@ class MessagesTable extends Table
     {
         if ($message->from_user !== $userId) {
             switch ($message->status) {
-                case static::DELETED_STATUS:
+                case static::STATUS_DELETED:
                     $result = 'trash';
                     break;
 
-                case static::ARCHIVED_STATUS:
+                case static::STATUS_ARCHIVED:
                     $result = 'archived';
                     break;
 
