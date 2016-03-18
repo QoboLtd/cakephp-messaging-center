@@ -66,11 +66,11 @@ class MessagesController extends AppController
     }
 
     /**
-     * Add method
+     * Composer method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Network\Response|void Redirects on successful compose, renders view otherwise.
      */
-    public function create()
+    public function compose()
     {
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
