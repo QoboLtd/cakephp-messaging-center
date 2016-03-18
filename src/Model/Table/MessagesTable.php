@@ -155,11 +155,19 @@ class MessagesTable extends Table
         return $result;
     }
 
+    /**
+     * Method that returns default folder's name.
+     * @return string
+     */
     public function getDefaultFolder()
     {
         return static::FOLDER_INBOX;
     }
 
+    /**
+     * Method that returns all folder names.
+     * @return array
+     */
     public function getFolders()
     {
         $result = [
@@ -172,13 +180,18 @@ class MessagesTable extends Table
         return $result;
     }
 
-    public function getFolder($folder = '')
+    /**
+     * Check if folder exists.
+     * @param  string $folder folder name
+     * @return bool
+     */
+    public function folderExists($folder = '')
     {
         if (!in_array($folder, $this->getFolders())) {
-            $folder = $this->getDefaultFolder();
+            return false;
         }
 
-        return $folder;
+        return true;
     }
 
     /**
