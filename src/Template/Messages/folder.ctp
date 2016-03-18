@@ -27,7 +27,13 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                 <table id="folder-table" class="table table-hover folder-table">
                     <tbody>
                         <?php foreach ($messages as $message): ?>
-                        <tr class="<?= 'new' !== $message->status ?: 'unread'; ?>" data-url="<?= $this->Url->build(['action' => 'view', $message->id]) ?>">
+                        <?php
+                        $readClass = '';
+                        if ('new' === $message->status && 'sent' !== $folder) {
+                            $readClass = ' unread ';
+                        }
+                        ?>
+                        <tr class="<?= $readClass ?>" data-url="<?= $this->Url->build(['action' => 'view', $message->id]) ?>">
                             <td>
                                 <?= $message->has('fromUser') ? $message->fromUser->username : '' ?>
                             </td>
