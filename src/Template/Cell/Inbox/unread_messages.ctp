@@ -7,7 +7,7 @@
         <i class="fa fa-caret-down"></i>
     </a>
     <ul class="dropdown-menu dropdown-messages">
-        <?php foreach ($messages as $k => $message) : ?>
+        <?php foreach ($messages as $message) : ?>
         <li>
             <a href="<?= $this->Url->build(['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id]); ?>">
                 <div>
@@ -26,9 +26,7 @@
                 ); ?></div>
             </a>
         </li>
-        <?php if ($k > 0) : ?>
-            <li class="divider"></li>
-        <?php endif; ?>
+        <li class="divider"></li>
         <?php endforeach; ?>
 
         <li>
