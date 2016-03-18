@@ -46,6 +46,7 @@ class InboxCell extends Cell
                 'status' => $this->Messages->getNewStatus()
             ],
             'contain' => ['FromUser'],
+            'order' => ['Messages.date_sent' => 'DESC'],
             'limit' => (int)$limit
         ]);
 
