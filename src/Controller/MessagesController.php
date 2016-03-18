@@ -100,6 +100,13 @@ class MessagesController extends AppController
         $message = $this->Messages->get($id, [
             'contain' => ['FromUser', 'ToUser']
         ]);
+
+        // current user's sent message
+        if ($this->Auth->user('id') !== $message->to_user) {
+            $this->Flash->error(__('You cannot reply to a sent message.'));
+            return $this->redirect(['action' => 'view', $id]);
+        }
+
         if ($this->request->is('put')) {
             $newMessage = $this->Messages->newEntity();
             $this->request->data['from_user'] = $this->Auth->user('id');
@@ -133,8 +140,16 @@ class MessagesController extends AppController
 
         $status = $this->Messages->getDeletedStatus();
 
-        if ($this->Auth->user('id') !== $message->to_user || $message->status === $status) {
-            throw new \Cake\Network\Exception\ForbiddenException();
+        // already deleted message
+        if ($message->status === $status) {
+            $this->Flash->error(__('You cannot delete a deleted message.'));
+            return $this->redirect(['action' => 'view', $id]);
+        }
+
+        // current user's sent message
+        if ($this->Auth->user('id') !== $message->to_user) {
+            $this->Flash->error(__('You cannot delete a sent message.'));
+            return $this->redirect(['action' => 'view', $id]);
         }
 
         $message = $this->Messages->patchEntity($message, ['status' => $status]);
@@ -162,7 +177,19 @@ class MessagesController extends AppController
         $status = $this->Messages->getArchivedStatus();
         $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
-        if ($this->Auth->user('id') === $message->to_user && $this->Messages->save($message)) {
+        // current user's sent message
+        if ($this->Auth->user('id') !== $message->to_user) {
+            $this->Flash->error(__('You cannot archive a sent message.'));
+            return $this->redirect(['action' => 'view', $id]);
+        } else {
+            // already archived message
+            if ($message->status === $status) {
+                $this->Flash->error(__('You cannot arcive an archived message.'));
+                return $this->redirect(['action' => 'view', $id]);
+            }
+        }
+
+        if ($this->Messages->save($message)) {
             $this->Flash->success(__('The message has been archived.'));
         } else {
             $this->Flash->error(__('The message could not be archived. Please, try again.'));
@@ -185,7 +212,19 @@ class MessagesController extends AppController
         $status = $this->Messages->getReadStatus();
         $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
-        if ($this->Auth->user('id') === $message->to_user && $this->Messages->save($message)) {
+        // current user's sent message
+        if ($this->Auth->user('id') !== $message->to_user) {
+            $this->Flash->error(__('You cannot restore a sent message.'));
+            return $this->redirect(['action' => 'view', $id]);
+        } else {
+            // inbox message
+            if (in_array($message->status, [$status, $this->Messages->getNewStatus()])) {
+                $this->Flash->error(__('You cannot restore an inbox message.'));
+                return $this->redirect(['action' => 'view', $id]);
+            }
+        }
+
+        if ($this->Messages->save($message)) {
             $this->Flash->success(__('The message has been restored.'));
         } else {
             $this->Flash->error(__('The message could not be restored. Please, try again.'));
