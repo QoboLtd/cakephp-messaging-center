@@ -19,7 +19,7 @@ class MessagesController extends AppController
     public function folder($type = '')
     {
         $this->paginate = [
-            'conditions' => $this->Messages->getConditionsByFolderType($type, $this->Auth->user('id')),
+            'conditions' => $this->Messages->getConditionsByFolderType($this->Auth->user('id'), $type),
             'contain' => ['FromUser', 'ToUser'],
             'order' => ['Messages.date_sent' => 'DESC']
         ];
@@ -83,6 +83,35 @@ class MessagesController extends AppController
                 return $this->redirect(['action' => 'folder']);
             } else {
                 $this->Flash->error(__('The message could not be saved. Please, try again.'));
+            }
+        }
+        $users = $this->Messages->ToUser->find('list', ['limit' => 200]);
+        $this->set(compact('message', 'users'));
+        $this->set('_serialize', ['message']);
+    }
+
+    /**
+     * Reply method
+     *
+     * @return \Cake\Network\Response|void Redirects on successful reply, renders view otherwise.
+     */
+    public function reply($id)
+    {
+        $message = $this->Messages->get($id, [
+            'contain' => ['FromUser', 'ToUser']
+        ]);
+        if ($this->request->is('put')) {
+            $newMessage = $this->Messages->newEntity();
+            $this->request->data['from_user'] = $this->Auth->user('id');
+            $this->request->data['status'] = $this->Messages->getNewStatus();
+            $this->request->data['date_sent'] = $this->Messages->getDateSent();
+            $this->request->data['related_id'] = $id;
+            $newMessage = $this->Messages->patchEntity($newMessage, $this->request->data);
+            if ($this->Messages->save($newMessage)) {
+                $this->Flash->success(__('The message has been sent.'));
+                return $this->redirect(['action' => 'folder']);
+            } else {
+                $this->Flash->error(__('The message could not be sent. Please, try again.'));
             }
         }
         $users = $this->Messages->ToUser->find('list', ['limit' => 200]);
