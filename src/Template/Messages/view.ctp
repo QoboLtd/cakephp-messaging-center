@@ -66,7 +66,7 @@ $toUserId = $message->has('toUser') ? h($message->toUser->id) : '';
                     <?= h($message->date_sent) ?>
                 </p>
                 <hr />
-                <div><?= $this->Text->autoParagraph(h($message->content)); ?></div>
+                <div><?= $this->Text->autoParagraph($message->content); ?></div>
             </div>
         </div>
     </div>
