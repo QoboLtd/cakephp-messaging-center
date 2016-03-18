@@ -92,7 +92,7 @@ class MessagesController extends AppController
 
     /**
      * Reply method
-     *
+     * @param string $id message id
      * @return \Cake\Network\Response|void Redirects on successful reply, renders view otherwise.
      */
     public function reply($id)
