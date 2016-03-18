@@ -155,6 +155,32 @@ class MessagesTable extends Table
         return $result;
     }
 
+    public function getDefaultFolder()
+    {
+        return static::INBOX_FOLDER;
+    }
+
+    public function getFolders()
+    {
+        $result = [
+            static::INBOX_FOLDER,
+            static::ARCHIVED_FOLDER,
+            static::SENT_FOLDER,
+            static::TRASH_FOLDER
+        ];
+
+        return $result;
+    }
+
+    public function getFolder($folder = '')
+    {
+        if (!in_array($folder, $this->getFolders())) {
+            $folder = $this->getDefaultFolder();
+        }
+
+        return $folder;
+    }
+
     /**
      * Get message's folder based on user id and message status.
      * @param  \MessagingCenter\Model\Entity\Message $message Message enity
@@ -187,12 +213,12 @@ class MessagesTable extends Table
     /**
      * Get query conditions based on folder type.
      * @param  string $userId current user id
-     * @param  string $type   folder type
+     * @param  string $folder folder
      * @return array          query conditions
      */
-    public function getConditionsByFolderType($userId, $type = '')
+    public function getConditionsByFolder($userId, $folder = '')
     {
-        switch ($type) {
+        switch ($folder) {
             case 'archived':
                 $result = [
                     'to_user' => $userId,

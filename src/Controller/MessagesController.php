@@ -13,20 +13,22 @@ class MessagesController extends AppController
 
     /**
      * Folder method
-     * @param string $type folder type
+     * @param string $folder folder name
      * @return void
      */
-    public function folder($type = '')
+    public function folder($folder = '')
     {
+        $folder = $this->Messages->getFolder($folder);
+
         $this->paginate = [
-            'conditions' => $this->Messages->getConditionsByFolderType($this->Auth->user('id'), $type),
+            'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folder),
             'contain' => ['FromUser', 'ToUser'],
             'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
 
-        $this->set(compact('messages'));
-        $this->set('_serialize', ['messages']);
+        $this->set(compact('messages', 'folder'));
+        $this->set('_serialize', ['messages', 'folder']);
     }
 
     /**
