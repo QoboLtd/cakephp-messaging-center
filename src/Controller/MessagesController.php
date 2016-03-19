@@ -18,7 +18,9 @@ class MessagesController extends AppController
      */
     public function folder($folder = '')
     {
-        $folder = $this->Messages->getFolder($folder);
+        if (!$this->Messages->folderExists($folder)) {
+            $folder = $this->Messages->getDefaultFolder();
+        }
 
         $this->paginate = [
             'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folder),

@@ -33,7 +33,10 @@ class InboxCell extends Cell
 
     /**
      * Pass unread emails to the Cell View
+     *
      * @param  int $limit query limit
+     * @param  bool $count flag for including unread messages counter
+     * @param  int $contentLength content excerpt length
      * @return void
      */
     public function unreadMessages($limit = 10, $count = false, $contentLength = 100)
@@ -46,6 +49,7 @@ class InboxCell extends Cell
                 'status' => $this->Messages->getNewStatus()
             ],
             'contain' => ['FromUser'],
+            'order' => ['Messages.date_sent' => 'DESC'],
             'limit' => (int)$limit
         ]);
 
