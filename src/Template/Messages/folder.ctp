@@ -32,10 +32,14 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                         if ('new' === $message->status && 'sent' !== $folder) {
                             $readClass = ' unread ';
                         }
+                        $messageUser = 'fromUser';
+                        if ('sent' === $folder) {
+                            $messageUser = 'toUser';
+                        }
                         ?>
                         <tr class="<?= $readClass ?>" data-url="<?= $this->Url->build(['action' => 'view', $message->id]) ?>">
                             <td>
-                                <?= $message->has('fromUser') ? $message->fromUser->username : '' ?>
+                                <?= $message->has($messageUser) ? $message->{$messageUser}->username : '' ?>
                             </td>
                             <td><?= h($message->subject) ?> -
                                 <span class="text-muted">
