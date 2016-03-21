@@ -51,7 +51,7 @@ class MessagesController extends AppController
             throw new \Cake\Network\Exception\ForbiddenException();
         }
 
-        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
+        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'), $this->referer());
 
         // set status to read
         if ($this->request->is(['get']) &&

@@ -195,13 +195,21 @@ class MessagesTable extends Table
     }
 
     /**
-     * Get message's folder based on user id and message status.
+     * Get message's folder based on http referer, if not
+     * matched get it from user id and message status.
      * @param  \MessagingCenter\Model\Entity\Message $message Message enity
      * @param  string $userId current user id
+     * @param  string $referer http referer
      * @return string         folder name
      */
-    public function getFolderByMessage(Message $message, $userId)
+    public function getFolderByMessage(Message $message, $userId, $referer = '')
     {
+        $result = substr($referer, strrpos($referer, '/') + 1);
+
+        if (in_array($result, $this->getFolders())) {
+            return $result;
+        }
+
         if ($message->from_user !== $userId) {
             switch ($message->status) {
                 case static::STATUS_DELETED:
