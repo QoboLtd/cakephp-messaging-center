@@ -15,18 +15,20 @@ var typeahead = typeahead || {};
      */
     Typeahead.prototype.init = function() {
         that = this;
+        typeahead_id = '[data-type="typeahead"]';
 
         // loop through typeahead inputs
-        $('[data-type="typeahead"]').each(function() {
+        $(typeahead_id).each(function() {
             hidden_input = $('[name=' + $(this).data('name') + ']');
 
             // enable typeahead functionality
             that._enable(this, hidden_input);
+        });
 
-            // clear inputs on double click
-            $(this).dblclick(function() {
-                that._clearInputs(this, hidden_input);
-            });
+        // clear inputs on double click
+        $(typeahead_id).dblclick(function() {
+            hidden_input = $('[name=' + $(this).data('name') + ']');
+            that._clearInputs(this, hidden_input);
         });
     };
 
