@@ -5,7 +5,15 @@ use Cake\View\Cell;
 
 class InboxCell extends Cell
 {
+    /**
+     * Unread count default format
+     */
     const UNREAD_COUNT_FORMAT = '<span class="badge">{{text}}</span>';
+
+    /**
+     * Max unread count to display in the View
+     */
+    const MAX_UNREAD_COUNT = 100;
 
     /**
      * Pass unread emails count to the Cell View
@@ -29,6 +37,7 @@ class InboxCell extends Cell
 
         $this->set('unread_format', $format);
         $this->set('unread_count', (int)$unread->count());
+        $this->set('max_unread_count', static::MAX_UNREAD_COUNT);
     }
 
     /**
