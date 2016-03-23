@@ -1,0 +1,14 @@
+.noti_bubble {
+    position: absolute;
+    top: 6px;
+    right: 35%;
+    padding-right: 3px;
+    padding-left: 3px;
+    background-color: #dc0d17;
+    background-image: linear-gradient(#fa3c45, #dc0d17);
+    color: #fff;
+    font-size: 9px;
+    font-weight: bold;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .7);
+}
