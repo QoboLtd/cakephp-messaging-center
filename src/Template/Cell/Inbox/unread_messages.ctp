@@ -1,8 +1,10 @@
+<?= $this->Html->css('MessagingCenter.notifications'); ?>
+
 <li class="dropdown">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="fa fa-envelope"></i>
         <?php if ((bool)$count) : ?>
-            <sup><?= $this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}']); ?></sup>
+        <div class="noti_bubble"><?= $this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}']); ?></div>
         <?php endif; ?>
         <i class="fa fa-caret-down"></i>
     </a>
