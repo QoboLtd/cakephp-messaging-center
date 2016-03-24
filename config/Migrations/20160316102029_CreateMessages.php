@@ -1,5 +1,6 @@
 <?php
 use Migrations\AbstractMigration;
+use Phinx\Db\Adapter\MysqlAdapter;
 
 class CreateMessages extends AbstractMigration
 {
@@ -35,6 +36,7 @@ class CreateMessages extends AbstractMigration
         ]);
         $table->addColumn('content', 'text', [
             'default' => null,
+            'limit' => MysqlAdapter::TEXT_LONG,
             'null' => false,
         ]);
         $table->addColumn('date_sent', 'datetime', [
