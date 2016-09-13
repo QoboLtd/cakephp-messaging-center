@@ -11,12 +11,16 @@
     cursor: pointer;
 }
 
-.folder-table tr td:last-child {
+.folder-table tr td:last-child, .folder-table tr th:last-child {
     text-align: right;
 }
 
 .unread {
     font-weight: 700;
+}
+
+.read {
+    font-weight: normal;
 }
 
 .message-actions .btn  {
