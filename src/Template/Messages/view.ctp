@@ -26,12 +26,12 @@ $toUserId = $message->has('toUser') ? h($message->toUser->id) : '';
                     $archiveBtn = $this->Form->postLink(
                         '',
                         ['action' => 'archive', $message->id],
-                        ['title' => __('Archive'), 'class' => 'btn btn-default glyphicon glyphicon-folder-open pull-right']
+                        ['title' => __('Archive'), 'class' => 'btn btn-default glyphicon glyphicon-save pull-right']
                     );
                     $restoreBtn = $this->Form->postLink(
                         '',
                         ['action' => 'restore', $message->id],
-                        ['title' => __('Restore'), 'class' => 'btn btn-default glyphicon glyphicon-folder-close pull-right']
+                        ['title' => __('Restore'), 'class' => 'btn btn-default glyphicon glyphicon-open pull-right']
                     );
                     switch ($folder) {
                         case 'inbox':
@@ -54,17 +54,31 @@ $toUserId = $message->has('toUser') ? h($message->toUser->id) : '';
                 ?>
                 </div>
                 <hr />
-                <h2><?= h($message->subject) ?></h2>
-                <hr />
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <p>
-                    <strong><?= $message->has('fromUser') ? h($message->fromUser->username) : '' ?></strong> to
-                    <strong><?= $message->has('toUser') ? h($message->toUser->username) : '' ?></strong> on
-                    <?= h($message->date_sent) ?>
-                </p>
+                <table class="table table-condensed text-muted">
+                    <tbody>
+                        <tr>
+                            <th><?= __('Subject'); ?></th>
+                            <td><?= h($message->subject) ?></td>
+                        </tr>
+                        <tr>
+                            <th><?= __('From'); ?></th>
+                            <td><?= $this->element('user', ['user' => $message->fromUser]) ?></td>
+                        </tr>
+                        <tr>
+                            <th><?= __('To'); ?></th>
+                            <td><?= $this->element('user', ['user' => $message->toUser]) ?></td>
+                        </tr>
+                        <tr>
+                            <th><?= __('Sent'); ?></th>
+                            <td><?= h($message->date_sent) ?></td>
+                        </tr>
+
+                    </tbody>
+                </table>
                 <hr />
                 <div><?= $this->Text->autoParagraph($message->content); ?></div>
             </div>
