@@ -31,7 +31,7 @@ echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'scriptBottom'
             ]);
             echo $this->Form->input('to_user', ['type' => 'hidden']);
             echo $this->Form->input('subject');
-            echo $this->Form->input('content', ['label' => '']);
+            echo $this->Form->input('content', ['label' => __('Message')]);
             ?>
         </fieldset>
         <?= $this->Form->button(__("Send"), ['class' => 'btn btn-primary pull-right']); ?>
