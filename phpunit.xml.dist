@@ -4,7 +4,7 @@
     processIsolation="false"
     stopOnFailure="false"
     syntaxCheck="false"
-    bootstrap="./vendor/cakephp/cakephp/tests/bootstrap.php"
+    bootstrap="./tests/bootstrap.php"
     verbose="true"
     >
     <php>
