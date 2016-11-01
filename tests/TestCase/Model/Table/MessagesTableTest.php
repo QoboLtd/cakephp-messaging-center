@@ -25,7 +25,6 @@ class MessagesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.messaging_center.messages',
-        'plugin.messaging_center.relateds'
     ];
 
     /**
