@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+    <!--
+         Useful links:
+         * https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage
+         * https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xml.dist
+         * https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml
+    -->
+    <description>PHP CodeSniffer Configuration</description>
+
+    <!-- Coding standard to use -->
+    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP" />
+
+    <!-- Do not fail on warnings -->
+    <config name="ignore_warnings_on_exit" value="1" />
+
+    <!-- Assume UTF-8 -->
+    <config name="encoding" value="UTF-8" />
+
+    <!-- Extensions to check -->
+    <arg name="extensions" value="php,inc,ctp,js,css" />
+
+    <!-- Use colors -->
+    <arg name="colors" />
+
+    <!-- Show progress -->
+    <arg value="p" />
+
+    <!-- Files and directories to check -->
+    <file>./src/</file>
+    <file>./tests/</file>
+    <file>./webroot/</file>
+</ruleset>
