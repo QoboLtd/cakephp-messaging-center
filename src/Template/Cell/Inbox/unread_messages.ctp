@@ -19,14 +19,14 @@
                     </span>
                 </div>
                 <div><?= $this->Text->truncate(
-                    $this->Text->stripLinks($message->content),
-                    (int)$contentLength,
-                    [
-                        'ellipsis' => '...',
-                        'exact' => true,
-                        'html' => true
-                    ]
-                ); ?></div>
+                            $this->Text->stripLinks($message->content),
+                            (int)$contentLength,
+                            [
+                            'ellipsis' => '...',
+                            'exact' => true,
+                            'html' => true
+                            ]
+                        ); ?></div>
             </a>
         </li>
         <li class="divider"></li>

@@ -29,10 +29,10 @@ if (!isset($folder)) {
     <div class="list-group">
         <?php foreach ($actions as $action => $options) : ?>
             <?php
-                if ('inbox' === $action) {
-                    $cell = $this->cell('MessagingCenter.Inbox::unreadCount');
-                    $options['label'] .= ' ' . $cell;
-                }
+            if ('inbox' === $action) {
+                $cell = $this->cell('MessagingCenter.Inbox::unreadCount');
+                $options['label'] .= ' ' . $cell;
+            }
 
                 $options['icon'] = '<i class="fa fa-' .$options['icon'] . '"></i>';
             ?>

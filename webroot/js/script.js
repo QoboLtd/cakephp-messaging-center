@@ -1,14 +1,15 @@
-(function($) {
-    function MessagingCenter() {}
+(function ($) {
+    function MessagingCenter()
+    {}
 
     /**
      * Enable folder messages links
      * @param  {object} options
      * @return {undefined}
      */
-    MessagingCenter.prototype.enableLinks = function(options) {
+    MessagingCenter.prototype.enableLinks = function (options) {
         if (options.hasOwnProperty('tableId')) {
-            $(options.tableId + ' tr').click(function() {
+            $(options.tableId + ' tr').click(function () {
                 window.document.location = $(this).data('url');
             });
         }
