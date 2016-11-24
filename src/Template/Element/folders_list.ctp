@@ -34,7 +34,7 @@ if (!isset($folder)) {
                 $options['label'] .= ' ' . $cell;
             }
 
-                $options['icon'] = '<i class="fa fa-' .$options['icon'] . '"></i>';
+                $options['icon'] = '<i class="fa fa-' . $options['icon'] . '"></i>';
             ?>
             <?= $this->Html->link(
                 $options['icon'] . ' ' . $options['label'],
