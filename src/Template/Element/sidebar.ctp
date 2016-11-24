@@ -3,4 +3,4 @@
     ['action' => 'compose'],
     ['class' => 'btn btn-primary btn-block', 'escape' => false]
 ); ?>
-<?= $this->element('MessagingCenter.folders_list') ?>
+<?= $this->element('MessagingCenter.folders_list');

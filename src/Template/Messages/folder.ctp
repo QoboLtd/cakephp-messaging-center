@@ -46,7 +46,7 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($messages as $message): ?>
+                        <?php foreach ($messages as $message) : ?>
                         <?php
                         $readClass = '';
                         if ('new' === $message->status && 'sent' !== $folder) {

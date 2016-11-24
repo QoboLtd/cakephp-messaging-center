@@ -27,7 +27,7 @@ echo $this->Html->css('MessagingCenter.style');
                 'readonly' => true
             ]);
             echo $this->Form->input('subject', ['value' => 'Re: ' . $message->subject]);
-            echo $this->Form->input('content', ['value' => '','label' => '']);
+            echo $this->Form->input('content', ['value' => '', 'label' => '']);
             ?>
         </fieldset>
         <?= $this->Form->button(__("Send"), ['class' => 'pull-right']); ?>

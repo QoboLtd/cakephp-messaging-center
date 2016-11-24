@@ -17,7 +17,7 @@ matrix:
   fast_finish: true
 
 install:
-  - composer install
+  - composer install --no-interaction --no-progress --no-suggest
   - mkdir -p build/logs
 
 before_script:
@@ -25,8 +25,7 @@ before_script:
 
 script:
   - vendor/bin/phpunit
-  - vendor/bin/phpcs --config-set ignore_warnings_on_exit 1
-  - vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests
+  - vendor/bin/phpcs
 
 after_success:
   - curl -s https://codecov.io/bash > /tmp/codecov.sh

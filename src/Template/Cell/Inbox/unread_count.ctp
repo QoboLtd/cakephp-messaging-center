@@ -1,8 +1,7 @@
 <?php
-if (0 < $unread_count) {
-    if ($max_unread_count < $unread_count) {
-        $unread_count = $max_unread_count . '+';
+if (0 < $unreadCount) {
+    if ($maxUnreadCount < $unreadCount) {
+        $unreadCount = $maxUnreadCount . '+';
     }
-    echo str_replace('{{text}}', $unread_count, $unread_format);
+    echo str_replace('{{text}}', $unreadCount, $unreadFormat);
 }
-?>
