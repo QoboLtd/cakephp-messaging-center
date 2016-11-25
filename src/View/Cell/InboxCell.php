@@ -35,9 +35,9 @@ class InboxCell extends Cell
             ]
         ]);
 
-        $this->set('unread_format', $format);
-        $this->set('unread_count', (int)$unread->count());
-        $this->set('max_unread_count', static::MAX_UNREAD_COUNT);
+        $this->set('unreadFormat', $format);
+        $this->set('unreadCount', (int)$unread->count());
+        $this->set('maxUnreadCount', static::MAX_UNREAD_COUNT);
     }
 
     /**
