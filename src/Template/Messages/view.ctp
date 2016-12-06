@@ -66,11 +66,13 @@ $toUserId = $message->has('toUser') ? h($message->toUser->id) : '';
                         </tr>
                         <tr>
                             <th><?= __('From'); ?></th>
-                            <td><?= $this->element('user', ['user' => $message->fromUser]) ?></td>
+                            <?php $fromUser = !empty($message->fromUser) ? $message->fromUser : $message->from_user; ?>
+                            <td><?= $this->element('MessagingCenter.user', ['user' => $fromUser]) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('To'); ?></th>
-                            <td><?= $this->element('user', ['user' => $message->toUser]) ?></td>
+                            <?php $toUser = !empty($message->toUser) ? $message->toUser : $message->to_user; ?>
+                            <td><?= $this->element('MessagingCenter.user', ['user' => $toUser]) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Sent'); ?></th>

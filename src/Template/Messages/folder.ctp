@@ -1,4 +1,6 @@
 <?php
+use Cake\Utility\Inflector;
+
 echo $this->Html->css('MessagingCenter.style');
 echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
 ?>
@@ -25,22 +27,13 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
             <div class="col-xs-12">
                 <?php if (0 < $messages->count()) : ?>
 
-                <?php
-                // Assume this is not a Sent folder
-                $isSentFolder = false;
-                $messageUser = 'fromUser';
-                $messageUserLabel = __('From');
-                if ('sent' === $folder) {
-                    $isSentFolder = true;
-                    $messageUser = 'toUser';
-                    $messageUserLabel = __('To');
-                }
-                ?>
-
                 <table id="folder-table" class="table table-hover folder-table">
                     <thead>
                         <tr>
-                            <th><?php echo $this->Paginator->sort($messageUser, $messageUserLabel); ?></th>
+                            <th><?php echo $this->Paginator->sort(
+                                'sent' === $folder ? 'toUser' : 'fromUser',
+                                'sent' === $folder ? __('To') : __('From')
+                            ); ?></th>
                             <th><?php echo $this->Paginator->sort('subject'); ?></th>
                             <th><?php echo $this->Paginator->sort('sent'); ?></th>
                         </tr>
@@ -48,13 +41,22 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                     <tbody>
                         <?php foreach ($messages as $message) : ?>
                         <?php
+                        $messageUser = 'sent' === $folder ? 'toUser' : 'fromUser';
+                        $messageUser = !empty($message->{$messageUser}) ?
+                            $message->{$messageUser} :
+                            $message->{Inflector::underscore($messageUser)};
+                        ?>
+                        <?php
                         $readClass = '';
                         if ('new' === $message->status && 'sent' !== $folder) {
                             $readClass = ' unread ';
                         }
                         ?>
-                        <tr class="<?= $readClass ?>" data-url="<?= $this->Url->build(['action' => 'view', $message->id]) ?>">
-                            <td><?= $this->element('user', ['user' => $message->{$messageUser}]) ?></td>
+                        <tr
+                            class="<?= $readClass ?>"
+                            data-url="<?= $this->Url->build(['action' => 'view', $message->id]) ?>"
+                        >
+                            <td><?= $this->element('MessagingCenter.user', ['user' => $messageUser]) ?></td>
                             <td><?= h($message->subject) ?> -
                                 <span class="text-muted read">
                                     <?= $this->Text->truncate(

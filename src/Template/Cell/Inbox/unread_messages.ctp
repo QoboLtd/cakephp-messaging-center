@@ -10,10 +10,11 @@
     </a>
     <ul class="dropdown-menu dropdown-messages">
         <?php foreach ($messages as $message) : ?>
+        <?php $fromUser = !empty($message->fromUser) ? $message->fromUser : $message->from_user; ?>
         <li>
             <a href="<?= $this->Url->build(['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id]); ?>">
                 <div>
-                    <strong><?= $message->fromUser->username ?></strong>
+                    <strong><?= $this->element('MessagingCenter.user', ['user' => $fromUser]) ?></strong>
                     <span class="pull-right text-muted">
                         <em><?= h($message->date_sent->i18nFormat('yyyy-MM-dd HH:mm')) ?></em>
                     </span>
