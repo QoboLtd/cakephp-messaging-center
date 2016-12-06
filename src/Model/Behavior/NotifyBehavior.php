@@ -28,8 +28,9 @@ class NotifyBehavior extends Behavior
     protected $_usersTable = null;
 
     /**
-     * [$_fromUser description]
-     * @var null
+     * From user entity.
+     *
+     * @var Cake\ORM\Entity
      */
     protected $_fromUser = null;
 
