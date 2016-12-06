@@ -35,6 +35,13 @@ class NotifyBehavior extends Behavior
     protected $_fromUser = null;
 
     /**
+     * Ingored modified fields
+     *
+     * @var array
+     */
+    protected $_ignoredFields = ['created', 'modified'];
+
+    /**
      * {@inheritDoc}
      */
     public function initialize(array $config)
@@ -75,6 +82,13 @@ class NotifyBehavior extends Behavior
             return;
         }
 
+        $modifiedFields = $this->_getModifiedFields($entity);
+
+        // skip if empty modified fields
+        if (empty($modifiedFields)) {
+            return;
+        }
+
         $notifyFields = $this->_getNotifyFields($event->subject());
         // no notify fields have been found
         if (empty($notifyFields)) {
@@ -90,6 +104,38 @@ class NotifyBehavior extends Behavior
         foreach ($notifyFields as $notifyField) {
             $this->_notifyUser($notifyField, $entity, $event->subject());
         }
+    }
+
+    /**
+     * Get entity modified fields in multi-dimensional array format,
+     * with field name as the key and old value / new value as value.
+     *
+     * Returns empty result if all modified fields are part of the
+     * _ignoreFields array.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity object
+     * @return array
+     */
+    protected function _getModifiedFields(EntityInterface $entity)
+    {
+        $result = [];
+
+        $fields = $entity->extractOriginalChanged($entity->visibleProperties());
+
+        $diff = array_diff(array_keys($fields), $this->_ignoredFields);
+
+        if (empty($diff)) {
+            return $result;
+        }
+
+        foreach ($fields as $k => $v) {
+            $result[$k] = [
+                'oldValue' => $v,
+                'newValue' => $entity->{$k}
+            ];
+        }
+
+        return $result;
     }
 
     /**
