@@ -112,7 +112,7 @@ class NotifyBehavior extends Behavior
         }
 
         foreach ($notifyFields as $notifyField) {
-            $this->_notifyUser($notifyField, $entity, $event->subject());
+            $this->_notifyUser($notifyField, $entity, $event->subject(), $modifiedFields);
         }
     }
 
@@ -206,7 +206,7 @@ class NotifyBehavior extends Behavior
      * @param \Cake\ORM\Table $table Table instance
      * @return void
      */
-    protected function _notifyUser($field, EntityInterface $entity, Table $table)
+    protected function _notifyUser($field, EntityInterface $entity, Table $table, array $modifiedFields)
     {
         $modelName = Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table())));
         $this->Notifier->from($this->_fromUser->id);
@@ -222,6 +222,7 @@ class NotifyBehavior extends Behavior
         ];
         if (static::STATUS_MODIFIED === $field['status']) {
             $this->Notifier->template('MessagingCenter.record_modified');
+            $data['modifiedFields'] = $modifiedFields;
         }
         $this->Notifier->message($data);
 
