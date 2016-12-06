@@ -2,12 +2,10 @@
 namespace MessagingCenter\Model\Behavior;
 
 use ArrayObject;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Log\Log;
 use Cake\ORM\Behavior;
-use Cake\ORM\Entity;
-use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -15,6 +13,16 @@ use MessagingCenter\Notifier\MessageNotifier;
 
 class NotifyBehavior extends Behavior
 {
+    /**
+     * Assigned status identifier.
+     */
+    const STATUS_ASSIGNED = 'assigned';
+
+    /**
+     * Modified status identifier.
+     */
+    const STATUS_MODIFIED = 'modified';
+
     /**
      * Notifier instance.
      *
@@ -30,10 +38,18 @@ class NotifyBehavior extends Behavior
     protected $_usersTable = null;
 
     /**
-     * [$_fromUser description]
-     * @var null
+     * From user id.
+     *
+     * @var string
      */
     protected $_fromUser = null;
+
+    /**
+     * Ingored modified fields
+     *
+     * @var array
+     */
+    protected $_ignoredFields = ['created', 'modified'];
 
     /**
      * {@inheritDoc}
@@ -42,23 +58,11 @@ class NotifyBehavior extends Behavior
     {
         parent::initialize($config);
 
+        $this->_fromUser = Configure::readOrFail('MessagingCenter.systemUser.id');
         // get users table
         $this->_usersTable = TableRegistry::get('Users');
 
         $this->Notifier = new MessageNotifier();
-
-        // get [from] user to be used on system notifications
-        $username = 'SYSTEM';
-        $this->_fromUser = $this->_usersTable->find('all', [
-            'conditions' => [
-                'username' => $username
-            ]
-        ])->first();
-
-        // log user not found error
-        if (!$this->_fromUser) {
-            Log::error('[' . $username . '] user was not found in the system, notifications cannot be sent.');
-        }
     }
 
     /**
@@ -66,13 +70,15 @@ class NotifyBehavior extends Behavior
      */
     public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        // from user was not found
-        if (!$this->_fromUser) {
+        // nothing has been modified
+        if (!$entity->dirty()) {
             return;
         }
 
-        // nothing has been modified
-        if (!$entity->dirty()) {
+        $modifiedFields = $this->_getModifiedFields($entity);
+
+        // skip if empty modified fields
+        if (empty($modifiedFields)) {
             return;
         }
 
@@ -89,8 +95,40 @@ class NotifyBehavior extends Behavior
         }
 
         foreach ($notifyFields as $notifyField) {
-            $this->_notifyUser($notifyField, $entity, $event->subject());
+            $this->_notifyUser($notifyField, $entity, $event->subject(), $modifiedFields);
         }
+    }
+
+    /**
+     * Get entity modified fields in multi-dimensional array format,
+     * with field name as the key and old value / new value as value.
+     *
+     * Returns empty result if all modified fields are part of the
+     * _ignoreFields array.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Entity object
+     * @return array
+     */
+    protected function _getModifiedFields(EntityInterface $entity)
+    {
+        $result = [];
+
+        $fields = $entity->extractOriginalChanged($entity->visibleProperties());
+
+        $diff = array_diff(array_keys($fields), $this->_ignoredFields);
+
+        if (empty($diff)) {
+            return $result;
+        }
+
+        foreach ($fields as $k => $v) {
+            $result[$k] = [
+                'oldValue' => $v,
+                'newValue' => $entity->{$k}
+            ];
+        }
+
+        return $result;
     }
 
     /**
@@ -123,9 +161,10 @@ class NotifyBehavior extends Behavior
     {
         $fields = [];
         foreach ($notifyFields as $notifyField) {
+            $status = static::STATUS_ASSIGNED;
             // skip notify field(s) that have NOT been modified
             if (!$entity->dirty($notifyField)) {
-                continue;
+                $status = static::STATUS_MODIFIED;
             }
 
             // skip notify field(s) with empty value
@@ -133,7 +172,10 @@ class NotifyBehavior extends Behavior
                 continue;
             }
 
-            $fields[] = $notifyField;
+            $fields[] = [
+                'name' => $notifyField,
+                'status' => $status
+            ];
         }
 
         return $fields;
@@ -147,18 +189,25 @@ class NotifyBehavior extends Behavior
      * @param \Cake\ORM\Table $table Table instance
      * @return void
      */
-    protected function _notifyUser($field, EntityInterface $entity, Table $table)
+    protected function _notifyUser($field, EntityInterface $entity, Table $table, array $modifiedFields)
     {
         $modelName = Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table())));
-        $this->Notifier->from($this->_fromUser->id);
-        $this->Notifier->to($entity->{$field});
-        $this->Notifier->subject($modelName . ' Record');
-        $this->Notifier->message([
+        $this->Notifier->from($this->_fromUser);
+        $this->Notifier->to($entity->{$field['name']});
+        $this->Notifier->subject($modelName . ': ' . $entity->{$table->displayField()});
+
+        $data = [
             'modelName' => $modelName,
             'registryAlias' => $table->registryAlias(),
             'recordId' => $entity->{$table->primaryKey()},
-            'recordName' => $entity->{$table->displayField()}
-        ]);
+            'recordName' => $entity->{$table->displayField()},
+            'field' => Inflector::humanize($field['name'])
+        ];
+        if (static::STATUS_MODIFIED === $field['status']) {
+            $this->Notifier->template('MessagingCenter.record_modified');
+            $data['modifiedFields'] = $modifiedFields;
+        }
+        $this->Notifier->message($data);
 
         $this->Notifier->send();
     }

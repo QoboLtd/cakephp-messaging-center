@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Controller;
 
+use Cake\Network\Exception\ForbiddenException;
 use MessagingCenter\Controller\AppController;
 
 /**
@@ -48,7 +49,7 @@ class MessagesController extends AppController
 
         // forbid viewing of others messages
         if ($this->Auth->user('id') !== $message->to_user && $this->Auth->user('id') !== $message->from_user) {
-            throw new \Cake\Network\Exception\ForbiddenException();
+            throw new ForbiddenException();
         }
 
         $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'), $this->referer());
@@ -185,7 +186,6 @@ class MessagesController extends AppController
         $message = $this->Messages->get($id);
 
         $status = $this->Messages->getArchivedStatus();
-        $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
         // current user's sent message
         if ($this->Auth->user('id') !== $message->to_user) {
@@ -200,6 +200,8 @@ class MessagesController extends AppController
                 return $this->redirect(['action' => 'view', $id]);
             }
         }
+
+        $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
         if ($this->Messages->save($message)) {
             $this->Flash->success(__('The message has been archived.'));
@@ -223,7 +225,6 @@ class MessagesController extends AppController
         $message = $this->Messages->get($id);
 
         $status = $this->Messages->getReadStatus();
-        $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
         // current user's sent message
         if ($this->Auth->user('id') !== $message->to_user) {
@@ -238,6 +239,8 @@ class MessagesController extends AppController
                 return $this->redirect(['action' => 'view', $id]);
             }
         }
+
+        $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
         if ($this->Messages->save($message)) {
             $this->Flash->success(__('The message has been restored.'));
