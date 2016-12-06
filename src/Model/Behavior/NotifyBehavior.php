@@ -14,6 +14,16 @@ use MessagingCenter\Notifier\MessageNotifier;
 class NotifyBehavior extends Behavior
 {
     /**
+     * Assigned status identifier.
+     */
+    const STATUS_ASSIGNED = 'assigned';
+
+    /**
+     * Modified status identifier.
+     */
+    const STATUS_MODIFIED = 'modified';
+
+    /**
      * Notifier instance.
      *
      * @var \MessagingCenter\Notifier\Notifier
@@ -168,9 +178,10 @@ class NotifyBehavior extends Behavior
     {
         $fields = [];
         foreach ($notifyFields as $notifyField) {
+            $status = static::STATUS_ASSIGNED;
             // skip notify field(s) that have NOT been modified
             if (!$entity->dirty($notifyField)) {
-                continue;
+                $status = static::STATUS_MODIFIED;
             }
 
             // skip notify field(s) with empty value
@@ -178,7 +189,10 @@ class NotifyBehavior extends Behavior
                 continue;
             }
 
-            $fields[] = $notifyField;
+            $fields[] = [
+                'name' => $notifyField,
+                'status' => $status
+            ];
         }
 
         return $fields;
