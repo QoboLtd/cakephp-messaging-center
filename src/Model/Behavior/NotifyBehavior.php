@@ -2,9 +2,9 @@
 namespace MessagingCenter\Model\Behavior;
 
 use ArrayObject;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Log\Log;
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -38,9 +38,9 @@ class NotifyBehavior extends Behavior
     protected $_usersTable = null;
 
     /**
-     * From user entity.
+     * From user id.
      *
-     * @var Cake\ORM\Entity
+     * @var string
      */
     protected $_fromUser = null;
 
@@ -58,23 +58,11 @@ class NotifyBehavior extends Behavior
     {
         parent::initialize($config);
 
+        $this->_fromUser = Configure::readOrFail('MessagingCenter.systemUser.id');
         // get users table
         $this->_usersTable = TableRegistry::get('Users');
 
         $this->Notifier = new MessageNotifier();
-
-        // get [from] user to be used on system notifications
-        $username = 'SYSTEM';
-        $this->_fromUser = $this->_usersTable->find('all', [
-            'conditions' => [
-                'username' => $username
-            ]
-        ])->first();
-
-        // log user not found error
-        if (!$this->_fromUser) {
-            Log::error('[' . $username . '] user was not found in the system, notifications cannot be sent.');
-        }
     }
 
     /**
@@ -82,11 +70,6 @@ class NotifyBehavior extends Behavior
      */
     public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        // from user was not found
-        if (!$this->_fromUser) {
-            return;
-        }
-
         // nothing has been modified
         if (!$entity->dirty()) {
             return;
@@ -209,7 +192,7 @@ class NotifyBehavior extends Behavior
     protected function _notifyUser($field, EntityInterface $entity, Table $table, array $modifiedFields)
     {
         $modelName = Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table())));
-        $this->Notifier->from($this->_fromUser->id);
+        $this->Notifier->from($this->_fromUser);
         $this->Notifier->to($entity->{$field['name']});
         $this->Notifier->subject($modelName . ': ' . $entity->{$table->displayField()});
 
