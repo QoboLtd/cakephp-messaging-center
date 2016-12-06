@@ -15,7 +15,7 @@
                 <div>
                     <strong><?= $message->fromUser->username ?></strong>
                     <span class="pull-right text-muted">
-                        <em><?= $message->date_sent ?></em>
+                        <em><?= h($message->date_sent->i18nFormat('yyyy-MM-dd HH:mm')) ?></em>
                     </span>
                 </div>
                 <div><?= $this->Text->truncate(

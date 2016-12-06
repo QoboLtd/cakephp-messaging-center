@@ -67,7 +67,7 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                                     ); ?>
                                 </span>
                             </td>
-                            <td><?= h($message->date_sent) ?></td>
+                            <td><?= h($message->date_sent->i18nFormat('yyyy-MM-dd HH:mm')) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

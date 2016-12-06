@@ -74,7 +74,7 @@ $toUserId = $message->has('toUser') ? h($message->toUser->id) : '';
                         </tr>
                         <tr>
                             <th><?= __('Sent'); ?></th>
-                            <td><?= h($message->date_sent) ?></td>
+                            <td><?= h($message->date_sent->i18nFormat('yyyy-MM-dd HH:mm')) ?></td>
                         </tr>
 
                     </tbody>
