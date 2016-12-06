@@ -210,14 +210,20 @@ class NotifyBehavior extends Behavior
     {
         $modelName = Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table())));
         $this->Notifier->from($this->_fromUser->id);
-        $this->Notifier->to($entity->{$field});
-        $this->Notifier->subject($modelName . ' Record');
-        $this->Notifier->message([
+        $this->Notifier->to($entity->{$field['name']});
+        $this->Notifier->subject($modelName . ': ' . $entity->{$table->displayField()});
+
+        $data = [
             'modelName' => $modelName,
             'registryAlias' => $table->registryAlias(),
             'recordId' => $entity->{$table->primaryKey()},
-            'recordName' => $entity->{$table->displayField()}
-        ]);
+            'recordName' => $entity->{$table->displayField()},
+            'field' => Inflector::humanize($field['name'])
+        ];
+        if (static::STATUS_MODIFIED === $field['status']) {
+            $this->Notifier->template('MessagingCenter.record_modified');
+        }
+        $this->Notifier->message($data);
 
         $this->Notifier->send();
     }
