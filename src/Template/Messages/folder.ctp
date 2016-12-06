@@ -30,10 +30,12 @@ echo $this->Html->script('MessagingCenter.script', ['block' => 'scriptBottom']);
                 <table id="folder-table" class="table table-hover folder-table">
                     <thead>
                         <tr>
-                            <th><?php echo $this->Paginator->sort(
-                                'sent' === $folder ? 'toUser' : 'fromUser',
-                                'sent' === $folder ? __('To') : __('From')
-                            ); ?></th>
+                            <th><?php
+                                echo $this->Paginator->sort(
+                                    'sent' === $folder ? 'toUser' : 'fromUser',
+                                    'sent' === $folder ? __('To') : __('From')
+                                );
+                            ?></th>
                             <th><?php echo $this->Paginator->sort('subject'); ?></th>
                             <th><?php echo $this->Paginator->sort('sent'); ?></th>
                         </tr>

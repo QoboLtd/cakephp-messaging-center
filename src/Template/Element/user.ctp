@@ -1,6 +1,7 @@
 <?php
 use Cake\Core\Configure;
 use Cake\ORM\Entity;
+
 /**
  * Friendly display of the user in the to/from address
  * of the message.

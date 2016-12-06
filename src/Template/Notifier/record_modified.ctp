@@ -10,5 +10,5 @@ $url = $this->Html->link($recordName ?: 'record', [
 <?= $modelName ?> <?= $url ?> has been modified.
 
 <?php foreach ($modifiedFields as $k => $v) : ?>
-    <?= '* <strong>'  . Inflector::humanize($k) . '</strong>: changed from \'' . h($v['oldValue']) . '\' to \'' . h($v['newValue']) . '\'.' . "\n" ?>
+    <?= '* <strong>' . Inflector::humanize($k) . '</strong>: changed from \'' . h($v['oldValue']) . '\' to \'' . h($v['newValue']) . '\'.' . "\n" ?>
 <?php endforeach; ?>
