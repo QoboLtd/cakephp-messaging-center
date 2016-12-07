@@ -58,6 +58,11 @@ class NotifyBehavior extends Behavior
     {
         parent::initialize($config);
 
+        // merge with default ignored fields
+        if (!empty($this->config('ignoredFields'))) {
+            $this->_ignoredFields = array_merge($this->_ignoredFields, $this->config('ignoredFields'));
+        }
+
         $this->_fromUser = Configure::readOrFail('MessagingCenter.systemUser.id');
         // get users table
         $this->_usersTable = TableRegistry::get('Users');
