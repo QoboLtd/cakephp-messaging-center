@@ -118,7 +118,11 @@ class NotifyBehavior extends Behavior
     {
         $result = [];
 
-        $fields = $entity->extractOriginalChanged($entity->visibleProperties());
+        if ($entity->isNew()) {
+            $fields = $entity->extractOriginal($entity->visibleProperties());
+        } else {
+            $fields = $entity->extractOriginalChanged($entity->visibleProperties());
+        }
 
         $diff = array_diff(array_keys($fields), $this->_ignoredFields);
 
@@ -192,6 +196,7 @@ class NotifyBehavior extends Behavior
      * @param string $field Field name
      * @param \Cake\Datasource\EntityInterface $entity Entity object
      * @param \Cake\ORM\Table $table Table instance
+     * @param array $modifiedFields Entity's modified fields (includes old and new values)
      * @return void
      */
     protected function _notifyUser($field, EntityInterface $entity, Table $table, array $modifiedFields)
