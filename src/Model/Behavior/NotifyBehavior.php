@@ -118,7 +118,11 @@ class NotifyBehavior extends Behavior
     {
         $result = [];
 
-        $fields = $entity->extractOriginalChanged($entity->visibleProperties());
+        if ($entity->isNew()) {
+            $fields = $entity->extractOriginal($entity->visibleProperties());
+        } else {
+            $fields = $entity->extractOriginalChanged($entity->visibleProperties());
+        }
 
         $diff = array_diff(array_keys($fields), $this->_ignoredFields);
 
