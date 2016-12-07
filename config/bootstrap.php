@@ -3,6 +3,7 @@ use Cake\Core\Configure;
 
 // get app level config
 $config = Configure::read('MessagingCenter');
+$config = $config ? $config : [];
 
 // load default plugin config
 Configure::load('MessagingCenter.messaging_center');
