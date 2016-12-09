@@ -60,7 +60,7 @@ var messaging_center_typeahead = messaging_center_typeahead || {};
      */
     Typeahead.prototype._enable = function (input, hidden_input) {
         var that = this;
-        console.log(that.api_token);
+
         // enable typeahead
         $(input).typeahead({
             // ajax
