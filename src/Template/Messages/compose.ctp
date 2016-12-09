@@ -1,7 +1,7 @@
 <?php
 echo $this->Html->css('MessagingCenter.style');
 // enable typeahead library
-echo $this->Html->script('MessagingCenter.bootstrap-typeahead.min.js', ['block' => 'scriptBottom']);
+echo $this->Html->script('MessagingCenter.bootstrap-typeahead.js', ['block' => 'scriptBottom']);
 echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'scriptBottom']);
 ?>
 
