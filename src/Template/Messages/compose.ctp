@@ -1,8 +1,29 @@
 <?php
+use Cake\Core\Configure;
+
 echo $this->Html->css('MessagingCenter.style');
 // enable typeahead library
 echo $this->Html->script('MessagingCenter.bootstrap-typeahead.js', ['block' => 'scriptBottom']);
 echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'scriptBottom']);
+echo $this->Html->scriptBlock(
+    'typeahead_options = ' . json_encode(
+        array_merge(
+            Configure::read('CsvMigrations.typeahead'),
+            Configure::read('CsvMigrations.api')
+        )
+    ) . ';',
+    ['block' => 'scriptBottom']
+);
+echo $this->Html->scriptBlock(
+    'messaging_center_typeahead.init(
+        {
+            min_length: ' . json_encode(Configure::read('MessagingCenter.typeahead.min_length')) . ',
+            timeout: ' . json_encode(Configure::read('MessagingCenter.typeahead.timeout')) . ',
+            api_token: ' . json_encode(Configure::read('MessagingCenter.api.token')) . '
+        }
+    );',
+    ['block' => 'scriptBottom']
+);
 ?>
 
 <div class="row">
