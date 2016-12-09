@@ -8,9 +8,9 @@ echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'scriptBottom'
 echo $this->Html->scriptBlock(
     'messaging_center_typeahead.init(
         {
-            min_length: ' . json_encode(Configure::read('MessagingCenter.typeahead.min_length')) . ',
-            timeout: ' . json_encode(Configure::read('MessagingCenter.typeahead.timeout')) . ',
-            api_token: ' . json_encode(Configure::read('MessagingCenter.api.token')) . '
+            min_length: "' . Configure::read('MessagingCenter.typeahead.min_length') . '",
+            timeout: "' . Configure::read('MessagingCenter.typeahead.timeout') . '",
+            api_token: "' . Configure::read('MessagingCenter.api.token') . '"
         }
     );',
     ['block' => 'scriptBottom']
