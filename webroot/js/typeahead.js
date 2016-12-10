@@ -1,25 +1,29 @@
-var typeahead = typeahead || {};
+var messaging_center_typeahead = messaging_center_typeahead || {};
 
 (function ($) {
     /**
      * Typeahead Logic.
      * @param {object} options configuration options
      */
-    function Typeahead(options)
+    function Typeahead()
     {
-        this.min_length = options.hasOwnProperty('min_length') ? options.min_length : 4;
+        //
     }
 
     /**
      * Initialize method.
      * @return {void}
      */
-    Typeahead.prototype.init = function () {
-        that = this;
-        typeahead_id = '[data-type="typeahead"]';
+    Typeahead.prototype.init = function (options) {
+        this.min_length = options.hasOwnProperty('min_length') ? options.min_length : 1;
+        this.timeout = options.hasOwnProperty('timeout') ? options.timeout : 300;
+        this.api_token = options.hasOwnProperty('api_token') ? options.api_token : null;
+        this.typeahead_id = '[data-type="typeahead"]';
+
+        var that = this;
 
         // loop through typeahead inputs
-        $(typeahead_id).each(function () {
+        $(this.typeahead_id).each(function () {
             hidden_input = $('[name=' + $(this).data('name') + ']');
 
             // enable typeahead functionality
@@ -27,7 +31,7 @@ var typeahead = typeahead || {};
         });
 
         // clear inputs on double click
-        $(typeahead_id).dblclick(function () {
+        $(this.typeahead_id).dblclick(function () {
             hidden_input = $('[name=' + $(this).data('name') + ']');
             that._clearInputs(this, hidden_input);
         });
@@ -55,16 +59,21 @@ var typeahead = typeahead || {};
      * {@link plugin: http://plugins.upbootstrap.com/bootstrap-ajax-typeahead/}
      */
     Typeahead.prototype._enable = function (input, hidden_input) {
-        that = this;
+        var that = this;
 
         // enable typeahead
         $(input).typeahead({
             // ajax
             ajax: {
                 url: $(input).data('url'),
-                timeout: 500,
-                triggerLength: 4,
+                timeout: that.timeout,
+                triggerLength: that.min_length,
                 method: 'get',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + that.api_token
+                },
                 preProcess: function (data) {
                     if (data.success === false) {
                         // Hide the list, there was some error
@@ -83,7 +92,11 @@ var typeahead = typeahead || {};
             },
             onSelect: function (data) {
                 that._onSelect(input, hidden_input, data);
-            }
+            },
+            // No need to run matcher as ajax results are already filtered
+            matcher: function (item) {
+                return true;
+            },
         });
     };
 
@@ -99,8 +112,6 @@ var typeahead = typeahead || {};
         $(input).prop('readonly', true);
     };
 
-    typeahead = new Typeahead([]);
-
-    typeahead.init();
+    messaging_center_typeahead = new Typeahead();
 
 })(jQuery);

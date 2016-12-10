@@ -30,4 +30,6 @@
     <file>./src/</file>
     <file>./tests/</file>
     <file>./webroot/</file>
+    <!-- Files and directories to ignore -->
+    <arg name="ignore" value="webroot/js/bootstrap-typeahead.js" />
 </ruleset>
