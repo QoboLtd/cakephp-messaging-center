@@ -44,11 +44,10 @@ class InboxCell extends Cell
      * Pass unread emails to the Cell View
      *
      * @param  int $limit query limit
-     * @param  bool $count flag for including unread messages counter
      * @param  int $contentLength content excerpt length
      * @return void
      */
-    public function unreadMessages($limit = 10, $count = false, $contentLength = 100)
+    public function unreadMessages($limit = 10, $contentLength = 100)
     {
         $userId = $this->request->session()->read('Auth.User.id');
         $this->loadModel('MessagingCenter.Messages');
@@ -62,6 +61,6 @@ class InboxCell extends Cell
             'limit' => (int)$limit
         ]);
 
-        $this->set(compact('messages', 'count', 'contentLength'));
+        $this->set(compact('messages', 'contentLength'));
     }
 }
