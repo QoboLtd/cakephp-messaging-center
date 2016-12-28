@@ -84,11 +84,11 @@ class MessagesController extends AppController
             $this->request->data['date_sent'] = $this->Messages->getDateSent();
             $message = $this->Messages->patchEntity($message, $this->request->data);
             if ($this->Messages->save($message)) {
-                $this->Flash->success(__('The message has been saved.'));
+                $this->Flash->success(__('The message has been sent.'));
 
                 return $this->redirect(['action' => 'folder']);
             } else {
-                $this->Flash->error(__('The message could not be saved. Please, try again.'));
+                $this->Flash->error(__('The message could not be sent. Please, try again.'));
             }
         }
         $users = $this->Messages->ToUser->find('list', ['limit' => 200]);
