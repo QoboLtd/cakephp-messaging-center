@@ -2,8 +2,8 @@
 use Cake\Core\Configure;
 
 // enable typeahead library
-echo $this->Html->script('MessagingCenter.bootstrap-typeahead.js', ['block' => 'scriptBotton']);
-echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'scriptBotton']);
+echo $this->Html->script('MessagingCenter.bootstrap-typeahead.js', ['block' => 'script']);
+echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'script']);
 echo $this->Html->scriptBlock(
     'messaging_center_typeahead.init(
         {
