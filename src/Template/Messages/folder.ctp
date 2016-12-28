@@ -21,9 +21,9 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                 </div>
                 <div class="box-body no-padding">
                     <div class="mailbox-controls">
-                        <button type="button" class="btn btn-default btn-sm">
+                        <a href="<?= $this->request->here; ?>" type="button" class="btn btn-default btn-sm">
                             <i class="fa fa-refresh"></i>
-                        </button>
+                        </a>
                         <div class="pull-right">
                             <?= $this->Paginator->counter(['format' => '{{start}}-{{end}}/{{count}}']) ?>
                             <div class="btn-group">
@@ -93,9 +93,9 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                 </div>
                 <div class="box-footer no-padding">
                     <div class="mailbox-controls">
-                        <button type="button" class="btn btn-default btn-sm">
+                        <a href="<?= $this->request->here; ?>" type="button" class="btn btn-default btn-sm">
                             <i class="fa fa-refresh"></i>
-                        </button>
+                        </a>
                         <div class="pull-right">
                             <?= $this->Paginator->counter(['format' => '{{start}}-{{end}}/{{count}}']) ?>
                             <div class="btn-group">
