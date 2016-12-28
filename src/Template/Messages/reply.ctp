@@ -8,8 +8,8 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
     <div class="row">
         <div class="col-md-3">
             <?= $this->Html->link(
-                '<i class="glyphicon glyphicon-inbox small" aria-hidden="true"></i> ' . __('Back to inbox'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', 'inbox'],
+                '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __('Back to message'),
+                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
             <?= $this->element('MessagingCenter.folders_list') ?>

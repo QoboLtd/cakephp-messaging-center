@@ -11,7 +11,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
     <div class="row">
         <div class="col-md-3">
             <?= $this->Html->link(
-                '<i class="glyphicon glyphicon-pencil small" aria-hidden="true"></i> ' . __('Compose'),
+                '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
                 ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
