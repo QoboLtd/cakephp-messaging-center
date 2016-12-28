@@ -69,24 +69,24 @@ $restoreBtn = $this->Form->postLink(
                     <div class="mailbox-controls with-border text-center">
                         <div class="btn-group">
                         <?php
-                            switch ($folder) {
-                                case 'inbox':
-                                    echo $deleteSmBtn;
-                                    echo $replySmBtn;
-                                    echo $archiveSmBtn;
-                                    break;
+                        switch ($folder) {
+                            case 'inbox':
+                                echo $deleteSmBtn;
+                                echo $replySmBtn;
+                                echo $archiveSmBtn;
+                                break;
 
-                                case 'archived':
-                                    echo $deleteSmBtn;
-                                    echo $replySmBtn;
-                                    echo $restoreSmBtn;
-                                    break;
+                            case 'archived':
+                                echo $deleteSmBtn;
+                                echo $replySmBtn;
+                                echo $restoreSmBtn;
+                                break;
 
-                                case 'trash':
-                                    echo $replySmBtn;
-                                    echo $restoreSmBtn;
-                                    break;
-                            }
+                            case 'trash':
+                                echo $replySmBtn;
+                                echo $restoreSmBtn;
+                                break;
+                        }
                         ?>
                         </div>
                     </div>
@@ -99,23 +99,23 @@ $restoreBtn = $this->Form->postLink(
                         <?= $replyBtn; ?>
                     </div>
                     <?php
-                        switch ($folder) {
-                            case 'inbox':
-                                echo $deleteBtn;
-                                echo ' ';
-                                echo $archiveBtn;
-                                break;
+                    switch ($folder) {
+                        case 'inbox':
+                            echo $deleteBtn;
+                            echo ' ';
+                            echo $archiveBtn;
+                            break;
 
-                            case 'archived':
-                                echo $deleteBtn;
-                                echo ' ';
-                                echo $restoreBtn;
-                                break;
+                        case 'archived':
+                            echo $deleteBtn;
+                            echo ' ';
+                            echo $restoreBtn;
+                            break;
 
-                            case 'trash':
-                                echo $restoreBtn;
-                                break;
-                        }
+                        case 'trash':
+                            echo $restoreBtn;
+                            break;
+                    }
                     ?>
                 </div>
             </div>
