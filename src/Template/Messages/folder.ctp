@@ -1,18 +1,21 @@
 <?php
 use Cake\Utility\Inflector;
 
-echo $this->Html->css('MessagingCenter.style');
-
 $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
 ?>
 <section class="content-header">
-    <h1>Mailbox <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : ''; ?></small></h1>
+    <h1><?= __('Message Box'); ?> <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : ''; ?></small></h1>
 </section>
 
 <section class="content">
     <div class="row">
         <div class="col-md-3">
-            <?= $this->element('MessagingCenter.sidebar') ?>
+            <?= $this->Html->link(
+                '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
+                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
+                ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
+            ); ?>
+            <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">
@@ -86,9 +89,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                         </table>
                     </div>
                     <?php else : ?>
-                    <div class="well">
-                        <p class="h4 text-muted"><?= __('You don\'t have any messages here...') ?></p>
-                    </div>
+                    <p class="text-muted text-center"><?= __('You don\'t have any messages here...') ?></p>
                     <?php endif; ?>
                 </div>
                 <div class="box-footer no-padding">
