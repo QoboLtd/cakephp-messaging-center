@@ -5,6 +5,7 @@ use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -131,6 +132,10 @@ class NotifyBehavior extends Behavior
         }
 
         foreach ($fields as $k => $v) {
+            // skip ignored fields
+            if (!in_array($k, $diff)) {
+                continue;
+            }
             $result[$k] = [
                 'oldValue' => $v,
                 'newValue' => $entity->{$k}
@@ -204,7 +209,6 @@ class NotifyBehavior extends Behavior
         $modelName = Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table())));
         $this->Notifier->from($this->_fromUser);
         $this->Notifier->to($entity->{$field['name']});
-        $this->Notifier->subject($modelName . ': ' . $entity->{$table->displayField()});
 
         $data = [
             'modelName' => $modelName,
@@ -217,6 +221,18 @@ class NotifyBehavior extends Behavior
             $this->Notifier->template('MessagingCenter.record_modified');
             $data['modifiedFields'] = $modifiedFields;
         }
+
+        // broadcast event for modifying message data before passing them to the Notifier
+        $event = new Event('MessagingCenter.Notify.beforeRender', $this, [
+            'table' => $this->getTable(),
+            'entity' => $entity,
+            'data' => $data
+        ]);
+        $eventManager = new EventManager();
+        $eventManager->dispatch($event);
+        $data = !empty($event->result) ? $event->result : $data;
+
+        $this->Notifier->subject($data['modelName'] . ': ' . $data['recordName']);
         $this->Notifier->message($data);
 
         $this->Notifier->send();

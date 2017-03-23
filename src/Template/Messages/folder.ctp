@@ -50,6 +50,12 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                     <?php if (0 < $messages->count()) : ?>
                     <div class="table-responsive mailbox-messages">
                         <table id="folder-table" class="table table-hover table-striped">
+                            <thead>
+                                <th></th>
+                                <th><?= 'sent' === $folder ? __('To') : __('From') ?></th>
+                                <th><?= __('Subject') ?></th>
+                                <th><?= __('Date') ?></th>
+                            </thead>
                             <tbody>
                                 <?php foreach ($messages as $message) : ?>
                                 <?php
@@ -66,20 +72,17 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                                 ]);
                                 ?>
                                 <tr>
+                                    <td class="mailbox-read text-center">
+                                        <?php if ('new' === $message->status && 'sent' !== $folder) : ?>
+                                        <small><i class="fa fa-envelope-o" title="unread"></i></small>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="mailbox-name">
                                         <a href="<?= $messageUrl ?>">
                                             <?= $this->element('MessagingCenter.user', ['user' => $messageUser]) ?>
                                         </a>
-                                        <?php if ('new' === $message->status && 'sent' !== $folder) : ?>
-                                        <small><i class="fa fa-envelope" title="unread"></i></small>
-                                        <?php endif; ?>
                                     </td>
-                                    <td class="mailbox-subject"><strong><?= h($message->subject) ?></strong> -
-                                        <?= $this->Text->truncate($message->content, 50, [
-                                            'ellipsis' => '...',
-                                            'exact' => false
-                                        ]); ?>
-                                    </td>
+                                    <td class="mailbox-subject"><?= h($message->subject) ?></td>
                                     <td class="mailbox-date">
                                         <?= h($this->Time->timeAgoInWords($message->date_sent)) ?>
                                     </td>
