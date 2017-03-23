@@ -5,7 +5,7 @@ use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventManager;
+use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -14,6 +14,8 @@ use MessagingCenter\Notifier\MessageNotifier;
 
 class NotifyBehavior extends Behavior
 {
+    use EventDispatcherTrait;
+
     /**
      * Assigned status identifier.
      */
@@ -228,8 +230,7 @@ class NotifyBehavior extends Behavior
             'entity' => $entity,
             'data' => $data
         ]);
-        $eventManager = new EventManager();
-        $eventManager->dispatch($event);
+        $this->eventManager()->dispatch($event);
         $data = !empty($event->result) ? $event->result : $data;
 
         $this->Notifier->subject($data['modelName'] . ': ' . $data['recordName']);
