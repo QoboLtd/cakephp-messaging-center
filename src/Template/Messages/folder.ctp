@@ -82,12 +82,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                                             <?= $this->element('MessagingCenter.user', ['user' => $messageUser]) ?>
                                         </a>
                                     </td>
-                                    <td class="mailbox-subject"><strong><?= h($message->subject) ?></strong> -
-                                        <?= $this->Text->truncate($message->content, 50, [
-                                            'ellipsis' => '...',
-                                            'exact' => false
-                                        ]); ?>
-                                    </td>
+                                    <td class="mailbox-subject"><?= h($message->subject) ?></td>
                                     <td class="mailbox-date">
                                         <?= h($this->Time->timeAgoInWords($message->date_sent)) ?>
                                     </td>
