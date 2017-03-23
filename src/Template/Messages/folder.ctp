@@ -50,6 +50,12 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                     <?php if (0 < $messages->count()) : ?>
                     <div class="table-responsive mailbox-messages">
                         <table id="folder-table" class="table table-hover table-striped">
+                            <thead>
+                                <th></th>
+                                <th><?= 'sent' === $folder ? __('To') : __('From') ?></th>
+                                <th><?= __('Subject') ?></th>
+                                <th><?= __('Date') ?></th>
+                            </thead>
                             <tbody>
                                 <?php foreach ($messages as $message) : ?>
                                 <?php
