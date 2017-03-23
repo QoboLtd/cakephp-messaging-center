@@ -72,13 +72,15 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                                 ]);
                                 ?>
                                 <tr>
+                                    <td class="mailbox-read text-center">
+                                        <?php if ('new' === $message->status && 'sent' !== $folder) : ?>
+                                        <small><i class="fa fa-envelope-o" title="unread"></i></small>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="mailbox-name">
                                         <a href="<?= $messageUrl ?>">
                                             <?= $this->element('MessagingCenter.user', ['user' => $messageUser]) ?>
                                         </a>
-                                        <?php if ('new' === $message->status && 'sent' !== $folder) : ?>
-                                        <small><i class="fa fa-envelope" title="unread"></i></small>
-                                        <?php endif; ?>
                                     </td>
                                     <td class="mailbox-subject"><strong><?= h($message->subject) ?></strong> -
                                         <?= $this->Text->truncate($message->content, 50, [
