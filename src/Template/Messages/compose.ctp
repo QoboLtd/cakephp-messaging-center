@@ -18,7 +18,11 @@ echo $this->Html->scriptBlock(
 $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
 ?>
 <section class="content-header">
-    <h1><?= __('Message Box'); ?> <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : ''; ?></small></h1>
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <h4><?= __('Message Box'); ?> <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : ''; ?></small></h4>
+        </div>
+    </div>
 </section>
 <section class="content">
     <div class="row">
