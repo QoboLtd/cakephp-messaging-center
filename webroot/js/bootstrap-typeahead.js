@@ -109,6 +109,7 @@
             this.$element
                 .val(this.updater(text))
                 .change();
+
             return this.hide();
         },
         updater: function (item) {
@@ -124,7 +125,7 @@
                 left: pos.left
             });
 
-            if(this.options.alignWidth) {
+            if (this.options.alignWidth) {
                 var width = $(this.$element[0]).outerWidth();
                 this.$menu.css({
                     width: width
@@ -133,11 +134,13 @@
 
             this.$menu.show();
             this.shown = true;
+
             return this;
         },
         hide: function () {
             this.$menu.hide();
             this.shown = false;
+
             return this;
         },
         ajaxLookup: function () {
@@ -168,12 +171,14 @@
                 return this.shown ? this.hide() : this;
             }
 
-            function execute() {
+            function execute()
+            {
                 this.ajaxToggleLoadClass(true);
 
                 // Cancel last call if already in progress
-                if (this.ajax.xhr)
+                if (this.ajax.xhr) {
                     this.ajax.xhr.abort();
+                }
 
                 var params = this.ajax.preDispatch ? this.ajax.preDispatch(query) : {
                     query: query
@@ -197,8 +202,9 @@
         ajaxSource: function (data) {
             this.ajaxToggleLoadClass(false);
             var that = this, items;
-            if (!that.ajax.xhr)
+            if (!that.ajax.xhr) {
                 return;
+            }
             if (that.ajax.preProcess) {
                 data = that.ajax.preProcess(data);
             }
@@ -212,19 +218,20 @@
             }
 
             that.ajax.xhr = null;
+
             return that.render(items.slice(0, that.options.items)).show();
         },
         ajaxToggleLoadClass: function (enable) {
-            if (!this.ajax.loadingClass)
+            if (!this.ajax.loadingClass) {
                 return;
+            }
             this.$element.toggleClass(this.ajax.loadingClass, enable);
         },
         lookup: function (event) {
             var that = this, items;
             if (that.ajax) {
                 that.ajaxer();
-            }
-            else {
+            } else {
                 that.query = that.$element.val();
 
                 if (!that.query) {
@@ -241,6 +248,7 @@
                 if (items.length == 0) {
                     items[0] = {'id': -21, 'name': "Result not Found"}
                 }
+
                 return that.render(items.slice(0, that.options.items)).show();
             }
         },
@@ -255,12 +263,13 @@
                     item;
 
                 while (item = items.shift()) {
-                    if (!item.toLowerCase().indexOf(this.query.toLowerCase()))
+                    if (!item.toLowerCase().indexOf(this.query.toLowerCase())) {
                         beginswith.push(item);
-                    else if (~item.indexOf(this.query))
+                    } else if (~item.indexOf(this.query)) {
                         caseSensitive.push(item);
-                    else
+                    } else {
                         caseInsensitive.push(item);
+                    }
                 }
 
                 return beginswith.concat(caseSensitive, caseInsensitive);
@@ -270,6 +279,7 @@
         },
         highlighter: function (item) {
             var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+
             return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
                 return '<strong>' + match + '</strong>';
             });
@@ -286,12 +296,14 @@
                     i = $(that.options.item).attr('data-value', item);
                 }
                 i.find('a').html(that.highlighter(display));
+
                 return i[0];
             });
 
             items.first().addClass('active');
 
             this.$menu.html(items);
+
             return this;
         },
         //------------------------------------------------------------------
@@ -304,6 +316,7 @@
                 if (data[0].hasOwnProperty(that.options.displayField)) {
                     items = $.grep(data, function (item) {
                         display = isString ? item[that.options.displayField] : that.options.displayField(item);
+
                         return that.matcher(display);
                     });
                 } else if (typeof data[0] === 'string') {
@@ -316,6 +329,7 @@
             } else {
                 return null;
             }
+
             return this.sorter(items);
         },
         next: function (event) {
@@ -344,7 +358,6 @@
             }
 
             if (this.options.scrollBar) {
-
                 var $li = this.$menu.children("li");
                 var total = $li.length - 1;
                 var index = $li.index(prev);
@@ -352,7 +365,6 @@
                 if ((total - index) % 8 == 0) {
                     this.$menu.scrollTop((index - 7) * 26);
                 }
-
             }
 
             prev.addClass('active');
@@ -375,25 +387,26 @@
                 .on('mouseleave', 'li', $.proxy(this.mouseleave, this))
         },
         move: function (e) {
-            if (!this.shown)
+            if (!this.shown) {
                 return
 
-            switch (e.keyCode) {
-                case 9: // tab
-                case 13: // enter
-                case 27: // escape
-                    e.preventDefault();
-                    break
+                switch (e.keyCode) {
+                    case 9: // tab
+                    case 13: // enter
+                    case 27: // escape
+                        e.preventDefault();
+                        break
 
-                case 38: // up arrow
-                    e.preventDefault()
-                    this.prev()
-                    break
+                    case 38: // up arrow
+                        e.preventDefault()
+                        this.prev()
+                        break
 
-                case 40: // down arrow
-                    e.preventDefault()
-                    this.next()
-                    break
+                    case 40: // down arrow
+                        e.preventDefault()
+                        this.next()
+                        break
+                }
             }
 
             e.stopPropagation();
@@ -403,9 +416,10 @@
             this.move(e)
         },
         keypress: function (e) {
-            if (this.suppressKeyPressRepeat)
+            if (this.suppressKeyPressRepeat) {
                 return
-            this.move(e)
+                this.move(e)
+            }
         },
         keyup: function (e) {
             switch (e.keyCode) {
@@ -418,22 +432,24 @@
 
                 case 9: // tab
                 case 13: // enter
-                    if (!this.shown)
-                        return
+                    if (!this.shown) {
+                    }
                     this.select()
                     break
 
                 case 27: // escape
-                    if (!this.shown)
-                        return
+                    if (!this.shown) {
+                    }
                     this.hide()
                     break
 
                 default:
-                    if (this.ajax)
+                    if (this.ajax) {
                         this.ajaxLookup()
-                    else
-                        this.lookup()
+                        else {
+                            this.lookup()
+                        }
+                    }
             }
 
             e.stopPropagation()
@@ -444,8 +460,9 @@
         },
         blur: function (e) {
             this.focused = false
-            if (!this.mousedover && this.shown)
+            if (!this.mousedover && this.shown) {
                 this.hide()
+            }
         },
         click: function (e) {
             e.stopPropagation()
@@ -460,10 +477,11 @@
         },
         mouseleave: function (e) {
             this.mousedover = false
-            if (!this.focused && this.shown)
+            if (!this.focused && this.shown) {
                 this.hide()
+            }
         },
-        destroy: function() {
+        destroy: function () {
             this.$element
                 .off('focus', $.proxy(this.focus, this))
                 .off('blur', $.proxy(this.blur, this))
@@ -491,10 +509,12 @@
             var $this = $(this),
                 data = $this.data('typeahead'),
                 options = typeof option === 'object' && option;
-            if (!data)
+            if (!data) {
                 $this.data('typeahead', (data = new Typeahead(this, options)));
-            if (typeof option === 'string')
+            }
+            if (typeof option === 'string') {
                 data[option]();
+            }
         });
     };
 
@@ -528,8 +548,9 @@
     $(function () {
         $('body').on('focus.typeahead.data-api', '[data-provide="typeahead"]', function (e) {
             var $this = $(this);
-            if ($this.data('typeahead'))
+            if ($this.data('typeahead')) {
                 return;
+            }
             e.preventDefault();
             $this.typeahead($this.data());
         });
