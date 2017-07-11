@@ -12,6 +12,11 @@ return [
         ],
         'api' => [
             'token' => null
+        ],
+        'welcomeMessage' => [
+            'enabled' => 1,
+            'subject' => '',
+            'projectName' => 'Qobrix',
         ]
     ]
 ];
