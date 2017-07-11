@@ -2,7 +2,7 @@
 Dear <?= $username ?>
 <br>
 <br>
-Welcome to <?= $projectName ?>!
+<?= $subject ?>
 
 You can compose a new message by clicking on the top left button "compose".
 

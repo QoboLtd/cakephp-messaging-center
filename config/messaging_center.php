@@ -14,8 +14,7 @@ return [
             'token' => null
         ],
         'welcomeMessage' => [
-            'enabled' => 1,
-            'subject' => '',
+            'enabled' => true,
             'projectName' => 'Qobrix',
         ]
     ]

@@ -44,19 +44,27 @@ class UserListener implements EventListenerInterface
             return;
         }
 
-        if (! Configure::readOrFail('MessagingCenter.welcomeMessage.enabled')) {
+        if (! Configure::read('MessagingCenter.welcomeMessage.enabled')) {
             return;
         }
 
         try {
             $this->Notifier = new MessageNotifier();
-            $this->Notifier->from(Configure::readOrFail('MessagingCenter.systemUser.id'));
+            $this->Notifier->from(Configure::read('MessagingCenter.systemUser.id'));
             $this->Notifier->to($entity->id);
+
+            $projectName = Configure::read('MessagingCenter.welcomeMessage.projectName');
+
+            $subject = 'Welcome';
+            if (!empty($projectName)) {
+                $subject .= ' to ' . $projectName;
+            }
 
             $data = [
                 'username' => $entity->username,
-                'projectName' => Configure::readOrFail('MessagingCenter.welcomeMessage.projectName'),
-                'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
+                'projectName' => $projectName,
+                'subject' => $subject,
+                'adminName' => Configure::read('MessagingCenter.systemUser.name'),
             ];
             $this->Notifier->template('MessagingCenter.welcome');
 
@@ -68,12 +76,6 @@ class UserListener implements EventListenerInterface
             ]);
             $this->eventManager()->dispatch($event);
             $data = !empty($event->result) ? $event->result : $data;
-
-            $subject = Configure::readOrFail('MessagingCenter.welcomeMessage.subject');
-
-            if (empty($subject)) {
-                $subject = 'Welcome to' . Configure::readOrFail('MessagingCenter.welcomeMessage.projectName');
-            }
 
             $this->Notifier->subject($subject);
             $this->Notifier->message($data);
