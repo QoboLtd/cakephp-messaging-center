@@ -50,7 +50,7 @@ class UserListener implements EventListenerInterface
 
         try {
             $this->Notifier = new MessageNotifier();
-            $this->Notifier->from(Configure::read('MessagingCenter.systemUser.id'));
+            $this->Notifier->from(Configure::readOrFail('MessagingCenter.systemUser.id'));
             $this->Notifier->to($entity->id);
 
             $projectName = Configure::read('MessagingCenter.welcomeMessage.projectName');
@@ -64,7 +64,7 @@ class UserListener implements EventListenerInterface
                 'username' => $entity->username,
                 'projectName' => $projectName,
                 'subject' => $subject,
-                'adminName' => Configure::read('MessagingCenter.systemUser.name'),
+                'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
             ];
             $this->Notifier->template('MessagingCenter.welcome');
 
