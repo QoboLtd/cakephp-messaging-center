@@ -1,5 +1,5 @@
 <?php
-namespace MessagingCenter\Events;
+namespace MessagingCenter\Event;
 
 use App\Model\Table\UsersTable;
 use Cake\Core\Configure;
