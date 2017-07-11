@@ -13,3 +13,5 @@ Configure::write('MessagingCenter', array_replace_recursive(
     Configure::read('MessagingCenter'),
     $config
 ));
+
+\Cake\Event\EventManager::instance()->on(new \MessagingCenter\Event\UserListener());
