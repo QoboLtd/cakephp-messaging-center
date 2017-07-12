@@ -48,41 +48,37 @@ class UserListener implements EventListenerInterface
             return;
         }
 
-        try {
-            $this->Notifier = new MessageNotifier();
-            $this->Notifier->from(Configure::readOrFail('MessagingCenter.systemUser.id'));
-            $this->Notifier->to($entity->id);
+        $this->Notifier = new MessageNotifier();
+        $this->Notifier->from(Configure::readOrFail('MessagingCenter.systemUser.id'));
+        $this->Notifier->to($entity->id);
 
-            $projectName = Configure::read('MessagingCenter.welcomeMessage.projectName');
+        $projectName = Configure::read('MessagingCenter.welcomeMessage.projectName');
 
-            $subject = 'Welcome';
-            if (!empty($projectName)) {
-                $subject .= ' to ' . $projectName;
-            }
-
-            $data = [
-                'username' => $entity->username,
-                'projectName' => $projectName,
-                'subject' => $subject,
-                'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
-            ];
-            $this->Notifier->template('MessagingCenter.welcome');
-
-            // broadcast event for modifying message data before passing them to the Notifier
-            $event = new Event('MessagingCenter.Notify.beforeRender', $this, [
-                'table' => TableRegistry::get('Messages'),
-                'entity' => $entity,
-                'data' => $data
-            ]);
-            $this->eventManager()->dispatch($event);
-            $data = !empty($event->result) ? $event->result : $data;
-
-            $this->Notifier->subject($subject);
-            $this->Notifier->message($data);
-
-            $this->Notifier->send();
-        } catch (\Exception $ex) {
-            print_r($ex);
+        $subject = 'Welcome';
+        if (!empty($projectName)) {
+            $subject .= ' to ' . $projectName;
         }
+
+        $data = [
+            'username' => $entity->username,
+            'projectName' => $projectName,
+            'subject' => $subject,
+            'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
+        ];
+        $this->Notifier->template('MessagingCenter.welcome');
+
+        // broadcast event for modifying message data before passing them to the Notifier
+        $event = new Event('MessagingCenter.Notify.beforeRender', $this, [
+            'table' => TableRegistry::get('Messages'),
+            'entity' => $entity,
+            'data' => $data
+        ]);
+        $this->eventManager()->dispatch($event);
+        $data = !empty($event->result) ? $event->result : $data;
+
+        $this->Notifier->subject($subject);
+        $this->Notifier->message($data);
+
+        $this->Notifier->send();
     }
 }

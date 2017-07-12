@@ -15,7 +15,7 @@ return [
         ],
         'welcomeMessage' => [
             'enabled' => true,
-            'projectName' => 'Qobrix',
+            'projectName' => 'Project Name',
         ]
     ]
 ];
