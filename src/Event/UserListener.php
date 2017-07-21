@@ -37,6 +37,7 @@ class UserListener implements EventListenerInterface
      * @param Event $event event.
      * @param EntityInterface $entity entity.
      * @param \ArrayObject $options options.
+     * @return void
      */
     public function afterSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
