@@ -1,10 +1,18 @@
 <?php
 $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
+
+$fromUser['id'] = $message->get('fromUser') ? $message->fromUser->id : $message->from_user;
+$fromUser['username'] = $this->element('MessagingCenter.user', [
+    'user' => $message->get('fromUser') ? $message->fromUser : $message->from_user
+]);
 ?>
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('Message Box'); ?> <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : ''; ?></small></h4>
+            <h4>
+                <?= __('Message Box') ?>
+                <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : '' ?></small>
+            </h4>
         </div>
     </div>
 </section>
@@ -12,14 +20,14 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
     <div class="row">
         <div class="col-md-3">
             <?= $this->Html->link(
-                '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __('Back to message'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
-                ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
-            ); ?>
+                    '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __('Back to message'),
+                    ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
+                    ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
+                ) ?>
             <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
-            <div class="box box-primary">
+            <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title"><?= __('Reply to: {0}', [$message->subject]) ?></h3>
                 </div>
@@ -27,12 +35,12 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                 <div class="box-body">
                 <?php
                 echo $this->Form->input('to_user_label', [
-                    'value' => $message->fromUser->username,
+                    'value' => $fromUser['username'],
                     'label' => false,
                     'readonly' => true
                 ]);
                 echo $this->Form->input('to_user', [
-                    'value' => $message->fromUser->id,
+                    'value' => $fromUser['id'],
                     'type' => 'hidden',
                     'readonly' => true
                 ]);

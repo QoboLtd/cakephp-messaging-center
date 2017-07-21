@@ -20,7 +20,10 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('Message Box'); ?> <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : ''; ?></small></h4>
+            <h4>
+                <?= __('Message Box') ?>
+                <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : '' ?></small>
+            </h4>
         </div>
     </div>
 </section>
@@ -28,14 +31,14 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
     <div class="row">
         <div class="col-md-3">
             <?= $this->Html->link(
-                '<i class="fa fa-inbox" aria-hidden="true"></i> ' . __('Back to inbox'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', 'inbox'],
-                ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
-            ); ?>
+                    '<i class="fa fa-inbox" aria-hidden="true"></i> ' . __('Back to inbox'),
+                    ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', 'inbox'],
+                    ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
+                ); ?>
             <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
-            <div class="box box-primary">
+            <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title"><?= __('Compose New {0}', ['Message']) ?></h3>
                 </div>
