@@ -1,4 +1,7 @@
 #This Travis config template file was taken from https://github.com/FriendsOfCake/travis
+sudo: true
+dist: trusty
+
 language: php
 
 php:
@@ -7,11 +10,9 @@ php:
   - 7.1
   - nightly
 
-sudo: false
-
 env:
   matrix:
-    - DB=mysql db_dsn='mysql://travis@0.0.0.0/cakephp_test'
+    - DB=mysql db_dsn='mysql://root@0.0.0.0/cakephp_test'
   global:
     - DEFAULT=1
 
