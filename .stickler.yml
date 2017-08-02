@@ -2,3 +2,5 @@ linters:
   phpcs:
     standard: CakePHP
     extensions: '.php,.ctp'
+files:
+  ignore: ['config/*', 'tests/*']
