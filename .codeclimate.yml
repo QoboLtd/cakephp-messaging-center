@@ -1,0 +1,12 @@
+engines:
+  phpmd:
+    enabled: true
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
+      CleanCode/BooleanArgumentFlag:
+        enabled: false
+exclude_paths:
+- config/
+- tests/
+
