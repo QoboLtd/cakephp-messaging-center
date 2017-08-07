@@ -9,4 +9,6 @@ engines:
 exclude_paths:
 - config/
 - tests/
-
+ratings:
+  paths:
+  - "src/**/*"
