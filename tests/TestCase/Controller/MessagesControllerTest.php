@@ -182,7 +182,8 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($data['content'], $entity->content);
         $this->assertEquals($this->_requestSession->read('Auth.User.id'), $entity->from_user);
         $this->assertEquals('new', $entity->status);
-        $this->assertEquals(new Time(), $entity->date_sent);
+        $time = new Time();
+        $this->assertEquals($time->i18nFormat(), $entity->date_sent->i18nFormat());
     }
 
     public function testComposePostNoData()
@@ -259,7 +260,8 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($data['content'], $newEntity->content);
         $this->assertEquals($this->_requestSession->read('Auth.User.id'), $newEntity->from_user);
         $this->assertEquals('new', $newEntity->status);
-        $this->assertEquals(new Time(), $newEntity->date_sent);
+        $time = new Time();
+        $this->assertEquals($time->i18nFormat(), $newEntity->date_sent->i18nFormat());
         // verify existing message was not affected.
         $this->assertEquals($entity->toArray(), $this->MessagesTable->get($id)->toArray());
     }

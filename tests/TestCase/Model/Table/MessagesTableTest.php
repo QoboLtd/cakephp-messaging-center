@@ -115,7 +115,8 @@ class MessagesTableTest extends TestCase
 
     public function testGetDateSent()
     {
-        $this->assertEquals(new Time(), $this->Messages->getDateSent());
+        $time = new Time();
+        $this->assertEquals($time->i18nFormat(), $this->Messages->getDateSent()->i18nFormat());
     }
 
     public function testGetSentFolder()
