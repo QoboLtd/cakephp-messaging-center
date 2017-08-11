@@ -91,8 +91,8 @@ class MessagesController extends AppController
                 $this->Flash->error(__('The message could not be sent. Please, try again.'));
             }
         }
-        $users = $this->Messages->ToUser->find('list', ['limit' => 200]);
-        $this->set(compact('message', 'users'));
+
+        $this->set('message', $message);
         $this->set('_serialize', ['message']);
     }
 
@@ -116,6 +116,7 @@ class MessagesController extends AppController
 
         if ($this->request->is('put')) {
             $newMessage = $this->Messages->newEntity();
+            $this->request->data['to_user'] = $message->from_user;
             $this->request->data['from_user'] = $this->Auth->user('id');
             $this->request->data['status'] = $this->Messages->getNewStatus();
             $this->request->data['date_sent'] = $this->Messages->getDateSent();
@@ -129,8 +130,8 @@ class MessagesController extends AppController
                 $this->Flash->error(__('The message could not be sent. Please, try again.'));
             }
         }
-        $users = $this->Messages->ToUser->find('list', ['limit' => 200]);
-        $this->set(compact('message', 'users'));
+
+        $this->set('message', $message);
         $this->set('_serialize', ['message']);
     }
 
