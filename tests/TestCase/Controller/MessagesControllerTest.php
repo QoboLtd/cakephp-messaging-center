@@ -411,7 +411,6 @@ class MessagesControllerTest extends IntegrationTestCase
         ];
         $this->assertRedirect($url);
 
-
         $entity = $this->MessagesTable->get($id);
         $this->assertEquals('archived', $entity->get('status'));
     }
@@ -473,7 +472,6 @@ class MessagesControllerTest extends IntegrationTestCase
         ];
         $this->assertRedirect($url);
 
-
         $entity = $this->MessagesTable->get($id);
         $this->assertNotEquals('archived', $entity->get('status'));
     }
@@ -492,7 +490,6 @@ class MessagesControllerTest extends IntegrationTestCase
             'action' => 'folder'
         ];
         $this->assertRedirect($url);
-
 
         $entity = $this->MessagesTable->get($id);
         $this->assertNotEquals('archived', $entity->get('status'));
