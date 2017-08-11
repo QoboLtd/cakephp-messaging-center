@@ -83,5 +83,18 @@ class MessagesFixture extends TestFixture
             'created' => '2016-03-16 10:46:23',
             'modified' => '2016-03-16 10:46:23'
         ],
+        [
+            'id' => '00000000-0000-0000-0000-000000000004',
+            'from_user' => '00000000-0000-0000-0000-000000000001',
+            'to_user' => '00000000-0000-0000-0000-000000000003',
+            'subject' => 'Lorem ipsum dolor sit amet',
+            'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            'date_sent' => '2016-03-16 10:46:23',
+            'status' => 'new',
+            'related_model' => 'Lorem ipsum dolor sit amet',
+            'related_id' => 'df3011fc-a45d-4081-9ffe-25aeaaf73789',
+            'created' => '2016-03-16 10:46:23',
+            'modified' => '2016-03-16 10:46:23'
+        ],
     ];
 }
