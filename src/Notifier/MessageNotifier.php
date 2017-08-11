@@ -62,11 +62,6 @@ class MessageNotifier extends Notifier
      */
     public function __construct()
     {
-        // check if required fields are present
-        if (!empty($diff)) {
-            throw new InvalidArgumentException('Fields [' . implode(', ', $diff) . '] are required.');
-        }
-
         // set table instance
         $this->_table = TableRegistry::get('MessagingCenter.Messages');
 
