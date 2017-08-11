@@ -1,7 +1,8 @@
 <?php
-namespace MessagingCenter\Event;
+namespace MessagingCenter\Event\Model;
 
 use App\Model\Table\UsersTable;
+use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -34,18 +35,18 @@ class UserListener implements EventListenerInterface
     /**
      * After save event.
      *
-     * @param Event $event event.
-     * @param EntityInterface $entity entity.
+     * @param \Cake\Event\Event $event event.
+     * @param \Cake\Datasource\EntityInterface $entity entity.
      * @param \ArrayObject $options options.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
         if (!$event->subject() instanceof UsersTable) {
             return;
         }
 
-        if (! Configure::read('MessagingCenter.welcomeMessage.enabled')) {
+        if (!Configure::read('MessagingCenter.welcomeMessage.enabled')) {
             return;
         }
 

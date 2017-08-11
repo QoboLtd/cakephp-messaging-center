@@ -1,5 +1,7 @@
 <?php
 use Cake\Core\Configure;
+use Cake\Event\EventManager;
+use MessagingCenter\Event\Model\UserListener;
 
 // get app level config
 $config = Configure::read('MessagingCenter');
@@ -14,4 +16,4 @@ Configure::write('MessagingCenter', array_replace_recursive(
     $config
 ));
 
-\Cake\Event\EventManager::instance()->on(new \MessagingCenter\Event\UserListener());
+EventManager::instance()->on(new UserListener());
