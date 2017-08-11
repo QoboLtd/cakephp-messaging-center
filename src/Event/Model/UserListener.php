@@ -1,8 +1,8 @@
 <?php
 namespace MessagingCenter\Event\Model;
 
-use App\Model\Table\UsersTable;
 use ArrayObject;
+use CakeDC\Users\Controller\Traits\CustomUsersTableTrait;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -13,6 +13,7 @@ use MessagingCenter\Notifier\MessageNotifier;
 
 class UserListener implements EventListenerInterface
 {
+    use CustomUsersTableTrait;
     use EventDispatcherTrait;
 
     /**
@@ -42,7 +43,7 @@ class UserListener implements EventListenerInterface
      */
     public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        if (!$event->subject() instanceof UsersTable) {
+        if ($event->subject() !== $this->getUsersTable()) {
             return;
         }
 
