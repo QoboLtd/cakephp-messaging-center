@@ -96,6 +96,9 @@ class MessagesTable extends Table
         $validator
             ->allowEmpty('related_model');
 
+        $validator
+            ->allowEmpty('related_id');
+
         return $validator;
     }
 
