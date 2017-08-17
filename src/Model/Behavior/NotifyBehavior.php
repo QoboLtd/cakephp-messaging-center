@@ -10,6 +10,7 @@ use Cake\ORM\Behavior;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use MessagingCenter\Event\EventName;
 use MessagingCenter\Notifier\MessageNotifier;
 
 class NotifyBehavior extends Behavior
@@ -225,7 +226,7 @@ class NotifyBehavior extends Behavior
         }
 
         // broadcast event for modifying message data before passing them to the Notifier
-        $event = new Event('MessagingCenter.Notify.beforeRender', $this, [
+        $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
             'table' => $this->getTable(),
             'entity' => $entity,
             'data' => $data
