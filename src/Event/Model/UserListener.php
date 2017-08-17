@@ -9,6 +9,7 @@ use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
+use MessagingCenter\Event\EventName;
 use MessagingCenter\Notifier\MessageNotifier;
 
 class UserListener implements EventListenerInterface
@@ -71,7 +72,7 @@ class UserListener implements EventListenerInterface
         $this->Notifier->template('MessagingCenter.welcome');
 
         // broadcast event for modifying message data before passing them to the Notifier
-        $event = new Event('MessagingCenter.Notify.beforeRender', $this, [
+        $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
             'table' => TableRegistry::get('Messages'),
             'entity' => $entity,
             'data' => $data
