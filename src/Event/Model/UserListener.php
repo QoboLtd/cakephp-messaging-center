@@ -44,7 +44,7 @@ class UserListener implements EventListenerInterface
      */
     public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        if ($event->subject() !== $this->getUsersTable()) {
+        if ($event->subject()->getTable() !== $this->getUsersTable()->getTable()) {
             return;
         }
 
@@ -72,7 +72,7 @@ class UserListener implements EventListenerInterface
         $this->Notifier->template('MessagingCenter.welcome');
 
         // broadcast event for modifying message data before passing them to the Notifier
-        $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
+        $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER, $this, [
             'table' => TableRegistry::get('Messages'),
             'entity' => $entity,
             'data' => $data
