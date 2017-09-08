@@ -44,7 +44,7 @@ class UserListener implements EventListenerInterface
      */
     public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        if ($event->subject() !== $this->getUsersTable()) {
+        if ($event->subject()->getTable() !== $this->getUsersTable()->getTable()) {
             return;
         }
 
