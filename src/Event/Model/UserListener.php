@@ -72,7 +72,7 @@ class UserListener implements EventListenerInterface
         $this->Notifier->template('MessagingCenter.welcome');
 
         // broadcast event for modifying message data before passing them to the Notifier
-        $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER, $this, [
+        $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
             'table' => TableRegistry::get('Messages'),
             'entity' => $entity,
             'data' => $data
