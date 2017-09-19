@@ -48,6 +48,10 @@ class UserListener implements EventListenerInterface
             return;
         }
 
+        if (!$entity->isNew()) {
+            return;
+        }
+
         if (!Configure::read('MessagingCenter.welcomeMessage.enabled')) {
             return;
         }
