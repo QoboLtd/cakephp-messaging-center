@@ -66,7 +66,7 @@ class NotifyBehaviorTest extends TestCase
 
         $expected = [
             'subject' => 'Article: New Article',
-            'content' => 'Article record <a href="/messaging-center/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.'
+            'content' => 'Article record <a href="/messaging-center/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n"
         ];
 
         $table = TableRegistry::get('MessagingCenter.Messages');
