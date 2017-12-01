@@ -159,7 +159,7 @@ class MessagesTable extends Table
 
     /**
      * Returns Time object to be used as date_sent field value.
-     * @return Cake\I18n\Time
+     * @return \Cake\I18n\Time
      */
     public function getDateSent()
     {
