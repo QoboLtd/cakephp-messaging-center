@@ -30,10 +30,10 @@ $username = $this->element('MessagingCenter.user', [
     <div class="row">
         <div class="col-md-3">
             <?= $this->Html->link(
-                    '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __('Back to message'),
-                    ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
-                    ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
-                ) ?>
+                '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __('Back to message'),
+                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
+                ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
+            ) ?>
             <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
