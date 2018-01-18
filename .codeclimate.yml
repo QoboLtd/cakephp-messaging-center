@@ -9,6 +9,7 @@ engines:
 exclude_paths:
 - config/
 - tests/
+- webroot/plugins/
 ratings:
   paths:
   - "src/**/*"
