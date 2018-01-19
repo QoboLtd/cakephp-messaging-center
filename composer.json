@@ -14,10 +14,6 @@
     "require": {
         "qobo/cakephp-utils": "^6.0"
     },
-    "require-dev": {
-        "phpunit/phpunit": "^5.0",
-        "cakephp/cakephp-codesniffer": "^3.0"
-    },
     "autoload": {
         "psr-4": {
             "MessagingCenter\\": "src",
