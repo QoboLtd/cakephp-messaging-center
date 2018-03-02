@@ -33,7 +33,7 @@ if (!isset($folder)) {
     $folder = isset($this->request->params['pass'][0]) ? $this->request->params['pass'][0] : 'inbox';
 }
 ?>
-<div class="box box-solid">
+<div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Folders</h3>
         <div class="box-tools">

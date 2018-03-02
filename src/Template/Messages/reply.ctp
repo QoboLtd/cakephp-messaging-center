@@ -37,7 +37,7 @@ $username = $this->element('MessagingCenter.user', [
             <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
-            <div class="box box-solid">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title"><?= __('Reply to: {0}', [$message->subject]) ?></h3>
                 </div>
