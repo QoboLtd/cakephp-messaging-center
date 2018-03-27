@@ -46,7 +46,7 @@ class MessagesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('messages');
+        $this->table('qobo_messages');
         $this->displayField('id');
         $this->primaryKey('id');
 
