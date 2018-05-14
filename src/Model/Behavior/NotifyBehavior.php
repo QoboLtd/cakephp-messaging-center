@@ -59,11 +59,18 @@ class NotifyBehavior extends Behavior
     protected $_fromUser = null;
 
     /**
-     * Ingored modified fields
+     * Ingored modified fields.
      *
      * @var array
      */
-    protected $_ignoredFields = ['created', 'modified'];
+    protected $_ignoredModifyFields = ['created', 'modified', 'modified_by', 'created_by'];
+
+    /**
+     * Ingored notify fields.
+     *
+     * @var array
+     */
+    protected $_ignoredNotifyFields = ['modified_by', 'created_by'];
 
     /**
      * {@inheritDoc}
@@ -74,7 +81,7 @@ class NotifyBehavior extends Behavior
 
         // merge with default ignored fields
         if (!empty($this->config('ignoredFields'))) {
-            $this->_ignoredFields = array_merge($this->_ignoredFields, $this->config('ignoredFields'));
+            $this->_ignoredModifyFields = array_merge($this->_ignoredModifyFields, $this->config('ignoredFields'));
         }
 
         $this->_fromUser = Configure::readOrFail('MessagingCenter.systemUser.id');
@@ -130,20 +137,19 @@ class NotifyBehavior extends Behavior
      */
     protected function _getModifiedFields(EntityInterface $entity)
     {
-        $result = [];
-
         if ($entity->isNew()) {
             $fields = $entity->extractOriginal($entity->visibleProperties());
         } else {
             $fields = $entity->extractOriginalChanged($entity->visibleProperties());
         }
 
-        $diff = array_diff(array_keys($fields), $this->_ignoredFields);
+        $diff = array_diff(array_keys($fields), $this->_ignoredModifyFields);
 
         if (empty($diff)) {
-            return $result;
+            return [];
         }
 
+        $result = [];
         foreach ($fields as $k => $v) {
             // skip ignored fields
             if (!in_array($k, $diff)) {
@@ -166,15 +172,20 @@ class NotifyBehavior extends Behavior
      */
     protected function _getNotifyFields(Table $table)
     {
-        $fields = [];
+        $result = [];
         foreach ($table->associations() as $association) {
             if ($association->className() !== $this->_usersTable->alias()) {
                 continue;
             }
-            $fields[] = $association->foreignKey();
+
+            if (in_array($association->foreignKey(), $this->_ignoredModifyFields)) {
+                continue;
+            }
+
+            $result[] = $association->foreignKey();
         }
 
-        return $fields;
+        return $result;
     }
 
     /**
@@ -186,26 +197,29 @@ class NotifyBehavior extends Behavior
      */
     protected function _filterNotifyFields(array $notifyFields, EntityInterface $entity)
     {
-        $fields = [];
+        $result = [];
         foreach ($notifyFields as $notifyField) {
-            $status = static::STATUS_ASSIGNED;
-            // skip notify field(s) that have NOT been modified
-            if (!$entity->dirty($notifyField)) {
-                $status = static::STATUS_MODIFIED;
-            }
-
             // skip notify field(s) with empty value
-            if (empty($entity->{$notifyField})) {
+            if (empty($entity->get($notifyField))) {
                 continue;
             }
 
-            $fields[] = [
-                'name' => $notifyField,
-                'status' => $status
-            ];
+            $result[] = $notifyField;
         }
 
-        return $fields;
+        return $result;
+    }
+
+    /**
+     * Get template file based on notify field status
+     *
+     * @param string $field Notify field
+     * @param \Cake\Datasource\EntityInterface $entity Entity object
+     * @return array
+     */
+    protected function _getTemplate($field, EntityInterface $entity)
+    {
+        return $entity->isDirty($field) ? 'MessagingCenter.record_link' : 'MessagingCenter.record_modified';
     }
 
     /**
@@ -219,21 +233,11 @@ class NotifyBehavior extends Behavior
      */
     protected function _notifyUser($field, EntityInterface $entity, Table $table, array $modifiedFields)
     {
-        $modelName = Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table())));
         $this->Notifier->from($this->_fromUser);
-        $this->Notifier->to($entity->{$field['name']});
+        $this->Notifier->to($entity->get($field));
+        $this->Notifier->template($this->_getTemplate($field, $entity));
 
-        $data = [
-            'modelName' => $modelName,
-            'registryAlias' => $table->registryAlias(),
-            'recordId' => $entity->{$table->primaryKey()},
-            'recordName' => $entity->{$table->displayField()},
-            'field' => Inflector::humanize($field['name'])
-        ];
-        if (static::STATUS_MODIFIED === $field['status']) {
-            $this->Notifier->template('MessagingCenter.record_modified');
-            $data['modifiedFields'] = $modifiedFields;
-        }
+        $data = $this->_getData($field, $entity, $table, $modifiedFields);
 
         // broadcast event for modifying message data before passing them to the Notifier
         $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
@@ -248,5 +252,26 @@ class NotifyBehavior extends Behavior
         $this->Notifier->message($data);
 
         $this->Notifier->send();
+    }
+
+    /**
+     * Notification message data getter.
+     *
+     * @param string $field Field name
+     * @param \Cake\Datasource\EntityInterface $entity Entity object
+     * @param \Cake\ORM\Table $table Table instance
+     * @param array $modifiedFields Entity's modified fields (includes old and new values)
+     * @return array
+     */
+    protected function _getData($field, EntityInterface $entity, Table $table, array $modifiedFields)
+    {
+        return [
+            'modelName' => Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table()))),
+            'registryAlias' => $table->registryAlias(),
+            'recordId' => $entity->get($table->getPrimaryKey()),
+            'recordName' => $entity->get($table->getDisplayField()),
+            'field' => Inflector::humanize($field),
+            'modifiedFields' => $modifiedFields
+        ];
     }
 }
