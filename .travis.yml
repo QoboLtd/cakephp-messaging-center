@@ -32,7 +32,7 @@ before_script:
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS cakephp_test DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;'; fi"
 
 script:
-  - vendor/bin/phpunit
+  - if [ $TRAVIS_PHP_VERSION != "7.1" ]; then vendor/bin/phpunit --no-coverage; else vendor/bin/phpunit; fi
   - vendor/bin/phpcs
 
 after_success:
