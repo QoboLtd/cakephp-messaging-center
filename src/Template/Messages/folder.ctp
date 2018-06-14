@@ -75,7 +75,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                                 <th><?= __('Date') ?></th>
                             </thead>
                             <tbody>
-                                <?php foreach ($messages as $message) : ?>
+                            <?php foreach ($messages as $message) : ?>
                                 <?php
                                 $messageUser = 'sent' === $folder ? 'toUser' : 'fromUser';
                                 $messageUser = !empty($message->{$messageUser}) ?
@@ -107,7 +107,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                                         ])) ?>
                                     </td>
                                 </tr>
-                                <?php endforeach; ?>
+                            <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
