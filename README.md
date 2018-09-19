@@ -6,6 +6,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/qobo/cakephp-messaging-center/v/unstable)](https://packagist.org/packages/qobo/cakephp-messaging-center)
 [![License](https://poser.pugx.org/qobo/cakephp-messaging-center/license)](https://packagist.org/packages/qobo/cakephp-messaging-center)
 [![codecov](https://codecov.io/gh/QoboLtd/cakephp-messaging-center/branch/master/graph/badge.svg)](https://codecov.io/gh/QoboLtd/cakephp-messaging-center)
+[![BCH compliance](https://bettercodehub.com/edge/badge/QoboLtd/cakephp-messaging-center?branch=master)](https://bettercodehub.com/)
 
 ## About
 
