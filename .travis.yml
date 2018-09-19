@@ -11,6 +11,10 @@ php:
   - 7.2
   - nightly
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 env:
   matrix:
     - DB=mysql db_dsn='mysql://root@0.0.0.0/cakephp_test'
