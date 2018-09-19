@@ -11,7 +11,7 @@
 
 CakePHP 3+ plugin for a basic messaging center.
 
-Developed by [Qobo](https://www.qobo.biz), used in [Qobrix](https://qobrix.com).
+This plugin is developed by [Qobo](https://www.qobo.biz) for [Qobrix](https://qobrix.com).  It can be used as standalone CakePHP plugin, or as part of the [project-template-cakephp](https://github.com/QoboLtd/project-template-cakephp) installation.
 
 ## Installation
 
