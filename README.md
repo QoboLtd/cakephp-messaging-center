@@ -6,12 +6,13 @@
 [![Latest Unstable Version](https://poser.pugx.org/qobo/cakephp-messaging-center/v/unstable)](https://packagist.org/packages/qobo/cakephp-messaging-center)
 [![License](https://poser.pugx.org/qobo/cakephp-messaging-center/license)](https://packagist.org/packages/qobo/cakephp-messaging-center)
 [![codecov](https://codecov.io/gh/QoboLtd/cakephp-messaging-center/branch/master/graph/badge.svg)](https://codecov.io/gh/QoboLtd/cakephp-messaging-center)
+[![BCH compliance](https://bettercodehub.com/edge/badge/QoboLtd/cakephp-messaging-center?branch=master)](https://bettercodehub.com/)
 
 ## About
 
 CakePHP 3+ plugin for a basic messaging center.
 
-Developed by [Qobo](https://www.qobo.biz), used in [Qobrix](https://qobrix.com).
+This plugin is developed by [Qobo](https://www.qobo.biz) for [Qobrix](https://qobrix.com).  It can be used as standalone CakePHP plugin, or as part of the [project-template-cakephp](https://github.com/QoboLtd/project-template-cakephp) installation.
 
 ## Installation
 
