@@ -64,10 +64,10 @@ $restoreBtn = $this->Form->postLink(
         <div class="col-md-3">
             <?= $this->Html->link(
                 '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
+                ['plugin' => 'Qobo/MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
+            <?= $this->element('Qobo/MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">
@@ -78,7 +78,7 @@ $restoreBtn = $this->Form->postLink(
                     <div class="mailbox-read-info">
                         <h3><?= h($message->subject) ?></h3>
                         <?php $fromUser = !empty($message->fromUser) ? $message->fromUser : $message->from_user; ?>
-                        <h5>From: <?= $this->element('MessagingCenter.user', ['user' => $fromUser]) ?>
+                        <h5>From: <?= $this->element('Qobo/MessagingCenter.user', ['user' => $fromUser]) ?>
                         <span class="mailbox-read-time pull-right"><?= h($message->date_sent->i18nFormat([\IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT])) ?></span></h5>
                     </div>
                     <div class="mailbox-controls with-border text-center">

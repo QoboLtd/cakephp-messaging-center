@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\Event;
+namespace Qobo\MessagingCenter\Event;
 
 use MyCLabs\Enum\Enum;
 

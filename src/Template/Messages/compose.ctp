@@ -13,8 +13,8 @@
 use Cake\Core\Configure;
 
 // enable typeahead library
-echo $this->Html->script('MessagingCenter.bootstrap-typeahead.js', ['block' => 'script']);
-echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'script']);
+echo $this->Html->script('Qobo/MessagingCenter.bootstrap-typeahead.js', ['block' => 'script']);
+echo $this->Html->script('Qobo/MessagingCenter.typeahead', ['block' => 'script']);
 echo $this->Html->scriptBlock(
     'messaging_center_typeahead.init(
         {
@@ -26,7 +26,7 @@ echo $this->Html->scriptBlock(
     ['block' => 'scriptBotton']
 );
 
-$unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
+$unreadCount = (int)$this->cell('Qobo/MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
 ?>
 <section class="content-header">
     <div class="row">
@@ -43,10 +43,10 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
         <div class="col-md-3">
             <?= $this->Html->link(
                 '<i class="fa fa-inbox" aria-hidden="true"></i> ' . __('Back to inbox'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', 'inbox'],
+                ['plugin' => 'Qobo/MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', 'inbox'],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
+            <?= $this->element('Qobo/MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">

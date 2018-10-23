@@ -1,15 +1,15 @@
 <?php
-namespace MessagingCenter\Test\TestCase\Controller;
+namespace Qobo\MessagingCenter\Test\TestCase\Controller;
 
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
-use MessagingCenter\Controller\MessagesController;
-use MessagingCenter\Model\Entity\Message;
-use MessagingCenter\Model\Table\MessagesTable;
+use Qobo\MessagingCenter\Controller\MessagesController;
+use Qobo\MessagingCenter\Model\Entity\Message;
+use Qobo\MessagingCenter\Model\Table\MessagesTable;
 
 /**
- * MessagingCenter\Controller\MessagesController Test Case
+ * \Qobo\MessagingCenter\Controller\MessagesController Test Case
  */
 class MessagesControllerTest extends IntegrationTestCase
 {
@@ -20,7 +20,7 @@ class MessagesControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.CakeDC/Users.users',
-        'plugin.messaging_center.messages'
+        'plugin.qobo/messaging_center.messages'
     ];
 
     /**
@@ -32,7 +32,7 @@ class MessagesControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->MessagesTable = TableRegistry::get('MessagingCenter.Messages');
+        $this->MessagesTable = TableRegistry::get('Qobo/MessagingCenter.Messages');
 
         $this->enableRetainFlashMessages();
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
@@ -169,7 +169,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'folder'
         ];
@@ -247,7 +247,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'folder'
         ];
@@ -283,7 +283,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'view',
             $id
@@ -322,7 +322,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'folder'
         ];
@@ -346,7 +346,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'folder'
         ];
@@ -365,7 +365,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'view',
             $id
@@ -387,7 +387,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'view',
             $id
@@ -407,7 +407,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'folder'
         ];
@@ -426,7 +426,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'view',
             $id
@@ -448,7 +448,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'view',
             $id
@@ -468,7 +468,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'folder'
         ];
@@ -487,7 +487,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'folder'
         ];
@@ -506,7 +506,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'view',
             $id
@@ -528,7 +528,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(302);
 
         $url = [
-            'plugin' => 'MessagingCenter',
+            'plugin' => 'Qobo/MessagingCenter',
             'controller' => 'Messages',
             'action' => 'view',
             $id

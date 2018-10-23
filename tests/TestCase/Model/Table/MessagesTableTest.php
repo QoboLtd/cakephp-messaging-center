@@ -1,15 +1,15 @@
 <?php
-namespace MessagingCenter\Test\TestCase\Model\Table;
+namespace Qobo\MessagingCenter\Test\TestCase\Model\Table;
 
 use Cake\I18n\Time;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
-use MessagingCenter\Model\Table\MessagesTable;
+use Qobo\MessagingCenter\Model\Table\MessagesTable;
 
 /**
- * MessagingCenter\Model\Table\MessagesTable Test Case
+ * \Qobo\MessagingCenter\Model\Table\MessagesTable Test Case
  */
 class MessagesTableTest extends TestCase
 {
@@ -17,7 +17,7 @@ class MessagesTableTest extends TestCase
     /**
      * Test subject
      *
-     * @var \MessagingCenter\Model\Table\MessagesTable
+     * @var \Qobo\MessagingCenter\Model\Table\MessagesTable
      */
     public $Messages;
 
@@ -27,7 +27,7 @@ class MessagesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.messaging_center.messages',
+        'plugin.qobo/messaging_center.messages',
     ];
 
     /**
@@ -38,7 +38,7 @@ class MessagesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Messages') ? [] : ['className' => 'MessagingCenter\Model\Table\MessagesTable'];
+        $config = TableRegistry::exists('Messages') ? [] : ['className' => 'Qobo\MessagingCenter\Model\Table\MessagesTable'];
         $this->Messages = TableRegistry::get('Messages', $config);
     }
 

@@ -1,5 +1,5 @@
 <?php
-namespace MessagingCenter\Test\TestCase\Event\Model;
+namespace Qobo\MessagingCenter\Test\TestCase\Event\Model;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
@@ -7,13 +7,13 @@ use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use MessagingCenter\Event\Model\UserListener;
+use Qobo\MessagingCenter\Event\Model\UserListener;
 
 class UserListenerTest extends TestCase
 {
     public $fixtures = [
         'plugin.CakeDC/Users.users',
-        'plugin.MessagingCenter.messages',
+        'plugin.qobo/messaging_center.messages',
     ];
 
     public function setUp()
@@ -39,7 +39,7 @@ class UserListenerTest extends TestCase
 
     public function testAfterSave()
     {
-        $table = TableRegistry::get('MessagingCenter.Messages');
+        $table = TableRegistry::get('Qobo/MessagingCenter.Messages');
 
         $expected = 1 + $table->find()->count();
 
@@ -69,7 +69,7 @@ class UserListenerTest extends TestCase
     {
         Configure::write('MessagingCenter.welcomeMessage.enabled', false);
 
-        $table = TableRegistry::get('MessagingCenter.Messages');
+        $table = TableRegistry::get('Qobo/MessagingCenter.Messages');
 
         $expected = $table->find()->count();
 

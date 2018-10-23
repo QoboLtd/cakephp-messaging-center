@@ -47,7 +47,7 @@ if (!isset($folder)) {
             <li class="<?= $action === $folder ? ' active' : ''; ?>">
             <?php
             if ('inbox' === $action) {
-                $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
+                $unreadCount = (int)$this->cell('Qobo/MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
                 if (0 < $unreadCount) {
                     $options['label'] .= ' <span class="label label-primary pull-right">' . $unreadCount . '</span>';
                 }
@@ -57,7 +57,7 @@ if (!isset($folder)) {
             ?>
             <?= $this->Html->link(
                 $options['icon'] . ' ' . $options['label'],
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', $action],
+                ['plugin' => 'Qobo/MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', $action],
                 ['escape' => false]
             ); ?>
             </li>

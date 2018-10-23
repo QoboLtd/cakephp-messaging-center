@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\Model\Behavior;
+namespace Qobo\MessagingCenter\Model\Behavior;
 
 use ArrayObject;
 use Cake\Core\Configure;
@@ -20,8 +20,8 @@ use Cake\ORM\Behavior;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
-use MessagingCenter\Event\EventName;
-use MessagingCenter\Notifier\MessageNotifier;
+use Qobo\MessagingCenter\Event\EventName;
+use Qobo\MessagingCenter\Notifier\MessageNotifier;
 
 class NotifyBehavior extends Behavior
 {
@@ -219,7 +219,7 @@ class NotifyBehavior extends Behavior
      */
     protected function _getTemplate($field, EntityInterface $entity)
     {
-        return $entity->isDirty($field) ? 'MessagingCenter.record_link' : 'MessagingCenter.record_modified';
+        return $entity->isDirty($field) ? 'Qobo/MessagingCenter.record_link' : 'Qobo/MessagingCenter.record_modified';
     }
 
     /**

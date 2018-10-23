@@ -1,5 +1,5 @@
 <?php
-namespace MessagingCenter\Test\Fixture;
+namespace Qobo\MessagingCenter\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 

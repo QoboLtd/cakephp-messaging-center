@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\Notifier;
+namespace Qobo\MessagingCenter\Notifier;
 
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
@@ -73,7 +73,7 @@ class MessageNotifier extends Notifier
     public function __construct()
     {
         // set table instance
-        $this->_table = TableRegistry::get('MessagingCenter.Messages');
+        $this->_table = TableRegistry::get('Qobo/MessagingCenter.Messages');
 
         // set properties
         $this->_dateSent = new Time();
@@ -89,7 +89,7 @@ class MessageNotifier extends Notifier
     /**
      * {@inheritDoc}
      */
-    public function template($template = 'MessagingCenter.record_link')
+    public function template($template = 'Qobo/MessagingCenter.record_link')
     {
         parent::template($template);
     }

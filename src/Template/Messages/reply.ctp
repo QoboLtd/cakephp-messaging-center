@@ -10,9 +10,9 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
+$unreadCount = (int)$this->cell('Qobo/MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
 
-$username = $this->element('MessagingCenter.user', [
+$username = $this->element('Qobo/MessagingCenter.user', [
     'user' => $message->get('fromUser') ? $message->fromUser : $message->from_user
 ]);
 ?>
@@ -31,10 +31,10 @@ $username = $this->element('MessagingCenter.user', [
         <div class="col-md-3">
             <?= $this->Html->link(
                 '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __('Back to message'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
+                ['plugin' => 'Qobo/MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ) ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
+            <?= $this->element('Qobo/MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">

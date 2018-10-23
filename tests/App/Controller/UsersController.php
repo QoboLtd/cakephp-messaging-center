@@ -1,5 +1,5 @@
 <?php
-namespace MessagingCenter\Test\App\Controller;
+namespace Qobo\MessagingCenter\Test\App\Controller;
 
 use \Cake\Controller\Controller;
 

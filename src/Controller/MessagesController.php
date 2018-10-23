@@ -9,10 +9,10 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\Controller;
+namespace Qobo\MessagingCenter\Controller;
 
 use Cake\Network\Exception\ForbiddenException;
-use MessagingCenter\Controller\AppController;
+use Qobo\MessagingCenter\Controller\AppController;
 
 /**
  * Messages Controller

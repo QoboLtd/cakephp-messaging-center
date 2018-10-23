@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\Event\Model;
+namespace Qobo\MessagingCenter\Event\Model;
 
 use ArrayObject;
 use CakeDC\Users\Controller\Traits\CustomUsersTableTrait;
@@ -19,8 +19,8 @@ use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
-use MessagingCenter\Event\EventName;
-use MessagingCenter\Notifier\MessageNotifier;
+use Qobo\MessagingCenter\Event\EventName;
+use Qobo\MessagingCenter\Notifier\MessageNotifier;
 
 class UserListener implements EventListenerInterface
 {
@@ -83,11 +83,11 @@ class UserListener implements EventListenerInterface
             'subject' => $subject,
             'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
         ];
-        $this->Notifier->template('MessagingCenter.welcome');
+        $this->Notifier->template('Qobo/MessagingCenter.welcome');
 
         // broadcast event for modifying message data before passing them to the Notifier
         $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
-            'table' => TableRegistry::get('Messages'),
+            'table' => TableRegistry::get('Qobo/MessagingCenter.Messages'),
             'entity' => $entity,
             'data' => $data
         ]);

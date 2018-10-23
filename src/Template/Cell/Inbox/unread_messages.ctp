@@ -15,7 +15,7 @@
     <?php foreach ($messages as $message) : ?>
         <li><!-- start message -->
             <a href="<?= $this->Url->build([
-                'plugin' => 'MessagingCenter',
+                'plugin' => 'Qobo/MessagingCenter',
                 'controller' => 'Messages',
                 'action' => 'view',
                 $message->id
@@ -27,7 +27,7 @@
                     ]); ?>
                 </div>
                 <h4>
-                    <?= $this->element('MessagingCenter.user', [
+                    <?= $this->element('Qobo/MessagingCenter.user', [
                         'user' => !empty($message->fromUser) ? $message->fromUser : $message->from_user
                     ]) ?>
                     <small><i class="fa fa-clock-o"></i> <?= $this->Time->timeAgoInWords(h($message->date_sent->i18nFormat('yyyy-MM-dd HH:mm'))) ?></small>

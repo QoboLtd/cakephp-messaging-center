@@ -9,7 +9,7 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\View\Cell;
+namespace Qobo\MessagingCenter\View\Cell;
 
 use Cake\View\Cell;
 
@@ -37,7 +37,7 @@ class InboxCell extends Cell
             $format = static::UNREAD_COUNT_FORMAT;
         }
 
-        $this->loadModel('MessagingCenter.Messages');
+        $this->loadModel('Qobo/MessagingCenter.Messages');
         $unread = $this->Messages->find('all', [
             'conditions' => [
                 'to_user' => $userId,
@@ -60,7 +60,7 @@ class InboxCell extends Cell
     public function unreadMessages($limit = 10, $contentLength = 100)
     {
         $userId = $this->request->session()->read('Auth.User.id');
-        $this->loadModel('MessagingCenter.Messages');
+        $this->loadModel('Qobo/MessagingCenter.Messages');
         $messages = $this->Messages->find('all', [
             'conditions' => [
                 'to_user' => $userId,

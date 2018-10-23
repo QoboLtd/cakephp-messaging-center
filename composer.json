@@ -20,14 +20,14 @@
     },
     "autoload": {
         "psr-4": {
-            "MessagingCenter\\": "src",
-            "MessagingCenter\\Test\\Fixture\\": "tests\\Fixture",
+            "Qobo\\MessagingCenter\\": "src",
+            "Qobo\\MessagingCenter\\Test\\Fixture\\": "tests\\Fixture",
             "CakeDC\\Users\\Test\\Fixture\\": "tests"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MessagingCenter\\Test\\": "tests",
+            "Qobo\\MessagingCenter\\Test\\": "tests",
             "CakeDC\\Users\\Test\\": "./vendor/cakedc/users/tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }

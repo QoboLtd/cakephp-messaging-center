@@ -9,14 +9,14 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\Model\Table;
+namespace Qobo\MessagingCenter\Model\Table;
 
 use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use MessagingCenter\Model\Entity\Message;
+use Qobo\MessagingCenter\Model\Entity\Message;
 
 /**
  * Messages Model

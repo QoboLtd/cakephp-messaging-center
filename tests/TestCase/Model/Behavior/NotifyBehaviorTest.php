@@ -1,14 +1,14 @@
 <?php
-namespace MessagingCenter\Test\TestCase\Model\Behavior;
+namespace Qobo\MessagingCenter\Test\TestCase\Model\Behavior;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use MessagingCenter\Model\Behavior\NotifyBehavior;
+use Qobo\MessagingCenter\Model\Behavior\NotifyBehavior;
 
 class NotifyBehaviorTest extends TestCase
 {
     public $fixtures = [
-        'plugin.MessagingCenter.articles',
+        'plugin.qobo/messaging_center.articles',
         'plugin.CakeDC/Users.users',
     ];
 
@@ -16,13 +16,13 @@ class NotifyBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->Articles = TableRegistry::get('MessagingCenter.Articles', ['table' => 'articles']);
+        $this->Articles = TableRegistry::get('Qobo/MessagingCenter.Articles', ['class' => 'articles']);
         $this->Articles->displayField('title');
         $this->Articles->belongsTo('Users', [
             'foreignKey' => 'author',
             'className' => 'Users'
         ]);
-        $this->Articles->addBehavior('MessagingCenter.Notify', [
+        $this->Articles->addBehavior('Qobo/MessagingCenter.Notify', [
             'ignoredFields' => ['id']
         ]);
 
@@ -60,7 +60,6 @@ class NotifyBehaviorTest extends TestCase
             'title' => 'New Article',
             'body' => 'New Article Body'
         ];
-
         // triggers behavior
         $result = $this->Articles->save($this->Articles->newEntity($data));
 
@@ -69,7 +68,7 @@ class NotifyBehaviorTest extends TestCase
             'content' => 'Article record <a href="/messaging-center/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n"
         ];
 
-        $table = TableRegistry::get('MessagingCenter.Messages');
+        $table = TableRegistry::get('Qobo/MessagingCenter.Messages');
         $entity = $table->find()->limit(1)->where(['subject LIKE' => '%' . $data['title'] . '%'])->first();
 
         $this->assertEquals($expected['subject'], $entity->get('subject'));
@@ -94,7 +93,7 @@ class NotifyBehaviorTest extends TestCase
             'content' => 'Article <a href="/messaging-center/articles/view/' . $result->id . '">Modified Article</a> has been modified.' . "\n\n" . '* <strong>Title</strong>: changed from \'First Article\' to \'Modified Article\'.' . "\n" . '* <strong>Body</strong>: changed from \'First Article Body\' to \'Modified Article Body\'.' . "\n"
         ];
 
-        $table = TableRegistry::get('MessagingCenter.Messages');
+        $table = TableRegistry::get('Qobo/MessagingCenter.Messages');
         $entity = $table->find()->limit(1)->where(['subject LIKE' => '%' . $data['title'] . '%'])->first();
 
         $this->assertEquals($expected['subject'], $entity->get('subject'));

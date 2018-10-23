@@ -12,7 +12,7 @@
 
 use Cake\Utility\Inflector;
 
-$unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
+$unreadCount = (int)$this->cell('Qobo/MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
 ?>
 <section class="content-header">
     <div class="row">
@@ -30,10 +30,10 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
         <div class="col-md-3">
             <?= $this->Html->link(
                 '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
+                ['plugin' => 'Qobo/MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
+            <?= $this->element('Qobo/MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">
@@ -83,7 +83,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                                     $message->{Inflector::underscore($messageUser)};
 
                                 $messageUrl = $this->Url->build([
-                                    'plugin' => 'MessagingCenter',
+                                    'plugin' => 'Qobo/MessagingCenter',
                                     'controller' => 'Messages',
                                     'action' => 'view',
                                     $message->id
@@ -97,7 +97,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                                     </td>
                                     <td class="mailbox-name">
                                         <a href="<?= $messageUrl ?>">
-                                            <?= $this->element('MessagingCenter.user', ['user' => $messageUser]) ?>
+                                            <?= $this->element('Qobo/MessagingCenter.user', ['user' => $messageUser]) ?>
                                         </a>
                                     </td>
                                     <td class="mailbox-subject"><?= h($message->subject) ?></td>
