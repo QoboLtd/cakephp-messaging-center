@@ -1,13 +1,8 @@
-#This Travis config template file was taken from https://github.com/FriendsOfCake/travis
-sudo: true
-dist: trusty
-
 language: php
 
-php:
-  - 7.1
-  - 7.2
-  - nightly
+dist: trusty
+
+sudo: false
 
 cache:
   directories:
@@ -21,25 +16,39 @@ env:
 
 matrix:
   fast_finish: true
+
   allow_failures:
+    - php: 7.3
     - php: nightly
+
+  include:
+    - php: 7.1
+      env: PHPCS=1 COVERAGE=1 PHPSTAN=0
+    - php: 7.2
+      env: PHPCS=1 COVERAGE=0 PHPSTAN=0
+    - php: 7.3
+      env: PHPCS=1 COVERAGE=0 PHPSTAN=0
+    - php: nightly
+      env: PHPCS=1 COVERAGE=0 PHPSTAN=0
 
 install:
   - composer validate --strict
   - composer install --no-interaction --no-progress --no-suggest
-  - mkdir -p build/logs
+  - mkdir -p build/test-coverage build/test-results
 
 before_script:
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS cakephp_test DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;'; fi"
 
 script:
-  - vendor/bin/phpcs
-  - if [ $TRAVIS_PHP_VERSION != "7.1" ]; then vendor/bin/phpunit --no-coverage; else vendor/bin/phpunit; fi
+  - if [[ $PHPCS = 1 ]]; then ./vendor/bin/phpcs; fi
+  - if [[ $COVERAGE = 0 ]]; then ./vendor/bin/phpunit --no-coverage; fi
+  - if [[ $COVERAGE = 1 ]]; then ./vendor/bin/phpunit; fi
+  - if [[ $PHPSTAN = 1 ]]; then ./vendor/bin/phpstan analyse; fi
 
 after_success:
   - curl -s https://codecov.io/bash > /tmp/codecov.sh
   - chmod +x /tmp/codecov.sh
-  - /tmp/codecov.sh -s build/logs
+  - /tmp/codecov.sh -s build/test-results
 
 notifications:
   email:

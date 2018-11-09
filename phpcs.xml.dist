@@ -9,16 +9,15 @@
     <description>PHP CodeSniffer Configuration</description>
 
     <!-- Coding standard to use -->
-    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP" />
+    <rule ref="./vendor/cakephp/cakephp-codesniffer/CakePHP">
+        <exclude name="Generic.Commenting.Todo" />
+    </rule>
 
     <!-- Do not fail on warnings -->
     <config name="ignore_warnings_on_exit" value="1" />
 
     <!-- Assume UTF-8 -->
     <config name="encoding" value="UTF-8" />
-
-    <!-- Extensions to check -->
-    <arg name="extensions" value="php,inc,ctp,js,css" />
 
     <!-- Use colors -->
     <arg name="colors" />
@@ -29,7 +28,13 @@
     <!-- Files and directories to check -->
     <file>./src/</file>
     <file>./tests/</file>
+    <file>./config/</file>
     <file>./webroot/</file>
-    <!-- Files and directories to ignore -->
-    <arg name="ignore" value="webroot/js/bootstrap-typeahead.js" />
+
+    <!-- Exclude patterns -->
+    <exclude-pattern>webroot/js/bootstrap-typeahead.js</exclude-pattern>
+    <exclude-pattern>config/Migrations/*</exclude-pattern>
+    <exclude-pattern>config/Seeds/*</exclude-pattern>
+    <exclude-pattern>webroot/plugins/*</exclude-pattern>
+    <exclude-pattern>*\.min\.(css|js)</exclude-pattern>
 </ruleset>

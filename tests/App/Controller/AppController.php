@@ -5,5 +5,16 @@ use \Cake\Controller\Controller;
 
 class AppController extends Controller
 {
-    public $components = ['Auth', 'Flash', 'RequestHandler'];
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('Auth', [
+            'authenticate' => ['Form']
+        ]);
+
+        $this->loadComponent('Flash');
+        $this->loadComponent('RequestHandler', [
+            'enableBeforeRedirect' => false,
+        ]);
+    }
 }
