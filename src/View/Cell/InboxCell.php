@@ -13,6 +13,9 @@ namespace MessagingCenter\View\Cell;
 
 use Cake\View\Cell;
 
+/**
+ * @property \MessagingCenter\Model\Table\MessagesTable $Messages
+ */
 class InboxCell extends Cell
 {
     /**
@@ -30,7 +33,7 @@ class InboxCell extends Cell
      * @param  string $format html format styling
      * @return void
      */
-    public function unreadCount($format = '')
+    public function unreadCount(string $format = ''): void
     {
         $userId = $this->request->getSession()->read('Auth.User.id');
         if ('' === trim($format)) {
@@ -46,7 +49,7 @@ class InboxCell extends Cell
         ]);
 
         $this->set('unreadFormat', $format);
-        $this->set('unreadCount', (int)$unread->count());
+        $this->set('unreadCount', $unread->count());
         $this->set('maxUnreadCount', static::MAX_UNREAD_COUNT);
     }
 
@@ -57,7 +60,7 @@ class InboxCell extends Cell
      * @param  int $contentLength content excerpt length
      * @return void
      */
-    public function unreadMessages($limit = 10, $contentLength = 100)
+    public function unreadMessages(int $limit = 10, int $contentLength = 100): void
     {
         $userId = $this->request->getSession()->read('Auth.User.id');
         $this->loadModel('MessagingCenter.Messages');
@@ -68,7 +71,7 @@ class InboxCell extends Cell
             ],
             'contain' => ['FromUser'],
             'order' => ['Messages.date_sent' => 'DESC'],
-            'limit' => (int)$limit
+            'limit' => $limit
         ]);
 
         $this->set(compact('messages', 'contentLength'));

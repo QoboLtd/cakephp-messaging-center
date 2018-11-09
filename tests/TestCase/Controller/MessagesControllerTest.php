@@ -24,6 +24,11 @@ class MessagesControllerTest extends IntegrationTestCase
     ];
 
     /**
+     * @var \MessagingCenter\Model\Table\MessagesTable $MessagesTable
+     */
+    protected $MessagesTable;
+
+    /**
      * setUp method
      *
      * @return void
@@ -32,7 +37,11 @@ class MessagesControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->MessagesTable = TableRegistry::get('MessagingCenter.Messages');
+        /**
+         * @var \MessagingCenter\Model\Table\MessagesTable $table
+         */
+        $table = TableRegistry::get('MessagingCenter.Messages');
+        $this->MessagesTable = $table;
 
         $this->enableRetainFlashMessages();
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
@@ -50,7 +59,7 @@ class MessagesControllerTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    public function testFolder()
+    public function testFolder(): void
     {
         $this->get('/messaging-center/messages/folder');
 
@@ -60,7 +69,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals(1, $this->viewVariable('messages')->count());
     }
 
-    public function testFolderInbox()
+    public function testFolderInbox(): void
     {
         $this->get('/messaging-center/messages/folder/inbox');
 
@@ -70,7 +79,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals(1, $this->viewVariable('messages')->count());
     }
 
-    public function testFolderArchived()
+    public function testFolderArchived(): void
     {
         $this->get('/messaging-center/messages/folder/archived');
 
@@ -80,7 +89,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals(1, $this->viewVariable('messages')->count());
     }
 
-    public function testFolderSent()
+    public function testFolderSent(): void
     {
         $this->get('/messaging-center/messages/folder/sent');
 
@@ -90,7 +99,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertTrue($this->viewVariable('messages')->isEmpty());
     }
 
-    public function testFolderTrash()
+    public function testFolderTrash(): void
     {
         $this->get('/messaging-center/messages/folder/trash');
 
@@ -100,7 +109,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals(1, $this->viewVariable('messages')->count());
     }
 
-    public function testViewInboxMessage()
+    public function testViewInboxMessage(): void
     {
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000001');
 
@@ -109,7 +118,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
-    public function testViewSentMessage()
+    public function testViewSentMessage(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
 
@@ -120,7 +129,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
-    public function testViewDeletedMessage()
+    public function testViewDeletedMessage(): void
     {
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000002');
 
@@ -129,7 +138,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
-    public function testViewArchivedMessage()
+    public function testViewArchivedMessage(): void
     {
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000003');
 
@@ -138,14 +147,14 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
-    public function testViewForbidden()
+    public function testViewForbidden(): void
     {
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000004');
 
         $this->assertResponseCode(403);
     }
 
-    public function testCompose()
+    public function testCompose(): void
     {
         $this->get('/messaging-center/messages/compose');
 
@@ -155,7 +164,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertTrue($this->viewVariable('message')->isNew());
     }
 
-    public function testComposePost()
+    public function testComposePost(): void
     {
         $expected = 1 + $this->MessagesTable->find('all')->count();
 
@@ -177,16 +186,23 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
         $query = $this->MessagesTable->find()->limit(1)->where(['subject' => $data['subject']]);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $query->first();
         $this->assertEquals($data['to_user'], $entity->to_user);
         $this->assertEquals($data['content'], $entity->content);
-        $this->assertEquals($this->_requestSession->read('Auth.User.id'), $entity->from_user);
+        /**
+         * @var \Cake\Http\Session $session
+         */
+        $session = $this->_requestSession;
+        $this->assertEquals($session->read('Auth.User.id'), $entity->from_user);
         $this->assertEquals('new', $entity->status);
         $time = new Time();
         $this->assertEquals($time->i18nFormat(), $entity->date_sent->i18nFormat());
     }
 
-    public function testComposePostNoData()
+    public function testComposePostNoData(): void
     {
         $expected = $this->MessagesTable->find('all')->count();
         $this->post('/messaging-center/messages/compose');
@@ -196,7 +212,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testComposePostEnforceData()
+    public function testComposePostEnforceData(): void
     {
         $expected = 1 + $this->MessagesTable->find('all')->count();
 
@@ -214,13 +230,16 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
         $query = $this->MessagesTable->find()->limit(1)->where(['subject' => $data['subject']]);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $query->first();
         $this->assertNotEquals($data['from_user'], $entity->from_user);
         $this->assertNotEquals($data['status'], $entity->status);
         $this->assertNotEquals($data['date_sent'], $entity->date_sent);
     }
 
-    public function testReply()
+    public function testReply(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $this->get('/messaging-center/messages/reply/' . $id);
@@ -231,7 +250,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertFalse($this->viewVariable('message')->isNew());
     }
 
-    public function testReplyPut()
+    public function testReplyPut(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $entity = $this->MessagesTable->get($id);
@@ -255,10 +274,17 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
         $query = $this->MessagesTable->find()->limit(1)->where(['subject' => $data['subject']]);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $newEntity
+         */
         $newEntity = $query->first();
         $this->assertEquals($entity->get('from_user'), $newEntity->to_user);
         $this->assertEquals($data['content'], $newEntity->content);
-        $this->assertEquals($this->_requestSession->read('Auth.User.id'), $newEntity->from_user);
+        /**
+         * @var \Cake\Http\Session $session
+         */
+        $session = $this->_requestSession;
+        $this->assertEquals($session->read('Auth.User.id'), $newEntity->from_user);
         $this->assertEquals('new', $newEntity->status);
         $time = new Time();
         $this->assertEquals($time->i18nFormat(), $newEntity->date_sent->i18nFormat());
@@ -266,7 +292,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($entity->toArray(), $this->MessagesTable->get($id)->toArray());
     }
 
-    public function testReplyPutSameUser()
+    public function testReplyPutSameUser(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
 
@@ -292,7 +318,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutNoData()
+    public function testReplyPutNoData(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $expected = $this->MessagesTable->find('all')->count();
@@ -303,7 +329,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutEnforceData()
+    public function testReplyPutEnforceData(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $expected = 1 + $this->MessagesTable->find('all')->count();
@@ -330,6 +356,9 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
         $query = $this->MessagesTable->find()->limit(1)->where(['subject' => $data['subject']]);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $query->first();
         $this->assertNotEquals($data['to_user'], $entity->to_user);
         $this->assertNotEquals($data['from_user'], $entity->from_user);
@@ -337,7 +366,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertNotEquals($data['date_sent'], $entity->date_sent);
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
 
@@ -356,7 +385,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals('deleted', $entity->get('status'));
     }
 
-    public function testDeleteAlreadyDeleted()
+    public function testDeleteAlreadyDeleted(): void
     {
         $id = '00000000-0000-0000-0000-000000000002';
 
@@ -376,7 +405,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals('deleted', $entity->get('status'));
     }
 
-    public function testDeleteUserSent()
+    public function testDeleteUserSent(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
 
@@ -398,7 +427,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals('new', $entity->get('status'));
     }
 
-    public function testArchive()
+    public function testArchive(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
 
@@ -417,7 +446,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals('archived', $entity->get('status'));
     }
 
-    public function testArchiveAlreadyArchived()
+    public function testArchiveAlreadyArchived(): void
     {
         $id = '00000000-0000-0000-0000-000000000003';
 
@@ -437,7 +466,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals('archived', $entity->get('status'));
     }
 
-    public function testArchiveUserSent()
+    public function testArchiveUserSent(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
 
@@ -459,7 +488,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals('new', $entity->get('status'));
     }
 
-    public function testRestoreDeleted()
+    public function testRestoreDeleted(): void
     {
         $id = '00000000-0000-0000-0000-000000000002';
 
@@ -478,7 +507,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertNotEquals('archived', $entity->get('status'));
     }
 
-    public function testRestoreArchived()
+    public function testRestoreArchived(): void
     {
         $id = '00000000-0000-0000-0000-000000000003';
 
@@ -497,7 +526,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertNotEquals('archived', $entity->get('status'));
     }
 
-    public function testRestoreNotArchived()
+    public function testRestoreNotArchived(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
 
@@ -517,7 +546,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals('new', $entity->get('status'));
     }
 
-    public function testRestoreUserSent()
+    public function testRestoreUserSent(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
 
@@ -536,7 +565,11 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertRedirect($url);
 
         $entity = $this->MessagesTable->get($id);
-        $this->assertEquals($this->_requestSession->read('Auth.User.id'), $entity->get('from_user'));
+        /**
+         * @var \Cake\Http\Session $session
+         */
+        $session = $this->_requestSession;
+        $this->assertEquals($session->read('Auth.User.id'), $entity->get('from_user'));
         $this->assertEquals('new', $entity->get('status'));
     }
 }

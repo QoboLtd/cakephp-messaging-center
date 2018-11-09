@@ -25,9 +25,9 @@ class MessagesController extends AppController
     /**
      * Folder method
      * @param string $folder folder name
-     * @return void
+     * @return \Cake\Http\Response|void|null
      */
-    public function folder($folder = '')
+    public function folder(string $folder = '')
     {
         if (!$this->Messages->folderExists($folder)) {
             $folder = $this->Messages->getDefaultFolder();
@@ -48,11 +48,13 @@ class MessagesController extends AppController
      * View method
      *
      * @param string|null $id Message id.
-     * @return void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null
      */
-    public function view($id = null)
+    public function view(string $id = null)
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
         $message = $this->Messages->get($id, [
             'contain' => ['FromUser', 'ToUser']
         ]);
@@ -95,11 +97,11 @@ class MessagesController extends AppController
             $data['date_sent'] = $this->Messages->getDateSent();
             $message = $this->Messages->patchEntity($message, $data);
             if ($this->Messages->save($message)) {
-                $this->Flash->success(__('The message has been sent.'));
+                $this->Flash->success((string)__('The message has been sent.'));
 
                 return $this->redirect(['action' => 'folder']);
             } else {
-                $this->Flash->error(__('The message could not be sent. Please, try again.'));
+                $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
             }
         }
 
@@ -112,15 +114,18 @@ class MessagesController extends AppController
      * @param string $id message id
      * @return \Cake\Http\Response|void|null Redirects on successful reply, renders view otherwise.
      */
-    public function reply($id)
+    public function reply(string $id)
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
         $message = $this->Messages->get($id, [
             'contain' => ['FromUser', 'ToUser']
         ]);
 
         // current user's sent message
         if ($this->Auth->user('id') !== $message->to_user) {
-            $this->Flash->error(__('You cannot reply to a sent message.'));
+            $this->Flash->error((string)__('You cannot reply to a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         }
@@ -135,11 +140,11 @@ class MessagesController extends AppController
             $data['related_id'] = $id;
             $newMessage = $this->Messages->patchEntity($newMessage, $data);
             if ($this->Messages->save($newMessage)) {
-                $this->Flash->success(__('The message has been sent.'));
+                $this->Flash->success((string)__('The message has been sent.'));
 
                 return $this->redirect(['action' => 'folder']);
             } else {
-                $this->Flash->error(__('The message could not be sent. Please, try again.'));
+                $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
             }
         }
 
@@ -153,23 +158,26 @@ class MessagesController extends AppController
      * @param string|null $id Message id.
      * @return \Cake\Http\Response|void|null Redirects to folder.
      */
-    public function delete($id = null)
+    public function delete(string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
         $message = $this->Messages->get($id);
 
         $status = $this->Messages->getDeletedStatus();
 
         // already deleted message
         if ($message->status === $status) {
-            $this->Flash->error(__('You cannot delete a deleted message.'));
+            $this->Flash->error((string)__('You cannot delete a deleted message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         }
 
         // current user's sent message
         if ($this->Auth->user('id') !== $message->to_user) {
-            $this->Flash->error(__('You cannot delete a sent message.'));
+            $this->Flash->error((string)__('You cannot delete a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         }
@@ -177,9 +185,9 @@ class MessagesController extends AppController
         $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
         if ($this->Messages->save($message)) {
-            $this->Flash->success(__('The message has been deleted.'));
+            $this->Flash->success((string)__('The message has been deleted.'));
         } else {
-            $this->Flash->error(__('The message could not be deleted. Please, try again.'));
+            $this->Flash->error((string)__('The message could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'folder']);
@@ -191,22 +199,25 @@ class MessagesController extends AppController
      * @param string|null $id Message id.
      * @return \Cake\Http\Response|void|null Redirects to folder.
      */
-    public function archive($id = null)
+    public function archive(string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
         $message = $this->Messages->get($id);
 
         $status = $this->Messages->getArchivedStatus();
 
         // current user's sent message
         if ($this->Auth->user('id') !== $message->to_user) {
-            $this->Flash->error(__('You cannot archive a sent message.'));
+            $this->Flash->error((string)__('You cannot archive a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         } else {
             // already archived message
             if ($message->status === $status) {
-                $this->Flash->error(__('You cannot arcive an archived message.'));
+                $this->Flash->error((string)__('You cannot arcive an archived message.'));
 
                 return $this->redirect(['action' => 'view', $id]);
             }
@@ -215,9 +226,9 @@ class MessagesController extends AppController
         $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
         if ($this->Messages->save($message)) {
-            $this->Flash->success(__('The message has been archived.'));
+            $this->Flash->success((string)__('The message has been archived.'));
         } else {
-            $this->Flash->error(__('The message could not be archived. Please, try again.'));
+            $this->Flash->error((string)__('The message could not be archived. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'folder']);
@@ -229,22 +240,25 @@ class MessagesController extends AppController
      * @param string|null $id Message id.
      * @return \Cake\Http\Response|void|null Redirects to folder.
      */
-    public function restore($id = null)
+    public function restore(string $id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
         $message = $this->Messages->get($id);
 
         $status = $this->Messages->getReadStatus();
 
         // current user's sent message
         if ($this->Auth->user('id') !== $message->to_user) {
-            $this->Flash->error(__('You cannot restore a sent message.'));
+            $this->Flash->error((string)__('You cannot restore a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         } else {
             // inbox message
             if (in_array($message->status, [$status, $this->Messages->getNewStatus()])) {
-                $this->Flash->error(__('You cannot restore an inbox message.'));
+                $this->Flash->error((string)__('You cannot restore an inbox message.'));
 
                 return $this->redirect(['action' => 'view', $id]);
             }
@@ -253,9 +267,9 @@ class MessagesController extends AppController
         $message = $this->Messages->patchEntity($message, ['status' => $status]);
 
         if ($this->Messages->save($message)) {
-            $this->Flash->success(__('The message has been restored.'));
+            $this->Flash->success((string)__('The message has been restored.'));
         } else {
-            $this->Flash->error(__('The message could not be restored. Please, try again.'));
+            $this->Flash->error((string)__('The message could not be restored. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'folder']);

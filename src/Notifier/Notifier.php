@@ -13,10 +13,16 @@ namespace MessagingCenter\Notifier;
 
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use Cake\View\ViewVarsTrait;
 use InvalidArgumentException;
 
+/**
+ * @property \Cake\View\ViewBuilder $viewBuilder
+ */
 class Notifier implements NotifierInterface
 {
+    use ViewVarsTrait;
+
     /**
      * Notification From user.
      *
@@ -41,7 +47,7 @@ class Notifier implements NotifierInterface
     /**
      * Notification message.
      *
-     * @var string
+     * @var string|array
      */
     protected $_message;
 
@@ -58,19 +64,15 @@ class Notifier implements NotifierInterface
     ];
 
     /**
-     * {@inheritDoc}
+     * Message template setter.
+     *
+     * @throws \InvalidArgumentException when the template is empty
+     * @param  string $template Template name
+     * @return void
      */
-    public function __construct()
+    public function template(string $template): void
     {
-        //
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function template($template)
-    {
-        if (!$template) {
+        if (empty($template)) {
             throw new InvalidArgumentException('Template cannot be empty.');
         }
 
@@ -78,36 +80,48 @@ class Notifier implements NotifierInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Notification from user setter.
+     *
+     * @param  string $from From user
+     * @return void
      */
-    public function from($from)
+    public function from(string $from): void
     {
         $this->_from = $from;
     }
 
     /**
-     * {@inheritDoc}
+     * Notification to user setter.
+     *
+     * @param  string $to To user
+     * @return void
      */
-    public function to($to)
+    public function to(string $to): void
     {
         $this->_to = $to;
     }
 
     /**
-     * {@inheritDoc}
+     * Notification subject setter.
+     *
+     * @param  string $subject Subject
+     * @return void
      */
-    public function subject($subject)
+    public function subject(string $subject): void
     {
         $this->_subject = $subject;
     }
 
     /**
-     * {@inheritDoc}
+     * Notification message setter.
+     *
+     * @param  string|array $message Message
+     * @return void
      */
-    public function message($message)
+    public function message($message): void
     {
         if (!$this->viewBuilder()->getTemplate()) {
-            $this->template();
+            $this->template('');
         }
 
         $View = $this->createView();
@@ -129,13 +143,19 @@ class Notifier implements NotifierInterface
             $View->set('content', $message);
         }
 
-        $this->_message = $View->render();
+        /**
+         * @var string $message
+         */
+        $message = $View->render();
+        $this->_message = $message;
     }
 
     /**
-     * {@inheritDoc}
+     * Sends notification.
+     *
+     * @return void
      */
-    public function send()
+    public function send(): void
     {
         // validate notification data
         $this->validate();
@@ -144,9 +164,12 @@ class Notifier implements NotifierInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Validate notification data.
+     *
+     * @throws \InvalidArgumentException when validation fails
+     * @return void
      */
-    public function validate()
+    public function validate(): void
     {
         // check for empty values
         foreach ($this->_requiredFields as $field) {

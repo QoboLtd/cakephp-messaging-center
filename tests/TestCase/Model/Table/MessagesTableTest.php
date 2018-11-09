@@ -38,8 +38,13 @@ class MessagesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Messages') ? [] : ['className' => 'MessagingCenter\Model\Table\MessagesTable'];
-        $this->Messages = TableRegistry::get('Messages', $config);
+
+        $config = TableRegistry::exists('MessagingCenter.Messages') ? [] : ['className' => 'MessagingCenter\Model\Table\MessagesTable'];
+        /**
+         * @var \MessagingCenter\Model\Table\MessagesTable $table
+         */
+        $table = TableRegistry::get('MessagingCenter.Messages', $config);
+        $this->Messages = $table;
     }
 
     /**
@@ -59,7 +64,7 @@ class MessagesTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $this->assertTrue($this->Messages->hasBehavior('Timestamp'), 'Missing behavior Timestamp.');
         $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Messages->getAssociation('FromUser'));
@@ -72,7 +77,7 @@ class MessagesTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testValidationDefault(): void
     {
         $validator = new Validator();
         $result = $this->Messages->validationDefault($validator);
@@ -85,7 +90,7 @@ class MessagesTableTest extends TestCase
      *
      * @return void
      */
-    public function testBuildRules()
+    public function testBuildRules(): void
     {
         $rules = new RulesChecker();
         $result = $this->Messages->buildRules($rules);
@@ -93,107 +98,128 @@ class MessagesTableTest extends TestCase
         $this->assertInstanceOf(RulesChecker::class, $result);
     }
 
-    public function testGetNewStatus()
+    public function testGetNewStatus(): void
     {
         $this->assertEquals('new', $this->Messages->getNewStatus());
     }
 
-    public function testGetReadStatus()
+    public function testGetReadStatus(): void
     {
         $this->assertEquals('read', $this->Messages->getReadStatus());
     }
 
-    public function testGetDeletedStatus()
+    public function testGetDeletedStatus(): void
     {
         $this->assertEquals('deleted', $this->Messages->getDeletedStatus());
     }
 
-    public function testGetArchivedStatus()
+    public function testGetArchivedStatus(): void
     {
         $this->assertEquals('archived', $this->Messages->getArchivedStatus());
     }
 
-    public function testGetDateSent()
+    public function testGetDateSent(): void
     {
         $time = new Time();
         $this->assertEquals($time->i18nFormat(), $this->Messages->getDateSent()->i18nFormat());
     }
 
-    public function testGetSentFolder()
+    public function testGetSentFolder(): void
     {
         $this->assertEquals('sent', $this->Messages->getSentFolder());
     }
 
-    public function testGetDefaultFolder()
+    public function testGetDefaultFolder(): void
     {
         $this->assertEquals('inbox', $this->Messages->getDefaultFolder());
     }
 
-    public function testGetFolders()
+    public function testGetFolders(): void
     {
         $this->assertEquals(['inbox', 'archived', 'sent', 'trash'], $this->Messages->getFolders());
     }
 
-    public function testFolderExists()
+    public function testFolderExists(): void
     {
         $this->assertTrue($this->Messages->folderExists('inbox'));
     }
 
-    public function testFolderExistsNot()
+    public function testFolderExistsNot(): void
     {
         $this->assertFalse($this->Messages->folderExists('foo'));
     }
 
-    public function testGetFolderByMessageFromUser()
+    public function testGetFolderByMessageFromUser(): void
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $this->Messages->get('00000000-0000-0000-0000-000000000001');
         $result = $this->Messages->getFolderByMessage($entity, '00000000-0000-0000-0000-000000000001');
 
         $this->assertEquals('sent', $result);
     }
 
-    public function testGetFolderByMessageToUser()
+    public function testGetFolderByMessageToUser(): void
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $this->Messages->get('00000000-0000-0000-0000-000000000001');
         $result = $this->Messages->getFolderByMessage($entity, '00000000-0000-0000-0000-000000000002');
 
         $this->assertEquals('inbox', $result);
     }
 
-    public function testGetFolderByDeletedMessageFromUser()
+    public function testGetFolderByDeletedMessageFromUser(): void
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $this->Messages->get('00000000-0000-0000-0000-000000000002');
         $result = $this->Messages->getFolderByMessage($entity, '00000000-0000-0000-0000-000000000001');
 
         $this->assertEquals('sent', $result);
     }
 
-    public function testGetFolderByDeletedMessageToUser()
+    public function testGetFolderByDeletedMessageToUser(): void
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $this->Messages->get('00000000-0000-0000-0000-000000000002');
         $result = $this->Messages->getFolderByMessage($entity, '00000000-0000-0000-0000-000000000002');
 
         $this->assertEquals('trash', $result);
     }
 
-    public function testGetFolderByArchivedMessageFromUser()
+    public function testGetFolderByArchivedMessageFromUser(): void
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $this->Messages->get('00000000-0000-0000-0000-000000000003');
         $result = $this->Messages->getFolderByMessage($entity, '00000000-0000-0000-0000-000000000001');
 
         $this->assertEquals('sent', $result);
     }
 
-    public function testGetFolderByArchivedMessageToUser()
+    public function testGetFolderByArchivedMessageToUser(): void
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $this->Messages->get('00000000-0000-0000-0000-000000000003');
         $result = $this->Messages->getFolderByMessage($entity, '00000000-0000-0000-0000-000000000002');
 
         $this->assertEquals('archived', $result);
     }
 
-    public function testGetFolderByReferer()
+    public function testGetFolderByReferer(): void
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $this->Messages->get('00000000-0000-0000-0000-000000000001');
         $userId = '00000000-0000-0000-0000-000000000001';
         $referer = '/folder/archived';
@@ -202,7 +228,7 @@ class MessagesTableTest extends TestCase
         $this->assertEquals('archived', $result);
     }
 
-    public function testGetConditionsByFolderDefault()
+    public function testGetConditionsByFolderDefault(): void
     {
         $folder = '';
         $userId = '00000000-0000-0000-0000-000000000001';
@@ -215,7 +241,7 @@ class MessagesTableTest extends TestCase
         $this->assertEquals($expected, $this->Messages->getConditionsByFolder($userId, $folder));
     }
 
-    public function testGetConditionsByFolderInbox()
+    public function testGetConditionsByFolderInbox(): void
     {
         $folder = 'inbox';
         $userId = '00000000-0000-0000-0000-000000000001';
@@ -228,7 +254,7 @@ class MessagesTableTest extends TestCase
         $this->assertEquals($expected, $this->Messages->getConditionsByFolder($userId, $folder));
     }
 
-    public function testGetConditionsByFolderArchived()
+    public function testGetConditionsByFolderArchived(): void
     {
         $folder = 'archived';
         $userId = '00000000-0000-0000-0000-000000000001';
@@ -241,7 +267,7 @@ class MessagesTableTest extends TestCase
         $this->assertEquals($expected, $this->Messages->getConditionsByFolder($userId, $folder));
     }
 
-    public function testGetConditionsByFolderSent()
+    public function testGetConditionsByFolderSent(): void
     {
         $folder = 'sent';
         $userId = '00000000-0000-0000-0000-000000000001';
@@ -253,7 +279,7 @@ class MessagesTableTest extends TestCase
         $this->assertEquals($expected, $this->Messages->getConditionsByFolder($userId, $folder));
     }
 
-    public function testGetConditionsByFolderTrash()
+    public function testGetConditionsByFolderTrash(): void
     {
         $folder = 'trash';
         $userId = '00000000-0000-0000-0000-000000000001';

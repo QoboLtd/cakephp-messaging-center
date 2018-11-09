@@ -92,9 +92,14 @@ class NotifyBehavior extends Behavior
     }
 
     /**
-     * {@inheritDoc}
+     * afterSave event
+     *
+     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @param \ArrayObject $options Options
+     * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
+    public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
         // nothing has been modified
         if (!$entity->isDirty()) {
@@ -108,7 +113,12 @@ class NotifyBehavior extends Behavior
             return;
         }
 
-        $notifyFields = $this->_getNotifyFields($event->getSubject());
+        /**
+         * @var \Cake\ORM\Table $subject
+         */
+        $subject = $event->getSubject();
+
+        $notifyFields = $this->_getNotifyFields($subject);
         // no notify fields have been found
         if (empty($notifyFields)) {
             return;
@@ -121,7 +131,7 @@ class NotifyBehavior extends Behavior
         }
 
         foreach ($notifyFields as $notifyField) {
-            $this->_notifyUser($notifyField, $entity, $event->getSubject(), $modifiedFields);
+            $this->_notifyUser($notifyField, $entity, $subject, $modifiedFields);
         }
     }
 
@@ -133,9 +143,9 @@ class NotifyBehavior extends Behavior
      * _ignoreFields array.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity object
-     * @return array
+     * @return mixed[]
      */
-    protected function _getModifiedFields(EntityInterface $entity)
+    protected function _getModifiedFields(EntityInterface $entity): array
     {
         if ($entity->isNew()) {
             $fields = $entity->extractOriginal($entity->visibleProperties());
@@ -168,9 +178,9 @@ class NotifyBehavior extends Behavior
      * Get notify fields based on current table's associations.
      *
      * @param \Cake\ORM\Table $table Table instance
-     * @return array
+     * @return mixed[]
      */
-    protected function _getNotifyFields(Table $table)
+    protected function _getNotifyFields(Table $table): array
     {
         $result = [];
         foreach ($table->associations() as $association) {
@@ -191,11 +201,11 @@ class NotifyBehavior extends Behavior
     /**
      * Filter out notify fields that have not been modified or their value is currently empty.
      *
-     * @param  array $notifyFields Notify fields
+     * @param  mixed[] $notifyFields Notify fields
      * @param \Cake\Datasource\EntityInterface $entity Entity object
-     * @return array
+     * @return mixed[]
      */
-    protected function _filterNotifyFields(array $notifyFields, EntityInterface $entity)
+    protected function _filterNotifyFields(array $notifyFields, EntityInterface $entity): array
     {
         $result = [];
         foreach ($notifyFields as $notifyField) {
@@ -215,9 +225,9 @@ class NotifyBehavior extends Behavior
      *
      * @param string $field Notify field
      * @param \Cake\Datasource\EntityInterface $entity Entity object
-     * @return array
+     * @return string
      */
-    protected function _getTemplate($field, EntityInterface $entity)
+    protected function _getTemplate(string $field, EntityInterface $entity): string
     {
         return $entity->isDirty($field) ? 'MessagingCenter.record_link' : 'MessagingCenter.record_modified';
     }
@@ -228,10 +238,10 @@ class NotifyBehavior extends Behavior
      * @param string $field Field name
      * @param \Cake\Datasource\EntityInterface $entity Entity object
      * @param \Cake\ORM\Table $table Table instance
-     * @param array $modifiedFields Entity's modified fields (includes old and new values)
+     * @param mixed[] $modifiedFields Entity's modified fields (includes old and new values)
      * @return void
      */
-    protected function _notifyUser($field, EntityInterface $entity, Table $table, array $modifiedFields)
+    protected function _notifyUser(string $field, EntityInterface $entity, Table $table, array $modifiedFields): void
     {
         $this->Notifier->from($this->_fromUser);
         $this->Notifier->to($entity->get($field));
@@ -260,15 +270,20 @@ class NotifyBehavior extends Behavior
      * @param string $field Field name
      * @param \Cake\Datasource\EntityInterface $entity Entity object
      * @param \Cake\ORM\Table $table Table instance
-     * @param array $modifiedFields Entity's modified fields (includes old and new values)
-     * @return array
+     * @param mixed[] $modifiedFields Entity's modified fields (includes old and new values)
+     * @return mixed[]
      */
-    protected function _getData($field, EntityInterface $entity, Table $table, array $modifiedFields)
+    protected function _getData(string $field, EntityInterface $entity, Table $table, array $modifiedFields): array
     {
+        /**
+         * @var string $primaryKey
+         */
+        $primaryKey = $table->getPrimaryKey();
+
         return [
             'modelName' => Inflector::singularize(Inflector::humanize(Inflector::underscore($table->getTable()))),
             'registryAlias' => $table->getRegistryAlias(),
-            'recordId' => $entity->get($table->getPrimaryKey()),
+            'recordId' => $entity->get($primaryKey),
             'recordName' => $entity->get($table->getDisplayField()),
             'field' => Inflector::humanize($field),
             'modifiedFields' => $modifiedFields
