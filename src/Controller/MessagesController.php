@@ -11,7 +11,7 @@
  */
 namespace MessagingCenter\Controller;
 
-use Cake\Network\Exception\ForbiddenException;
+use Cake\Http\Exception\ForbiddenException;
 use MessagingCenter\Controller\AppController;
 
 /**
@@ -83,16 +83,17 @@ class MessagesController extends AppController
     /**
      * Composer method
      *
-     * @return \Cake\Network\Response|void Redirects on successful compose, renders view otherwise.
+     * @return \Cake\Http\Response|void|null Redirects on successful compose, renders view otherwise.
      */
     public function compose()
     {
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
-            $this->request->data['from_user'] = $this->Auth->user('id');
-            $this->request->data['status'] = $this->Messages->getNewStatus();
-            $this->request->data['date_sent'] = $this->Messages->getDateSent();
-            $message = $this->Messages->patchEntity($message, $this->request->data);
+            $data = $this->request->getData();
+            $data['from_user'] = $this->Auth->user('id');
+            $data['status'] = $this->Messages->getNewStatus();
+            $data['date_sent'] = $this->Messages->getDateSent();
+            $message = $this->Messages->patchEntity($message, $data);
             if ($this->Messages->save($message)) {
                 $this->Flash->success(__('The message has been sent.'));
 
@@ -109,7 +110,7 @@ class MessagesController extends AppController
     /**
      * Reply method
      * @param string $id message id
-     * @return \Cake\Network\Response|void Redirects on successful reply, renders view otherwise.
+     * @return \Cake\Http\Response|void|null Redirects on successful reply, renders view otherwise.
      */
     public function reply($id)
     {
@@ -126,12 +127,13 @@ class MessagesController extends AppController
 
         if ($this->request->is('put')) {
             $newMessage = $this->Messages->newEntity();
-            $this->request->data['to_user'] = $message->from_user;
-            $this->request->data['from_user'] = $this->Auth->user('id');
-            $this->request->data['status'] = $this->Messages->getNewStatus();
-            $this->request->data['date_sent'] = $this->Messages->getDateSent();
-            $this->request->data['related_id'] = $id;
-            $newMessage = $this->Messages->patchEntity($newMessage, $this->request->data);
+            $data = $this->request->getData();
+            $data['to_user'] = $message->from_user;
+            $data['from_user'] = $this->Auth->user('id');
+            $data['status'] = $this->Messages->getNewStatus();
+            $data['date_sent'] = $this->Messages->getDateSent();
+            $data['related_id'] = $id;
+            $newMessage = $this->Messages->patchEntity($newMessage, $data);
             if ($this->Messages->save($newMessage)) {
                 $this->Flash->success(__('The message has been sent.'));
 
@@ -149,8 +151,7 @@ class MessagesController extends AppController
      * Delete method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Network\Response|null Redirects to folder.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null Redirects to folder.
      */
     public function delete($id = null)
     {
@@ -188,8 +189,7 @@ class MessagesController extends AppController
      * Archive method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Network\Response|null Redirects to folder.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null Redirects to folder.
      */
     public function archive($id = null)
     {
@@ -227,8 +227,7 @@ class MessagesController extends AppController
      * Restore method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Network\Response|null Redirects to folder.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return \Cake\Http\Response|void|null Redirects to folder.
      */
     public function restore($id = null)
     {

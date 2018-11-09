@@ -32,7 +32,7 @@ class InboxCell extends Cell
      */
     public function unreadCount($format = '')
     {
-        $userId = $this->request->session()->read('Auth.User.id');
+        $userId = $this->request->getSession()->read('Auth.User.id');
         if ('' === trim($format)) {
             $format = static::UNREAD_COUNT_FORMAT;
         }
@@ -59,7 +59,7 @@ class InboxCell extends Cell
      */
     public function unreadMessages($limit = 10, $contentLength = 100)
     {
-        $userId = $this->request->session()->read('Auth.User.id');
+        $userId = $this->request->getSession()->read('Auth.User.id');
         $this->loadModel('MessagingCenter.Messages');
         $messages = $this->Messages->find('all', [
             'conditions' => [

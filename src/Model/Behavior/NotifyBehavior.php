@@ -80,8 +80,8 @@ class NotifyBehavior extends Behavior
         parent::initialize($config);
 
         // merge with default ignored fields
-        if (!empty($this->config('ignoredFields'))) {
-            $this->_ignoredModifyFields = array_merge($this->_ignoredModifyFields, $this->config('ignoredFields'));
+        if (!empty($this->getConfig('ignoredFields'))) {
+            $this->_ignoredModifyFields = array_merge($this->_ignoredModifyFields, $this->getConfig('ignoredFields'));
         }
 
         $this->_fromUser = Configure::readOrFail('MessagingCenter.systemUser.id');
@@ -97,7 +97,7 @@ class NotifyBehavior extends Behavior
     public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
         // nothing has been modified
-        if (!$entity->dirty()) {
+        if (!$entity->isDirty()) {
             return;
         }
 
@@ -108,7 +108,7 @@ class NotifyBehavior extends Behavior
             return;
         }
 
-        $notifyFields = $this->_getNotifyFields($event->subject());
+        $notifyFields = $this->_getNotifyFields($event->getSubject());
         // no notify fields have been found
         if (empty($notifyFields)) {
             return;
@@ -121,7 +121,7 @@ class NotifyBehavior extends Behavior
         }
 
         foreach ($notifyFields as $notifyField) {
-            $this->_notifyUser($notifyField, $entity, $event->subject(), $modifiedFields);
+            $this->_notifyUser($notifyField, $entity, $event->getSubject(), $modifiedFields);
         }
     }
 
@@ -174,15 +174,15 @@ class NotifyBehavior extends Behavior
     {
         $result = [];
         foreach ($table->associations() as $association) {
-            if ($association->className() !== $this->_usersTable->alias()) {
+            if ($association->className() !== $this->_usersTable->getAlias()) {
                 continue;
             }
 
-            if (in_array($association->foreignKey(), $this->_ignoredModifyFields)) {
+            if (in_array($association->getForeignKey(), $this->_ignoredModifyFields)) {
                 continue;
             }
 
-            $result[] = $association->foreignKey();
+            $result[] = $association->getForeignKey();
         }
 
         return $result;
@@ -245,7 +245,7 @@ class NotifyBehavior extends Behavior
             'entity' => $entity,
             'data' => $data
         ]);
-        $this->eventManager()->dispatch($event);
+        $this->getEventManager()->dispatch($event);
         $data = !empty($event->result) ? $event->result : $data;
 
         $this->Notifier->subject($data['modelName'] . ': ' . $data['recordName']);
@@ -266,8 +266,8 @@ class NotifyBehavior extends Behavior
     protected function _getData($field, EntityInterface $entity, Table $table, array $modifiedFields)
     {
         return [
-            'modelName' => Inflector::singularize(Inflector::humanize(Inflector::underscore($table->table()))),
-            'registryAlias' => $table->registryAlias(),
+            'modelName' => Inflector::singularize(Inflector::humanize(Inflector::underscore($table->getTable()))),
+            'registryAlias' => $table->getRegistryAlias(),
             'recordId' => $entity->get($table->getPrimaryKey()),
             'recordName' => $entity->get($table->getDisplayField()),
             'field' => Inflector::humanize($field),

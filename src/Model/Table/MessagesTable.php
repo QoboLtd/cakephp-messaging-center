@@ -46,9 +46,9 @@ class MessagesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('qobo_messages');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('qobo_messages');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 

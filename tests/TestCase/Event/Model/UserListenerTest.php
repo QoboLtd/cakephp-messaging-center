@@ -25,7 +25,7 @@ class UserListenerTest extends TestCase
         $this->Users = TableRegistry::get('CakeDC/Users.Users');
 
         // enable event tracking
-        $this->Users->eventManager()->setEventList(new EventList());
+        $this->Users->getEventManager()->setEventList(new EventList());
 
         EventManager::instance()->on(new UserListener());
     }
@@ -54,7 +54,7 @@ class UserListenerTest extends TestCase
         // trigger event
         $result = $this->Users->save($entity);
 
-        $this->assertEventFired('Model.afterSave', $this->Users->eventManager());
+        $this->assertEventFired('Model.afterSave', $this->Users->getEventManager());
 
         $subject = 'Welcome to Project Name';
         $content = "\nDear foobar<br>\n<br>\n$subject\nBest regards,\nSYSTEM";

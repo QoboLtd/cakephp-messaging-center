@@ -80,10 +80,10 @@ class MessageNotifier extends Notifier
         $this->_status = $this->_table->getNewStatus();
 
         $this->viewBuilder()
-            ->className('Cake\View\View')
-            ->template('')
-            ->layout('default')
-            ->helpers(['Html']);
+            ->setClassName('Cake\View\View')
+            ->setTemplate('')
+            ->setLayout('default')
+            ->setHelpers(['Html']);
     }
 
     /**

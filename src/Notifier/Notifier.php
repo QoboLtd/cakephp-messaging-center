@@ -74,7 +74,7 @@ class Notifier implements NotifierInterface
             throw new InvalidArgumentException('Template cannot be empty.');
         }
 
-        $this->viewBuilder()->template($template);
+        $this->viewBuilder()->setTemplate($template);
     }
 
     /**
@@ -106,20 +106,20 @@ class Notifier implements NotifierInterface
      */
     public function message($message)
     {
-        if (!$this->viewBuilder()->template()) {
+        if (!$this->viewBuilder()->getTemplate()) {
             $this->template();
         }
 
         $View = $this->createView();
 
-        list($plugin) = pluginSplit($View->template());
+        list($plugin) = pluginSplit($View->getTemplate());
         if ($plugin) {
             $View->plugin = $plugin;
         }
 
         $View->hasRendered = false;
-        $View->templatePath('Notifier');
-        $View->layoutPath('Notifier');
+        $View->setTemplatePath('Notifier');
+        $View->setLayoutPath('Notifier');
 
         if (is_array($message)) {
             foreach ($message as $k => $v) {

@@ -62,8 +62,8 @@ class MessagesTableTest extends TestCase
     public function testInitialize()
     {
         $this->assertTrue($this->Messages->hasBehavior('Timestamp'), 'Missing behavior Timestamp.');
-        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Messages->association('FromUser'));
-        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Messages->association('ToUser'));
+        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Messages->getAssociation('FromUser'));
+        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Messages->getAssociation('ToUser'));
         $this->assertInstanceOf(MessagesTable::class, $this->Messages);
     }
 

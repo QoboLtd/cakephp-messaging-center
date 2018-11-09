@@ -44,17 +44,17 @@ $username = $this->element('MessagingCenter.user', [
                 <?= $this->Form->create($message); ?>
                 <div class="box-body">
                 <?php
-                echo $this->Form->input('to_user_label', [
+                echo $this->Form->control('to_user_label', [
                     'value' => $username,
                     'label' => false,
                     'readonly' => true
                 ]);
-                echo $this->Form->input('subject', [
+                echo $this->Form->control('subject', [
                     'value' => 'Re: ' . $message->subject,
                     'label' => false,
                     'placeholder' => 'Subject:'
                 ]);
-                echo $this->Form->input('content', [
+                echo $this->Form->control('content', [
                     'value' => false,
                     'label' => false,
                     'placeholder' => 'Message:'

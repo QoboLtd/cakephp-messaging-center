@@ -54,7 +54,7 @@ class UserListener implements EventListenerInterface
      */
     public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
-        if ($event->subject()->getTable() !== $this->getUsersTable()->getTable()) {
+        if ($event->getSubject()->getTable() !== $this->getUsersTable()->getTable()) {
             return;
         }
 
@@ -91,7 +91,7 @@ class UserListener implements EventListenerInterface
             'entity' => $entity,
             'data' => $data
         ]);
-        $this->eventManager()->dispatch($event);
+        $this->getEventManager()->dispatch($event);
         $data = !empty($event->result) ? $event->result : $data;
 
         $this->Notifier->subject($subject);

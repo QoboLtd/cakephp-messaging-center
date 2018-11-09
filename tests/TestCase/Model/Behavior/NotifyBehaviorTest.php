@@ -16,8 +16,8 @@ class NotifyBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        $this->Articles = TableRegistry::get('MessagingCenter.Articles', ['table' => 'articles']);
-        $this->Articles->displayField('title');
+        $this->Articles = TableRegistry::get('Articles', ['table' => 'articles']);
+        $this->Articles->setDisplayField('title');
         $this->Articles->belongsTo('Users', [
             'foreignKey' => 'author',
             'className' => 'Users'
@@ -39,7 +39,7 @@ class NotifyBehaviorTest extends TestCase
 
     public function testInitialize()
     {
-        $result = $this->Behavior->config('ignoredFields');
+        $result = $this->Behavior->getConfig('ignoredFields');
         $expected = ['id'];
         $this->assertEquals($expected, $result);
     }
@@ -66,7 +66,7 @@ class NotifyBehaviorTest extends TestCase
 
         $expected = [
             'subject' => 'Article: New Article',
-            'content' => 'Article record <a href="/messaging-center/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n"
+            'content' => 'Article record <a href="/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n"
         ];
 
         $table = TableRegistry::get('MessagingCenter.Messages');
@@ -91,7 +91,7 @@ class NotifyBehaviorTest extends TestCase
 
         $expected = [
             'subject' => 'Article: Modified Article',
-            'content' => 'Article <a href="/messaging-center/articles/view/' . $result->id . '">Modified Article</a> has been modified.' . "\n\n" . '* <strong>Title</strong>: changed from \'First Article\' to \'Modified Article\'.' . "\n" . '* <strong>Body</strong>: changed from \'First Article Body\' to \'Modified Article Body\'.' . "\n"
+            'content' => 'Article <a href="/articles/view/' . $result->id . '">Modified Article</a> has been modified.' . "\n\n" . '* <strong>Title</strong>: changed from \'First Article\' to \'Modified Article\'.' . "\n" . '* <strong>Body</strong>: changed from \'First Article Body\' to \'Modified Article Body\'.' . "\n"
         ];
 
         $table = TableRegistry::get('MessagingCenter.Messages');
