@@ -52,9 +52,13 @@ class UserListener implements EventListenerInterface
      * @param \ArrayObject $options options.
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options)
+    public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
-        if ($event->subject()->getTable() !== $this->getUsersTable()->getTable()) {
+        /**
+         * @var \Cake\ORM\Table $subject
+         */
+        $subject = $event->getSubject();
+        if ($subject->getTable() !== $this->getUsersTable()->getTable()) {
             return;
         }
 
@@ -77,8 +81,10 @@ class UserListener implements EventListenerInterface
             $subject .= ' to ' . $projectName;
         }
 
+        // TODO: find a better way
+        $username = empty($entity->username) ? '' : $entity->username;
         $data = [
-            'username' => $entity->username,
+            'username' => $username,
             'projectName' => $projectName,
             'subject' => $subject,
             'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
@@ -91,7 +97,7 @@ class UserListener implements EventListenerInterface
             'entity' => $entity,
             'data' => $data
         ]);
-        $this->eventManager()->dispatch($event);
+        $this->getEventManager()->dispatch($event);
         $data = !empty($event->result) ? $event->result : $data;
 
         $this->Notifier->subject($subject);

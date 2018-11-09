@@ -42,7 +42,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                 </div>
                 <div class="box-body no-padding">
                     <div class="mailbox-controls">
-                        <a href="<?= $this->request->here; ?>" type="button" class="btn btn-default btn-sm">
+                        <a href="<?= $this->request->getAttribute('here'); ?>" type="button" class="btn btn-default btn-sm">
                             <i class="fa fa-refresh"></i>
                         </a>
                         <div class="pull-right">
@@ -117,7 +117,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                 </div>
                 <div class="box-footer no-padding">
                     <div class="mailbox-controls">
-                        <a href="<?= $this->request->here; ?>" type="button" class="btn btn-default btn-sm">
+                        <a href="<?= $this->request->getAttribute('here'); ?>" type="button" class="btn btn-default btn-sm">
                             <i class="fa fa-refresh"></i>
                         </a>
                         <div class="pull-right">

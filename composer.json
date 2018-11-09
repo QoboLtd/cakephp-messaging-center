@@ -1,35 +1,58 @@
 {
     "name": "qobo/cakephp-messaging-center",
     "description": "Messaging Center plugin for CakePHP",
+    "keywords": ["cakephp", "messages"],
     "type": "cakephp-plugin",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Qobo Ltd",
-			"email": "info@qobo.biz",
-			"homepage": "https://www.qobo.biz",
-			"role": "Developer"
-		}
-	],
+    "license": "MIT",
+    "homepage": "https://www.qobo.biz",
+    "authors": [
+        {
+            "name": "Qobo Ltd",
+            "email": "support@qobo.biz",
+            "homepage": "https://www.qobo.biz",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/QoboLtd/cakephp-messaging-center/issues",
+        "source": "https://github.com/QoboLtd/cakephp-messaging-center"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
     "require": {
-        "qobo/cakephp-utils": "^9.0"
+        "qobo/cakephp-utils": "^10.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0",
-        "cakephp/cakephp-codesniffer": "^3.0"
+        "qobo/cakephp-composer-dev": "^v1.0"
     },
     "autoload": {
         "psr-4": {
-            "MessagingCenter\\": "src",
-            "MessagingCenter\\Test\\Fixture\\": "tests\\Fixture",
-            "CakeDC\\Users\\Test\\Fixture\\": "tests"
+            "MessagingCenter\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MessagingCenter\\Test\\": "tests",
-            "CakeDC\\Users\\Test\\": "./vendor/cakedc/users/tests",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+            "MessagingCenter\\Test\\": "tests/",
+            "CakeDC\\Users\\Test\\": "vendor/cakedc/users/tests/",
+            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
         }
-    }
+    },
+    "scripts": {
+        "test": [
+            "phpcs",
+            "phpunit --no-coverage"
+        ],
+        "test-coverage": [
+            "phpcs",
+            "phpunit"
+        ],
+        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
+    },
+    "scripts-descriptions": {
+        "test": "Runs phpcs and phpunit without coverage",
+        "test-coverage": "Runs phpcs and phpunit with coverage enabled"
+    },
+    "prefer-stable": true
 }

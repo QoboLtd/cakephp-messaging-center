@@ -56,7 +56,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                 <?= $this->Form->create($message); ?>
                 <div class="box-body">
                 <?php
-                echo $this->Form->input('to_user', [
+                echo $this->Form->control('to_user', [
                     'label' => false,
                     'name' => 'to_user_label',
                     'id' => 'to_user_label',
@@ -67,9 +67,9 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                     'placeholder' => 'To:',
                     'data-url' => '/api/users/lookup.json'
                 ]);
-                echo $this->Form->input('to_user', ['type' => 'hidden']);
-                echo $this->Form->input('subject', ['label' => false, 'placeholder' => 'Subject:']);
-                echo $this->Form->input('content', ['label' => false, 'placeholder' => 'Message:']);
+                echo $this->Form->control('to_user', ['type' => 'hidden']);
+                echo $this->Form->control('subject', ['label' => false, 'placeholder' => 'Subject:']);
+                echo $this->Form->control('content', ['label' => false, 'placeholder' => 'Message:']);
                 ?>
                 </div>
                 <div class="box-footer">

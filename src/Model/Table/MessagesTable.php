@@ -46,9 +46,9 @@ class MessagesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('qobo_messages');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('qobo_messages');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 
@@ -114,54 +114,60 @@ class MessagesTable extends Table
 
     /**
      * Returns string to be used as status field value when a new message is created.
+     *
      * @return string
      */
-    public function getNewStatus()
+    public function getNewStatus(): string
     {
         return static::STATUS_NEW;
     }
 
     /**
      * Returns string to be used as status field value when a message is read.
+     *
      * @return string
      */
-    public function getReadStatus()
+    public function getReadStatus(): string
     {
         return static::STATUS_READ;
     }
 
     /**
      * Returns string to be used as status field value when a message is deleted.
+     *
      * @return string
      */
-    public function getDeletedStatus()
+    public function getDeletedStatus(): string
     {
         return static::STATUS_DELETED;
     }
 
     /**
      * Returns string to be used as status field value when a message is archived.
+     *
      * @return string
      */
-    public function getArchivedStatus()
+    public function getArchivedStatus(): string
     {
         return static::STATUS_ARCHIVED;
     }
 
     /**
      * Returns sent folder name.
+     *
      * @return string
      */
-    public function getSentFolder()
+    public function getSentFolder(): string
     {
         return static::FOLDER_SENT;
     }
 
     /**
      * Returns Time object to be used as date_sent field value.
+     *
      * @return \Cake\I18n\Time
      */
-    public function getDateSent()
+    public function getDateSent(): \Cake\I18n\Time
     {
         $result = new Time();
 
@@ -170,18 +176,20 @@ class MessagesTable extends Table
 
     /**
      * Method that returns default folder's name.
+     *
      * @return string
      */
-    public function getDefaultFolder()
+    public function getDefaultFolder(): string
     {
         return static::FOLDER_INBOX;
     }
 
     /**
      * Method that returns all folder names.
-     * @return array
+     *
+     * @return string[]
      */
-    public function getFolders()
+    public function getFolders(): array
     {
         $result = [
             static::FOLDER_INBOX,
@@ -198,7 +206,7 @@ class MessagesTable extends Table
      * @param  string $folder folder name
      * @return bool
      */
-    public function folderExists($folder = '')
+    public function folderExists(string $folder = ''): bool
     {
         if (!in_array($folder, $this->getFolders())) {
             return false;
@@ -215,7 +223,7 @@ class MessagesTable extends Table
      * @param  string $referer http referer
      * @return string         folder name
      */
-    public function getFolderByMessage(Message $message, $userId, $referer = '')
+    public function getFolderByMessage(Message $message, string $userId, string $referer = ''): string
     {
         $result = substr($referer, strrpos($referer, '/') + 1);
 
@@ -248,9 +256,9 @@ class MessagesTable extends Table
      * Get query conditions based on folder type.
      * @param  string $userId current user id
      * @param  string $folder folder
-     * @return array          query conditions
+     * @return mixed[]          query conditions
      */
-    public function getConditionsByFolder($userId, $folder = '')
+    public function getConditionsByFolder(string $userId, string $folder = ''): array
     {
         switch ($folder) {
             case 'archived':

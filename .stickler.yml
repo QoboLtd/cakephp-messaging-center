@@ -1,6 +1,7 @@
 linters:
   phpcs:
     standard: CakePHP
-    extensions: '.php,.ctp'
+    extensions: 'php,ctp'
+    exclude: 'Generic.Commenting.Todo'
 files:
-  ignore: ['config/*', 'tests/*']
+    ignore: ['webroot/plugins/*']

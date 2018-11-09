@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-	colors="true"
-	processIsolation="false"
-	stopOnFailure="false"
-	syntaxCheck="false"
-	bootstrap="./tests/bootstrap.php"
+    colors="true"
+    processIsolation="false"
+    stopOnFailure="false"
+    bootstrap="./tests/bootstrap.php"
     verbose="true"
-	>
-	<php>
-		<ini name="memory_limit" value="-1"/>
-		<ini name="apc.enable_cli" value="1"/>
-	</php>
-
-	<filter>
-		<whitelist>
-            <directory suffix=".php">./src/</directory>
-            <directory suffix=".php">./webroot/</directory>
-		</whitelist>
-	</filter>
+    >
+    <php>
+        <ini name="memory_limit" value="-1"/>
+        <ini name="apc.enable_cli" value="1"/>
+    </php>
 
     <logging>
-		<log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
-		<log type="coverage-html" target="build/coverage"/>
-		<log type="coverage-clover" target="build/logs/clover.xml"/>
-		<log type="coverage-crap4j" target="build/logs/crap4j.xml"/>
-		<log type="junit" target="build/logs/junit.xml"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
+        <log type="coverage-html" target="build/test-coverage"/>
+        <log type="coverage-clover" target="build/test-results/clover.xml"/>
+        <log type="coverage-crap4j" target="build/test-results/crap4j.xml"/>
+        <log type="junit" target="build/test-results/junit.xml"/>
     </logging>
+
+    <!-- Add any additional test suites you want to run here -->
+    <testsuites>
+        <testsuite name="messages">
+            <directory>tests/TestCase</directory>
+        </testsuite>
+    </testsuites>
 
     <!-- Setup a listener for fixtures -->
     <listeners>
@@ -38,11 +37,11 @@
         </listener>
     </listeners>
 
-    <!-- Add any additional test suites you want to run here -->
-    <testsuites>
-        <testsuite name="MessagingCenter Test Suite">
-            <directory>./tests/TestCase</directory>
-        </testsuite>
-    </testsuites>
-
+    <!-- Ignore vendor tests in code coverage reports -->
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src/</directory>
+            <directory suffix=".php">./webroot/</directory>
+        </whitelist>
+    </filter>
 </phpunit>

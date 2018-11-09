@@ -14,33 +14,26 @@ namespace MessagingCenter\Notifier;
 interface NotifierInterface
 {
     /**
-     * Constructor method.
-     */
-    public function __construct();
-
-    /**
      * Sends notification.
      *
      * @return void
      */
-    public function send();
+    public function send(): void;
 
     /**
      * Validate notification data.
      *
-     * @throws InvalidArgumentException
      * @return void
      */
-    public function validate();
+    public function validate(): void;
 
     /**
      * Message template setter.
      *
      * @param  string $template Template name
-     * @throws InvalidArgumentException
      * @return void
      */
-    public function template($template);
+    public function template(string $template): void;
 
     /**
      * Notification from user setter.
@@ -48,7 +41,7 @@ interface NotifierInterface
      * @param  string $from From user
      * @return void
      */
-    public function from($from);
+    public function from(string $from): void;
 
     /**
      * Notification to user setter.
@@ -56,7 +49,7 @@ interface NotifierInterface
      * @param  string $to To user
      * @return void
      */
-    public function to($to);
+    public function to(string $to): void;
 
     /**
      * Notification subject setter.
@@ -64,13 +57,13 @@ interface NotifierInterface
      * @param  string $subject Subject
      * @return void
      */
-    public function subject($subject);
+    public function subject(string $subject): void;
 
     /**
      * Notification message setter.
      *
-     * @param  string $message Message
+     * @param  string|array $message Message
      * @return void
      */
-    public function message($message);
+    public function message($message): void;
 }

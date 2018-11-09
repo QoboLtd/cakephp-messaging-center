@@ -30,7 +30,7 @@ $actions = [
 ];
 
 if (!isset($folder)) {
-    $folder = isset($this->request->params['pass'][0]) ? $this->request->params['pass'][0] : 'inbox';
+    $folder = $this->request->getParam('pass.0') ? $this->request->getParam('pass.0') : 'inbox';
 }
 ?>
 <div class="box box-primary">

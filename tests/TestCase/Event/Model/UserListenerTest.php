@@ -16,16 +16,25 @@ class UserListenerTest extends TestCase
         'plugin.MessagingCenter.messages',
     ];
 
+    /**
+     * @var \CakeDC\Users\Model\Table\UsersTable $Users
+     */
+    protected $Users;
+
     public function setUp()
     {
         parent::setUp();
 
         Configure::write('Users.table', 'CakeDC/Users.Users');
 
-        $this->Users = TableRegistry::get('CakeDC/Users.Users');
+        /**
+         * @var \CakeDC\Users\Model\Table\UsersTable $table
+         */
+        $table = TableRegistry::get('CakeDC/Users.Users');
+        $this->Users = $table;
 
         // enable event tracking
-        $this->Users->eventManager()->setEventList(new EventList());
+        $this->Users->getEventManager()->setEventList(new EventList());
 
         EventManager::instance()->on(new UserListener());
     }
@@ -37,7 +46,7 @@ class UserListenerTest extends TestCase
         parent::tearDown();
     }
 
-    public function testAfterSave()
+    public function testAfterSave(): void
     {
         $table = TableRegistry::get('MessagingCenter.Messages');
 
@@ -54,18 +63,21 @@ class UserListenerTest extends TestCase
         // trigger event
         $result = $this->Users->save($entity);
 
-        $this->assertEventFired('Model.afterSave', $this->Users->eventManager());
+        $this->assertEventFired('Model.afterSave', $this->Users->getEventManager());
 
         $subject = 'Welcome to Project Name';
         $content = "\nDear foobar<br>\n<br>\n$subject\nBest regards,\nSYSTEM";
 
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $entity
+         */
         $entity = $table->find()->limit(1)->where(['subject' => $subject])->first();
         $this->assertEquals($content, $entity->get('content'));
 
         $this->assertEquals($expected, $table->find()->count());
     }
 
-    public function testAfterSaveNoWelcomeMessage()
+    public function testAfterSaveNoWelcomeMessage(): void
     {
         Configure::write('MessagingCenter.welcomeMessage.enabled', false);
 

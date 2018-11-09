@@ -13,19 +13,16 @@ namespace MessagingCenter\Notifier;
 
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
-use Cake\View\ViewVarsTrait;
 use InvalidArgumentException;
 
 class MessageNotifier extends Notifier
 {
-    use ViewVarsTrait;
-
     /**
      * Messages Table instance.
      *
-     * @var \Cake\ORM\Table
+     * @var \MessagingCenter\Model\Table\MessagesTable $_table
      */
-    protected $_table = null;
+    protected $_table;
 
     /**
      * Notification status.
@@ -68,42 +65,53 @@ class MessageNotifier extends Notifier
     ];
 
     /**
-     * {@inheritDoc}
+     * Constructor
      */
     public function __construct()
     {
-        // set table instance
-        $this->_table = TableRegistry::get('MessagingCenter.Messages');
+        /**
+         * @var \MessagingCenter\Model\Table\MessagesTable $table
+         */
+        $table = TableRegistry::get('MessagingCenter.Messages');
+        $this->_table = $table;
 
         // set properties
         $this->_dateSent = new Time();
         $this->_status = $this->_table->getNewStatus();
 
         $this->viewBuilder()
-            ->className('Cake\View\View')
-            ->template('')
-            ->layout('default')
-            ->helpers(['Html']);
+            ->setClassName('Cake\View\View')
+            ->setTemplate('')
+            ->setLayout('default')
+            ->setHelpers(['Html']);
     }
 
     /**
-     * {@inheritDoc}
+     * Message template setter.
+     *
+     * @param  string $template Template name
+     * @return void
      */
-    public function template($template = 'MessagingCenter.record_link')
+    public function template(string $template): void
     {
+        if (empty($template)) {
+            $template = 'MessagingCenter.record_link';
+        }
         parent::template($template);
     }
 
     /**
-     * {@inheritDoc}
+     * Sends notification.
+     *
+     * @return void
      */
-    public function send()
+    public function send(): void
     {
         // validate message data
         $this->validate();
 
         $entity = $this->_table->newEntity();
-        $data = $this->_getMessageData();
+        $data = $this->getMessageData();
         $entity = $this->_table->patchEntity($entity, $data);
 
         $this->_table->save($entity);
@@ -112,9 +120,9 @@ class MessageNotifier extends Notifier
     /**
      * Extracts and returns notification message data from class properties.
      *
-     * @return array
+     * @return mixed[]
      */
-    protected function _getMessageData()
+    protected function getMessageData(): array
     {
         $data = [];
         foreach ($this->_propertyMap as $k => $v) {
