@@ -3,6 +3,8 @@ use Migrations\AbstractMigration;
 
 class CreateMessagesUsersStatuses extends AbstractMigration
 {
+    public $autoId = false;
+
     /**
      * Change Method.
      *
@@ -25,7 +27,7 @@ class CreateMessagesUsersStatuses extends AbstractMigration
             'default' => null,
             'null' => false,
         ]);
-        $tabe->addColumn('status', 'string', [
+        $table->addColumn('status', 'string', [
             'default' => null,
             'null' => false,
             'limit' => 255,

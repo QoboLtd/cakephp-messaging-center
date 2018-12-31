@@ -3,6 +3,8 @@ use Migrations\AbstractMigration;
 
 class CreateFolders extends AbstractMigration
 {
+    public $autoId = false;
+
     /**
      * Change Method.
      *

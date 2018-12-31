@@ -3,6 +3,8 @@ use Migrations\AbstractMigration;
 
 class CreateMailboxes extends AbstractMigration
 {
+    public $autoId = false;
+
     /**
      * Change Method.
      *
