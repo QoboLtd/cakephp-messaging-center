@@ -37,9 +37,9 @@ class CreateMailboxes extends AbstractMigration
             'limit' => 255,
             'null' => false,
         ]);
-        $table->addColumn('incoming_settings', 'string', [
+        $table->addColumn('incoming_settings', 'text', [
             'default' => null,
-            'limit' => 255,
+            'limit' => MysqlAdapter::TEXT_LONG,
             'null' => false,
         ]);
         $table->addColumn('outgoing_transport', 'string', [
@@ -47,9 +47,9 @@ class CreateMailboxes extends AbstractMigration
             'limit' => 255,
             'null' => false,
         ]);
-        $table->addColumn('outgoing_settings', 'string', [
+        $table->addColumn('outgoing_settings', 'text', [
             'default' => null,
-            'limit' => 255,
+            'limit' => MysqlAdapter::TEXT_LONG,
             'null' => false,
         ]);
         $table->addColumn('active', 'boolean', [
