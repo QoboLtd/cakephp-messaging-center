@@ -4,10 +4,10 @@ namespace MessagingCenter\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * QoboMailboxesFixture
+ * MailboxesFixture
  *
  */
-class QoboMailboxesFixture extends TestFixture
+class MailboxesFixture extends TestFixture
 {
 
     /**
