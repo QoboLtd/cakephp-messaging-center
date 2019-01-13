@@ -2,6 +2,7 @@
 namespace MessagingCenter\Model\Table;
 
 use App\Model\Table\FoldersTable;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -126,11 +127,49 @@ class MailboxesTable extends Table
      *
      * @return mixed[]
      */
-    public function getDefaultFolders() : array
+    public static function getDefaultFolders() : array
     {
         return [
             self::FOLDER_INBOX,
             self::FOLDER_SENT,
         ];
+    }
+
+    /**
+     * createDefaultMailbox method
+     *
+     * @param mixed[] $user to create a mailbox for
+     * @param mixed[] $options to create mailbox
+     * @return \Cake\Datasource\EntityInterface
+     */
+    public function createDefaultMailbox(array $user) : EntityInterface
+    {
+        $options = (array)Configure::read('MessagingCenter.Mailboxes.default');
+
+        $mailboxName = $user['username'] . $options['mailbox_postfix'];
+
+        $query = $this->find()
+            ->where([
+                'name' => $mailboxName,
+                'user_id' => $user['id']
+            ]);
+
+        $result = $query->first();
+        if (!empty($result)) {
+            return $result;
+        }
+
+        $mailbox = $this->newEntity();
+        $this->patchEntity($mailbox, [
+            'name' => $mailboxName,
+            'user_id' => $user['id'],
+            'type' => $options['mailbox_type'],
+            'incoming_transport' => $options['incoming_transport'],
+            'outgoing_transport' => $options['outgoing_transport'],
+            'active' => true
+        ]);
+        $result = $this->save($mailbox);
+
+        return $result;
     }
 }

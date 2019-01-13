@@ -11,10 +11,12 @@
  */
 namespace MessagingCenter\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use MessagingCenter\Model\Entity\Message;
 
@@ -289,5 +291,89 @@ class MessagesTable extends Table
         }
 
         return $result;
+    }
+
+    /**
+     * processMessages method
+     *
+     * @param string $userId who own the messages
+     * @param mixed[] $folders to move message
+     * @return void
+     */
+    public function processMessages(string $userId, array $folders) : void
+    {
+        $query = $this->find()
+            ->where([
+                'OR' => [
+                    'from_user' => $userId,
+                    'to_user' => $userId,
+                ]
+            ]);
+        $query->execute();
+
+        foreach ($query->all() as $message) {
+            if (!empty($message->get('folder_id'))) {
+                continue;
+            }
+
+            $folder = $folders[MailboxesTable::FOLDER_INBOX];
+            if ($message->get('from_user') == $userId) {
+                $folder = $folders[MailboxesTable::FOLDER_SENT];
+                if ($message->get('to_user') != (string)Configure::read('MessagingCenter.systemUser.id')) {
+                    $this->copyMessage($message->toArray(), $message->get('from_user'));
+                }
+            }
+
+            $this->patchEntity($message, [
+                'folder_id' => $folder->get('id')
+            ]);
+
+            $this->save($message);
+        }
+    }
+
+    /**
+     * copyMessage method
+     *
+     * @param mixed[] $data to copy
+     * @param string $userId to copy message
+     * @return bool
+     */
+    protected function copyMessage(array $data, string $userId) : bool
+    {
+        unset($data['id']);
+
+        $userTable = TableRegistry::getTableLocator()->get('Users');
+        $user = $userTable->get($userId);
+
+        if (empty($user)) {
+            return false;
+        }
+
+        /**
+         * @var \App\Model\Table\MailboxesTable $mailboxesTable
+         */
+        $mailboxesTable = TableRegistry::getTableLocator()->get('QoboMailboxes');
+        $mailbox = $mailboxesTable->createDefaultMailbox($user);
+        if (empty($mailbox)) {
+            return false;
+        }
+
+        /**
+         * @var \App\Model\Table\FoldersTable $foldersTable
+         */
+        $foldersTable = TableRegistry::getTableLocator()->get('QoboFolders');
+        $folders = $foldersTable->createDefaultFolders($mailbox);
+        if (empty($folders)) {
+            return false;
+        }
+
+        $data['folder_id'] = $folders[MailboxesTable::FOLDER_SENT];
+
+        $entity = $this->newEntity();
+        $this->patchEntity($entity, $data);
+        $result = $this->save($entity);
+
+        return !empty($result) ? true : false;
     }
 }

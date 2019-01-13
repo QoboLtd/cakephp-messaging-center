@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -26,7 +27,6 @@ use Cake\Validation\Validator;
  */
 class FoldersTable extends Table
 {
-
     /**
      * Initialize method
      *
@@ -98,5 +98,39 @@ class FoldersTable extends Table
         $rules->add($rules->existsIn(['parent_id'], 'ParentFolders'));
 
         return $rules;
+    }
+
+    /**
+     * createDefaultFolders method
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox entity.
+     * @return mixed[]
+     */
+    public function createDefaultFolders(EntityInterface $mailbox) : array
+    {
+        $list = [];
+        foreach (MailboxesTable::getDefaultFolders() as $folderName) {
+            $query = $this->find()
+                ->where([
+                    'name' => $folderName,
+                    'mailbox_id' => $mailbox->get('id')
+                ]);
+
+            $result = $query->first();
+
+            if (empty($result)) {
+                $folder = $this->newEntity();
+                $this->patchEntity($folder, [
+                    'mailbox_id' => $mailbox->get('id'),
+                    'name' => $folderName,
+                ]);
+
+                $result = $this->save($folder);
+            }
+
+            $list[$folderName] = $result;
+        }
+
+        return $list;
     }
 }
