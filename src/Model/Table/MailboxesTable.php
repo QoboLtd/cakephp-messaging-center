@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Model\Table;
 
+use App\Model\Table\FoldersTable;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -24,6 +25,8 @@ use Cake\Validation\Validator;
  */
 class MailboxesTable extends Table
 {
+    const FOLDER_INBOX = 'Inbox';
+    const FOLDER_SENT = 'Sent';
 
     /**
      * Initialize method
@@ -116,5 +119,18 @@ class MailboxesTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    /**
+     * getDefaultFolders method
+     *
+     * @return mixed[]
+     */
+    public function getDefaultFolders() : array
+    {
+        return [
+            self::FOLDER_INBOX,
+            self::FOLDER_SENT,
+        ];
     }
 }
