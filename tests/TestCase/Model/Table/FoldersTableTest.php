@@ -10,6 +10,8 @@ use MessagingCenter\Model\Table\FoldersTable;
  */
 class FoldersTableTest extends TestCase
 {
+    const FOLDER_INBOX = 'Inbox';
+    const FOLDER_SENT = 'Sent';
 
     /**
      * Test subject
