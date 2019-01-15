@@ -353,8 +353,8 @@ class MessagesTable extends Table
         /**
          * @var \App\Model\Table\MailboxesTable $mailboxesTable
          */
-        $mailboxesTable = TableRegistry::getTableLocator()->get('QoboMailboxes');
-        $mailbox = $mailboxesTable->createDefaultMailbox($user);
+        $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        $mailbox = $mailboxesTable->createDefaultMailbox($user->toArray());
         if (empty($mailbox)) {
             return false;
         }
@@ -362,7 +362,7 @@ class MessagesTable extends Table
         /**
          * @var \App\Model\Table\FoldersTable $foldersTable
          */
-        $foldersTable = TableRegistry::getTableLocator()->get('QoboFolders');
+        $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
         $folders = $foldersTable->createDefaultFolders($mailbox);
         if (empty($folders)) {
             return false;

@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -113,7 +114,7 @@ class FoldersTable extends Table
             $query = $this->find()
                 ->where([
                     'name' => $folderName,
-                    'mailbox_id' => $mailbox->get('id')
+                    'mailbox_id' => $mailbox->get('id'),
                 ]);
 
             $result = $query->first();
@@ -123,12 +124,17 @@ class FoldersTable extends Table
                 $this->patchEntity($folder, [
                     'mailbox_id' => $mailbox->get('id'),
                     'name' => $folderName,
+                    'type' => (string)Configure::read('MessagingCenter.Folder.defaultType'),
                 ]);
 
                 $result = $this->save($folder);
             }
 
             $list[$folderName] = $result;
+        }
+
+        if (empty($list)) {
+            throw new InvalidArgumentException('Cannot create default folders for mailbox ' . $mailbox->get('name') . '!');
         }
 
         return $list;

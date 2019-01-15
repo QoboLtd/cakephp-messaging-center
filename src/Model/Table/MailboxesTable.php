@@ -2,11 +2,13 @@
 namespace MessagingCenter\Model\Table;
 
 use App\Model\Table\FoldersTable;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use InvalidArgumentException;
 
 /**
  * Mailboxes Model
@@ -140,11 +142,11 @@ class MailboxesTable extends Table
      *
      * @param mixed[] $user to create a mailbox for
      * @param mixed[] $options to create mailbox
-     * @return \Cake\Datasource\EntityInterface
+     * @return \Cake\Datasource\EntityInterface|null
      */
-    public function createDefaultMailbox(array $user) : EntityInterface
+    public function createDefaultMailbox(array $user)
     {
-        $options = (array)Configure::read('MessagingCenter.Mailboxes.default');
+        $options = (array)Configure::read('MessagingCenter.Mailbox.default');
 
         $mailboxName = $user['username'] . $options['mailbox_postfix'];
 
@@ -165,10 +167,17 @@ class MailboxesTable extends Table
             'user_id' => $user['id'],
             'type' => $options['mailbox_type'],
             'incoming_transport' => $options['incoming_transport'],
+            'incoming_settings' => $options['incoming_settings'],
             'outgoing_transport' => $options['outgoing_transport'],
+            'outgoing_settings' => $options['outgoing_settings'],
             'active' => true
         ]);
         $result = $this->save($mailbox);
+
+        if (empty($result)) {
+            throw new InvalidArgumentException('Cannot create mailbox for user [' . $user['username'] .
+                        ']: please check input parameters [' . json_encode($mailbox->getErrors()) . ']');
+        }
 
         return $result;
     }
