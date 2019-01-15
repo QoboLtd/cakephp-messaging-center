@@ -23,8 +23,9 @@ use MessagingCenter\Event\EventName;
 
 class MailboxListener implements EventListenerInterface
 {
-    const FOLDERS_TABLE_NAME = 'QoboFolders';
-    const MESSAGES_TABLE_NAME = 'QoboMessages';
+    const MAILBOX_TABLE_NAME = 'Mailboxes';
+    const FOLDERS_TABLE_NAME = 'Folders';
+    const MESSAGES_TABLE_NAME = 'Messages';
 
     /**
      * implementedEvents method
@@ -73,7 +74,7 @@ class MailboxListener implements EventListenerInterface
      */
     protected function processMessages(string $userId, array $folders) : void
     {
-        $messagesTable = TableRegistry::getTableLocator()->get(MESSAGES_TABLE_NAME);
+        $messagesTable = TableRegistry::getTableLocator()->get(self::MESSAGES_TABLE_NAME);
         $result = $messagesTable->processMessages($userId, $folders);
     }
 }

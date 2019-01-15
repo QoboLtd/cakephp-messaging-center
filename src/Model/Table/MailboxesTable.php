@@ -141,7 +141,6 @@ class MailboxesTable extends Table
      * createDefaultMailbox method
      *
      * @param mixed[] $user to create a mailbox for
-     * @param mixed[] $options to create mailbox
      * @return \Cake\Datasource\EntityInterface|null
      */
     public function createDefaultMailbox(array $user)
