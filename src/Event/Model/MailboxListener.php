@@ -57,6 +57,7 @@ class MailboxListener implements EventListenerInterface
             return;
         }
 
+        /** @var \MessagingCenter\Model\Table\FoldersTable $foldersTable */
         $foldersTable = TableRegistry::getTableLocator()->get('FOLDERS_TABLE_NAME');
         $list = $foldersTable->createDefaultFolders($entity);
 
@@ -70,11 +71,13 @@ class MailboxListener implements EventListenerInterface
      *
      * @param string $userId who own the messages
      * @param mixed[] $folders to move message
-     * @return void
+     * @return bool
      */
-    protected function processMessages(string $userId, array $folders) : void
+    protected function processMessages(string $userId, array $folders) : bool
     {
+        /** @var \MessagingCenter\Model\Table\MessagesTable $messagesTable */
         $messagesTable = TableRegistry::getTableLocator()->get(self::MESSAGES_TABLE_NAME);
-        $result = $messagesTable->processMessages($userId, $folders);
+
+        return $messagesTable->processMessages($userId, $folders);
     }
 }
