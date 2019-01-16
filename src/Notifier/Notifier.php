@@ -128,7 +128,7 @@ class Notifier implements NotifierInterface
 
         list($plugin) = pluginSplit($View->getTemplate());
         if ($plugin) {
-            $View->plugin = $plugin;
+            $View->setPlugin($plugin);
         }
 
         $View->hasRendered = false;
