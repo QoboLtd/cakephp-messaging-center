@@ -9,6 +9,7 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class MailboxesFixture extends TestFixture
 {
+    public $table = 'qobo_mailboxes';
 
     /**
      * Fields

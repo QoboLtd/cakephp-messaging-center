@@ -10,9 +10,6 @@ use MessagingCenter\Model\Table\FoldersTable;
  */
 class FoldersTableTest extends TestCase
 {
-    const FOLDER_INBOX = 'Inbox';
-    const FOLDER_SENT = 'Sent';
-
     /**
      * Test subject
      *
@@ -26,7 +23,7 @@ class FoldersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.messaging_center.qobo_folders',
+        'plugin.messaging_center.folders',
         'plugin.messaging_center.mailboxes'
     ];
 

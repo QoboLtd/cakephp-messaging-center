@@ -9,6 +9,7 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class FoldersFixture extends TestFixture
 {
+    public $table = 'qobo_folders';
 
     /**
      * Fields

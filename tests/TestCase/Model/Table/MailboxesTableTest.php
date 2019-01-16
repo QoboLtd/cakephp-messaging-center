@@ -10,7 +10,6 @@ use MessagingCenter\Model\Table\MailboxesTable;
  */
 class MailboxesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *
@@ -25,7 +24,6 @@ class MailboxesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.messaging_center.mailboxes',
-        'plugin.messaging_center.users'
     ];
 
     /**
