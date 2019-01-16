@@ -35,7 +35,12 @@ class MailboxesTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::getTableLocator()->exists('Mailboxes') ? [] : ['className' => MailboxesTable::class];
-        $this->Mailboxes = TableRegistry::getTableLocator()->get('Mailboxes', $config);
+
+        /**
+         * @var \MessagingCenter\Model\Table\MailboxesTable $table
+         */
+        $table = TableRegistry::getTableLocator()->get('Mailboxes', $config);
+        $this->Mailboxes = $table;
     }
 
     /**
@@ -55,7 +60,7 @@ class MailboxesTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize()
+    public function testInitialize() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -65,7 +70,7 @@ class MailboxesTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testValidationDefault() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -75,7 +80,7 @@ class MailboxesTableTest extends TestCase
      *
      * @return void
      */
-    public function testBuildRules()
+    public function testBuildRules() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

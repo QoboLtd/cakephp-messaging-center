@@ -36,7 +36,12 @@ class FoldersTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::getTableLocator()->exists('Folders') ? [] : ['className' => FoldersTable::class];
-        $this->Folders = TableRegistry::getTableLocator()->get('Folders', $config);
+
+        /**
+         * @var \MessagingCenter\Model\Table\FoldersTable $table
+         */
+        $table = TableRegistry::getTableLocator()->get('Folders', $config);
+        $this->Folders = $table;
     }
 
     /**
@@ -56,7 +61,7 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize()
+    public function testInitialize() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -66,7 +71,7 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault()
+    public function testValidationDefault() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
@@ -76,7 +81,7 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    public function testBuildRules()
+    public function testBuildRules() : void
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
