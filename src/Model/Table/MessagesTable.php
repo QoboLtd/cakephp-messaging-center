@@ -19,6 +19,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use MessagingCenter\Model\Entity\Message;
+use MessagingCenter\Model\Table\MailboxesTable;
 
 /**
  * Messages Model
@@ -298,9 +299,9 @@ class MessagesTable extends Table
      *
      * @param string $userId who own the messages
      * @param mixed[] $folders to move message
-     * @return void
+     * @return bool
      */
-    public function processMessages(string $userId, array $folders) : void
+    public function processMessages(string $userId, array $folders) : bool
     {
         $query = $this->find()
             ->where([
@@ -330,6 +331,8 @@ class MessagesTable extends Table
 
             $this->save($message);
         }
+
+        return true;
     }
 
     /**
@@ -350,18 +353,14 @@ class MessagesTable extends Table
             return false;
         }
 
-        /**
-         * @var \App\Model\Table\MailboxesTable $mailboxesTable
-         */
+        /** @var \MessagingCenter\Model\Table\MailboxesTable $mailboxesTable */
         $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
         $mailbox = $mailboxesTable->createDefaultMailbox($user->toArray());
         if (empty($mailbox)) {
             return false;
         }
 
-        /**
-         * @var \App\Model\Table\FoldersTable $foldersTable
-         */
+        /** @var \MessagingCenter\Model\Table\FoldersTable $foldersTable */
         $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
         $folders = $foldersTable->createDefaultFolders($mailbox);
         if (empty($folders)) {

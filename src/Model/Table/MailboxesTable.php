@@ -141,9 +141,10 @@ class MailboxesTable extends Table
      * createDefaultMailbox method
      *
      * @param mixed[] $user to create a mailbox for
-     * @return \Cake\Datasource\EntityInterface|null
+     * @return \Cake\Datasource\EntityInterface
+     * @throws InvalidArgumentException in case of no mailbox is created
      */
-    public function createDefaultMailbox(array $user)
+    public function createDefaultMailbox(array $user) : EntityInterface
     {
         $options = (array)Configure::read('MessagingCenter.Mailbox.default');
 
@@ -155,6 +156,7 @@ class MailboxesTable extends Table
                 'user_id' => $user['id']
             ]);
 
+        /** @var \Cake\Datasource\EntityInterface $result */
         $result = $query->first();
         if (!empty($result)) {
             return $result;
@@ -173,7 +175,7 @@ class MailboxesTable extends Table
         ]);
         $result = $this->save($mailbox);
 
-        if (empty($result)) {
+        if (empty($result) || ! $result instanceof EntityInterface) {
             throw new InvalidArgumentException('Cannot create mailbox for user [' . $user['username'] .
                         ']: please check input parameters [' . json_encode($mailbox->getErrors()) . ']');
         }
