@@ -84,4 +84,14 @@ class MailboxesTableTest extends TestCase
     {
         $this->markTestIncomplete('Not implemented yet.');
     }
+
+    /**
+     * Test create default mailbox
+     *
+     * @return void
+     */
+    public function testCreateDefaultMailbox() :void
+    {
+
+    }
 }
