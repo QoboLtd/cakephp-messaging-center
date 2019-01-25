@@ -2,8 +2,10 @@
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Validation\Validator;
 use MessagingCenter\Model\Table\MailboxesTable;
 
 /**
@@ -36,6 +38,7 @@ class MailboxesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $config = TableRegistry::getTableLocator()->exists('Mailboxes') ? [] : ['className' => MailboxesTable::class];
 
         /**
@@ -64,6 +67,44 @@ class MailboxesTableTest extends TestCase
         unset($this->Mailboxes);
 
         parent::tearDown();
+    }
+
+    /**
+     * Test initialize method
+     *
+     * @return void
+     */
+    public function testInitialize(): void
+    {
+        $this->assertTrue($this->Mailboxes->hasBehavior('Timestamp'), 'Missing behavior Timestamp.');
+        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Mailboxes->getAssociation('Users'));
+        $this->assertInstanceOf(MailboxesTable::class, $this->Mailboxes);
+    }
+
+    /**
+     * Test validationDefault method
+     *
+     * @return void
+     */
+    public function testValidationDefault(): void
+    {
+        $validator = new Validator();
+        $result = $this->Mailboxes->validationDefault($validator);
+
+        $this->assertInstanceOf(Validator::class, $result);
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules(): void
+    {
+        $rules = new RulesChecker();
+        $result = $this->Mailboxes->buildRules($rules);
+
+        $this->assertInstanceOf(RulesChecker::class, $result);
     }
 
     /**
