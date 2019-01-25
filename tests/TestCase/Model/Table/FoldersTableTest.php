@@ -1,8 +1,10 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
+use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Validation\Validator;
 use MessagingCenter\Model\Table\FoldersTable;
 use MessagingCenter\Model\Table\MailboxesTable;
 
@@ -55,6 +57,46 @@ class FoldersTableTest extends TestCase
         unset($this->Folders);
 
         parent::tearDown();
+    }
+
+    /**
+     * Test initialize method
+     *
+     * @return void
+     */
+    public function testInitialize(): void
+    {
+        $this->assertTrue($this->Folders->hasBehavior('Timestamp'), 'Missing behavior Timestamp.');
+        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Folders->getAssociation('Mailboxes'));
+        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Folders->getAssociation('ParentFolders'));
+        $this->assertInstanceOf('Cake\ORM\Association\HasMany', $this->Folders->getAssociation('ChildFolders'));
+        $this->assertInstanceOf(FoldersTable::class, $this->Folders);
+    }
+
+    /**
+     * Test validationDefault method
+     *
+     * @return void
+     */
+    public function testValidationDefault(): void
+    {
+        $validator = new Validator();
+        $result = $this->Folders->validationDefault($validator);
+
+        $this->assertInstanceOf(Validator::class, $result);
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules(): void
+    {
+        $rules = new RulesChecker();
+        $result = $this->Folders->buildRules($rules);
+
+        $this->assertInstanceOf(RulesChecker::class, $result);
     }
 
     /**
