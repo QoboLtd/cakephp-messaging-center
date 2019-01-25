@@ -13,7 +13,6 @@ use MessagingCenter\Model\Table\MessagesTable;
  */
 class MessagesTableTest extends TestCase
 {
-
     /**
      * Test subject
      *

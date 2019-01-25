@@ -19,4 +19,5 @@ use MyCLabs\Enum\Enum;
 class EventName extends Enum
 {
     const NOTIFY_BEFORE_RENDER = 'MessagingCenter.Notify.beforeRender';
+    const CAKE_ORM_MODEL_AFTER_SAFE = 'Model.afterSave';
 }
