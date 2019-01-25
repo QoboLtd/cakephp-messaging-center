@@ -4,6 +4,7 @@ namespace MessagingCenter\Test\TestCase\Model\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use MessagingCenter\Model\Table\FoldersTable;
+use MessagingCenter\Model\Table\MailboxesTable;
 
 /**
  * MessagingCenter\Model\Table\FoldersTable Test Case
@@ -23,8 +24,8 @@ class FoldersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.messaging_center.mailboxes',
         'plugin.messaging_center.folders',
-        'plugin.messaging_center.mailboxes'
     ];
 
     /**
@@ -57,32 +58,19 @@ class FoldersTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * test create default folders
      *
      * @return void
      */
-    public function testInitialize() : void
+    public function testCreateDefaultFolders() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+        $config = TableRegistry::getTableLocator()->exists('Mailboxes') ? [] : ['className' => MailboxesTable::class];
+        $mailboxTable = TableRegistry::getTableLocator()->get('Mailboxes', $config);
+        $mailbox = $mailboxTable->get('a62a4c06-6bc6-4660-a59c-51fe8d7e54ed');
 
-    /**
-     * Test validationDefault method
-     *
-     * @return void
-     */
-    public function testValidationDefault() : void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+        $result = $this->Folders->createDefaultFolders($mailbox);
 
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules() : void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->assertNotEmpty($result, 'Cannot create default folders!');
+        $this->assertTrue(is_array($result), 'Created folders are not in array!');
     }
 }
