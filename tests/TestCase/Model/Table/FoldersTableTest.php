@@ -1,9 +1,12 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
+use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Validation\Validator;
 use MessagingCenter\Model\Table\FoldersTable;
+use MessagingCenter\Model\Table\MailboxesTable;
 
 /**
  * MessagingCenter\Model\Table\FoldersTable Test Case
@@ -23,8 +26,8 @@ class FoldersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.messaging_center.mailboxes',
         'plugin.messaging_center.folders',
-        'plugin.messaging_center.mailboxes'
     ];
 
     /**
@@ -61,9 +64,13 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    public function testInitialize() : void
+    public function testInitialize(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->assertTrue($this->Folders->hasBehavior('Timestamp'), 'Missing behavior Timestamp.');
+        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Folders->getAssociation('Mailboxes'));
+        $this->assertInstanceOf('Cake\ORM\Association\BelongsTo', $this->Folders->getAssociation('ParentFolders'));
+        $this->assertInstanceOf('Cake\ORM\Association\HasMany', $this->Folders->getAssociation('ChildFolders'));
+        $this->assertInstanceOf(FoldersTable::class, $this->Folders);
     }
 
     /**
@@ -71,9 +78,12 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    public function testValidationDefault() : void
+    public function testValidationDefault(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $validator = new Validator();
+        $result = $this->Folders->validationDefault($validator);
+
+        $this->assertInstanceOf(Validator::class, $result);
     }
 
     /**
@@ -81,8 +91,28 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    public function testBuildRules() : void
+    public function testBuildRules(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $rules = new RulesChecker();
+        $result = $this->Folders->buildRules($rules);
+
+        $this->assertInstanceOf(RulesChecker::class, $result);
+    }
+
+    /**
+     * test create default folders
+     *
+     * @return void
+     */
+    public function testCreateDefaultFolders() : void
+    {
+        $config = TableRegistry::getTableLocator()->exists('Mailboxes') ? [] : ['className' => MailboxesTable::class];
+        $mailboxTable = TableRegistry::getTableLocator()->get('Mailboxes', $config);
+        $mailbox = $mailboxTable->get('a62a4c06-6bc6-4660-a59c-51fe8d7e54ed');
+
+        $result = $this->Folders->createDefaultFolders($mailbox);
+
+        $this->assertNotEmpty($result, 'Cannot create default folders!');
+        $this->assertTrue(is_array($result), 'Created folders are not in array!');
     }
 }
