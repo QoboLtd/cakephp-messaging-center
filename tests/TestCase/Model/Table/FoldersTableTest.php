@@ -108,7 +108,7 @@ class FoldersTableTest extends TestCase
     {
         $config = TableRegistry::getTableLocator()->exists('Mailboxes') ? [] : ['className' => MailboxesTable::class];
         $mailboxTable = TableRegistry::getTableLocator()->get('Mailboxes', $config);
-        $mailbox = $mailboxTable->get('a62a4c06-6bc6-4660-a59c-51fe8d7e54ed');
+        $mailbox = $mailboxTable->get('00000000-0000-0000-0000-000000000001');
 
         $result = $this->Folders->createDefaultFolders($mailbox);
 

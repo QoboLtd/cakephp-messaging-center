@@ -1,11 +1,13 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
+use MessagingCenter\Model\Table\FoldersTable;
 use MessagingCenter\Model\Table\MessagesTable;
 
 /**
@@ -26,6 +28,7 @@ class MessagesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.CakeDC/Users.users',
         'plugin.messaging_center.mailboxes',
         'plugin.messaging_center.folders',
         'plugin.messaging_center.messages',
@@ -46,6 +49,26 @@ class MessagesTableTest extends TestCase
          */
         $table = TableRegistry::get('MessagingCenter.Messages', $config);
         $this->Messages = $table;
+
+        Configure::write('MessagingCenter', [
+            'Mailbox' => [
+                'default' => [
+                    'mailbox_type' => 'system',
+                    'incoming_transport' => 'internal',
+                    'incoming_settings' => 'default',
+                    'outgoing_transport' => 'internal',
+                    'outgoing_settings' => 'default',
+                    'mailbox_postfix' => '@system',
+                ]
+            ],
+            'Folder' => [
+                'defaultType' => 'default',
+            ],
+            'systemUser' => [
+                'name' => 'System',
+                'id' => '00000000-0000-0000-0000-000000000000',
+            ],
+        ]);
     }
 
     /**
@@ -291,5 +314,71 @@ class MessagesTableTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->Messages->getConditionsByFolder($userId, $folder));
+    }
+
+    /**
+     * test processMessages() method
+     *
+     * @return void
+     */
+    public function testProcessMessages() : void
+    {
+        $userId = '00000000-0000-0000-0000-000000000001';
+
+        $folders = $this->getDefaultFolders();
+
+        /**
+         * 5 messages in fixture without folder_id and 1 is assigned to folder
+         */
+        $this->assertEquals(5, $this->getMessagesCount(['folder_id IS' => null]), 'Wrong number of messages without folder!');
+
+        $result = $this->Messages->processMessages($userId, $folders);
+
+        $this->assertTrue($result, 'Cannot process messages!');
+
+        /**
+         * 1 messages shouldn't be duplicated because of system messages
+         * 4 messages have to be duplicated
+         */
+        $this->assertEquals(9, $this->getMessagesCount(['folder_id IS NOT' => null]), 'Wrong number of messages without folder!');
+    }
+
+    /**
+     * method to get default folders for specified mailbox
+     *
+     * @return mixed[]
+     */
+    protected function getDefaultFolders() : array
+    {
+        $mailboxId = '00000000-0000-0000-0000-000000000001';
+
+        $config = TableRegistry::getTableLocator()->exists('Folders') ? [] : ['className' => FoldersTable::class];
+        $foldersTable = TableRegistry::getTableLocator()->get('Folders', $config);
+        $query = $foldersTable->find()
+            ->where([
+                'mailbox_id' => $mailboxId,
+            ]);
+
+        $folders = [];
+        foreach ($query as $folder) {
+            $folders[$folder->get('name')] = $folder;
+        }
+
+        return $folders;
+    }
+
+    /**
+     * method to get count of messages with specified criteria
+     *
+     * @param mixed[] $where criteria to search messages
+     * @return int
+     */
+    protected function getMessagesCount(array $where) : int
+    {
+        $msgNum = $this->Messages->find()
+            ->where($where)
+            ->count();
+
+        return $msgNum;
     }
 }
