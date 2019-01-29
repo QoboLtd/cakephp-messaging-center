@@ -316,7 +316,12 @@ class MessagesTableTest extends TestCase
         $this->assertEquals($expected, $this->Messages->getConditionsByFolder($userId, $folder));
     }
 
-    public function testProcessMessages()
+    /**
+     * test processMessages() method
+     *
+     * @return void
+     */
+    public function testProcessMessages() : void
     {
         $userId = '00000000-0000-0000-0000-000000000001';
 
@@ -338,7 +343,12 @@ class MessagesTableTest extends TestCase
         $this->assertEquals(9, $this->getMessagesCount(['folder_id IS NOT' => null]), 'Wrong number of messages without folder!');
     }
 
-    protected function getDefaultFolders()
+    /**
+     * method to get default folders for specified mailbox
+     *
+     * @return mixed[]
+     */
+    protected function getDefaultFolders() : array
     {
         $mailboxId = '00000000-0000-0000-0000-000000000001';
 
@@ -357,7 +367,13 @@ class MessagesTableTest extends TestCase
         return $folders;
     }
 
-    protected function getMessagesCount($where)
+    /**
+     * method to get count of messages with specified criteria
+     *
+     * @param mixed[] $where criteria to search messages
+     * @return int
+     */
+    protected function getMessagesCount(array $where) : int
     {
         $msgNum = $this->Messages->find()
             ->where($where)
