@@ -48,14 +48,14 @@ class MailboxesFixture extends TestFixture
     {
         $this->records = [
             [
-                'id' => 'a62a4c06-6bc6-4660-a59c-51fe8d7e54ed',
+                'id' => '00000000-0000-0000-0000-000000000001',
                 'user_id' => '3eb99f53-16c7-4046-a1bd-8d526bdc24aa',
-                'name' => 'Lorem ipsum dolor sit amet',
-                'type' => 'Lorem ipsum dolor sit amet',
-                'incoming_transport' => 'Lorem ipsum dolor sit amet',
-                'incoming_settings' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-                'outgoing_transport' => 'Lorem ipsum dolor sit amet',
-                'outgoing_settings' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+                'name' => 'test@system',
+                'type' => 'system',
+                'incoming_transport' => 'internal',
+                'incoming_settings' => 'default',
+                'outgoing_transport' => 'internal',
+                'outgoing_settings' => 'default',
                 'active' => 1,
                 'created' => '2019-01-07 20:34:29',
                 'modified' => '2019-01-07 20:34:29'
