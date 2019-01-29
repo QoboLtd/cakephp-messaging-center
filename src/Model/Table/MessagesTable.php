@@ -18,6 +18,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Message;
 use MessagingCenter\Model\Table\MailboxesTable;
 
@@ -318,11 +319,13 @@ class MessagesTable extends Table
             }
 
             $folder = $folders[MailboxesTable::FOLDER_INBOX];
+            $copiedMessageUser = $message->get('from_user');
+            $copiedMessageFolder = MailboxesTable::FOLDER_SENT;
+
             if ($message->get('from_user') == $userId) {
                 $folder = $folders[MailboxesTable::FOLDER_SENT];
-                if ($message->get('to_user') != (string)Configure::read('MessagingCenter.systemUser.id')) {
-                    $this->copyMessage($message->toArray(), $message->get('from_user'));
-                }
+                $copiedMessageUser = $message->get('to_user');
+                $copiedMessageFolder = MailboxesTable::FOLDER_INBOX;
             }
 
             $this->patchEntity($message, [
@@ -330,6 +333,10 @@ class MessagesTable extends Table
             ]);
 
             $this->save($message);
+
+            if ($copiedMessageUser != (string)Configure::read('MessagingCenter.systemUser.id')) {
+                $this->copyMessage($message->toArray(), $copiedMessageUser, $copiedMessageFolder);
+            }
         }
 
         return true;
@@ -340,9 +347,10 @@ class MessagesTable extends Table
      *
      * @param mixed[] $data to copy
      * @param string $userId to copy message
+     * @param string $folderType to copy message
      * @return bool
      */
-    protected function copyMessage(array $data, string $userId) : bool
+    protected function copyMessage(array $data, string $userId, string $folderType) : bool
     {
         unset($data['id']);
 
@@ -367,7 +375,11 @@ class MessagesTable extends Table
             return false;
         }
 
-        $data['folder_id'] = $folders[MailboxesTable::FOLDER_SENT];
+        if (empty($folders[$folderType]) || ! $folders[$folderType] instanceof Folder) {
+            return false;
+        }
+
+        $data['folder_id'] = $folders[$folderType]->get('id');
 
         $entity = $this->newEntity();
         $this->patchEntity($entity, $data);
