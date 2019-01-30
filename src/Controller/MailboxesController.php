@@ -21,7 +21,7 @@ class MailboxesController extends AppController
     {
         $mailboxes = $this->paginate($this->Mailboxes);
 
-        $this->set(compact('Mailboxes'));
+        $this->set(compact('mailboxes'));
     }
 
     /**
