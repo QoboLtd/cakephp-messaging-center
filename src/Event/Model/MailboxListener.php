@@ -35,7 +35,10 @@ class MailboxListener implements EventListenerInterface
     public function implementedEvents() : array
     {
         return [
-            (string)EventName::CAKE_ORM_MODEL_AFTER_SAFE() => 'createFolders',
+            (string)EventName::CAKE_ORM_MODEL_AFTER_SAFE() => [
+                'callable' => 'createFolders',
+                'priority' => 8,
+            ]
         ];
     }
 
