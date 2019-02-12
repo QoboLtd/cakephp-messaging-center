@@ -43,7 +43,7 @@ class UserListener implements EventListenerInterface
              (string)EventName::CAKE_ORM_MODEL_AFTER_SAFE() => [
                 'callable' => 'afterSave',
                 'priority' => 12,
-            ]
+             ]
         ];
     }
 
