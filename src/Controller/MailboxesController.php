@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Controller;
 
+use Cake\Core\Configure;
 use MessagingCenter\Controller\AppController;
 
 /**
@@ -57,7 +58,12 @@ class MailboxesController extends AppController
             }
             $this->Flash->error(__('The mailbox could not be saved. Please, try again.'));
         }
-        $this->set(compact('mailbox'));
+
+        $types = (array)Configure::read('MessagingCenter.Mailbox.types');
+        $incomingTransports = (array)Configure::read('MessagingCenter.Mailbox.incomingTransports');
+        $outgoingTransports = (array)Configure::read('MessagingCenter.Mailbox.outgoingTransports');
+
+        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports'));
     }
 
     /**
