@@ -35,7 +35,7 @@ class MailboxesController extends AppController
     public function view($id = null)
     {
         $mailbox = $this->Mailboxes->get($id, [
-            'contain' => []
+            'contain' => ['Folders']
         ]);
 
         $this->set('mailbox', $mailbox);
