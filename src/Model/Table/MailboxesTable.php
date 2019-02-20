@@ -52,6 +52,11 @@ class MailboxesTable extends Table
             'joinType' => 'INNER',
             'className' => 'MessagingCenter.Users'
         ]);
+
+        $this->hasMany('Folders', [
+            'className' => 'MessagingCenter.Folders',
+            'foreignKey' => 'mailbox_id'
+        ]);
     }
 
     /**
