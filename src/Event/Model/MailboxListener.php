@@ -20,6 +20,9 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
 use MessagingCenter\Event\EventName;
+use MessagingCenter\Model\Table\FoldersTable;
+use MessagingCenter\Model\Table\MessagesTable;
+use Webmozart\Assert\Assert;
 
 class MailboxListener implements EventListenerInterface
 {
@@ -60,8 +63,8 @@ class MailboxListener implements EventListenerInterface
             return;
         }
 
-        /** @var \MessagingCenter\Model\Table\FoldersTable $foldersTable */
         $foldersTable = TableRegistry::getTableLocator()->get('FOLDERS_TABLE_NAME');
+        Assert::isInstanceOf($foldersTable, FoldersTable::class);
         $list = $foldersTable->createDefaultFolders($entity);
 
         if (!empty($list)) {
@@ -78,8 +81,8 @@ class MailboxListener implements EventListenerInterface
      */
     protected function processMessages(string $userId, array $folders) : bool
     {
-        /** @var \MessagingCenter\Model\Table\MessagesTable $messagesTable */
         $messagesTable = TableRegistry::getTableLocator()->get(self::MESSAGES_TABLE_NAME);
+        Assert::isInstanceOf($messagesTable, MessagesTable::class);
 
         return $messagesTable->processMessages($userId, $folders);
     }
