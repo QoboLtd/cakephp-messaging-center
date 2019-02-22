@@ -1,10 +1,8 @@
 <?php
 namespace MessagingCenter\Model\Table;
 
-use App\Model\Table\FoldersTable;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -161,9 +159,8 @@ class MailboxesTable extends Table
                 'user_id' => $user['id']
             ]);
 
-        /** @var \Cake\Datasource\EntityInterface $result */
         $result = $query->first();
-        if (!empty($result)) {
+        if ($result instanceof EntityInterface) {
             return $result;
         }
 

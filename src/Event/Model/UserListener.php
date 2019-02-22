@@ -40,7 +40,10 @@ class UserListener implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'Model.afterSave' => 'afterSave'
+             (string)EventName::CAKE_ORM_MODEL_AFTER_SAFE() => [
+                'callable' => 'afterSave',
+                'priority' => 12,
+             ]
         ];
     }
 

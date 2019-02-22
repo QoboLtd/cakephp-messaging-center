@@ -11,8 +11,6 @@
  */
 namespace MessagingCenter\Notifier;
 
-use Cake\I18n\Time;
-use Cake\ORM\TableRegistry;
 use Cake\View\ViewVarsTrait;
 use InvalidArgumentException;
 
