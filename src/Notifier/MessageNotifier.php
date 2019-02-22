@@ -13,7 +13,6 @@ namespace MessagingCenter\Notifier;
 
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
-use InvalidArgumentException;
 
 class MessageNotifier extends Notifier
 {

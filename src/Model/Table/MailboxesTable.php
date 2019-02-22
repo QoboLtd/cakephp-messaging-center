@@ -1,16 +1,12 @@
 <?php
 namespace MessagingCenter\Model\Table;
 
-use App\Model\Table\FoldersTable;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
-use Webmozart\Assert\Assert;
 
 /**
  * Mailboxes Model

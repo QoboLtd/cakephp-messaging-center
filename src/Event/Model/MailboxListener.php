@@ -12,11 +12,9 @@
  */
 namespace MessagingCenter\Event\Model;
 
-use App\Model\Table\MailboxesTable;
 use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
 use MessagingCenter\Event\EventName;

@@ -3,7 +3,6 @@ namespace MessagingCenter\Model\Table;
 
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
