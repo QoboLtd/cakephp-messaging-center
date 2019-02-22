@@ -12,7 +12,6 @@
 namespace MessagingCenter\Controller;
 
 use Cake\Http\Exception\ForbiddenException;
-use MessagingCenter\Controller\AppController;
 
 /**
  * Messages Controller

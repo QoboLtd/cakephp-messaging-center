@@ -14,13 +14,12 @@ namespace MessagingCenter\Model\Table;
 use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Message;
-use MessagingCenter\Model\Table\MailboxesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * Messages Model
@@ -361,15 +360,17 @@ class MessagesTable extends Table
             return false;
         }
 
-        /** @var \MessagingCenter\Model\Table\MailboxesTable $mailboxesTable */
         $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxesTable, MailboxesTable::class);
+
         $mailbox = $mailboxesTable->createDefaultMailbox($user->toArray());
         if (empty($mailbox)) {
             return false;
         }
 
-        /** @var \MessagingCenter\Model\Table\FoldersTable $foldersTable */
         $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
+        Assert::isInstanceOf($foldersTable, FoldersTable::class);
+
         $folders = $foldersTable->createDefaultFolders($mailbox);
         if (empty($folders)) {
             return false;

@@ -10,5 +10,6 @@ parameters:
         Cake\Console\Shell:
             - abort
 includes:
+    - vendor/phpstan/phpstan-webmozart-assert/extension.neon
     - vendor/thecodingmachine/phpstan-strict-rules/phpstan-strict-rules.neon
     - vendor/timeweb/phpstan-enum/extension.neon
