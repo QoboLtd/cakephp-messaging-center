@@ -21,7 +21,7 @@ class MailboxType extends Enum
     /**
      * Internal system messages
      */
-    const SYSTEM = 'syste';
+    const SYSTEM = 'system';
 
     /**
      * Emails
