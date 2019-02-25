@@ -89,18 +89,26 @@ class FetchMailShell extends Shell
             $settings = json_decode($mailbox->incoming_settings, true) ?? [];
             $settings = array_merge($defaultSettings, $settings);
 
+            // FIXME : This is here for testing purposes only, until Mailbox settings UI works
+            //$settings['username'] = 'user@hostname';
+            //$settings['password'] = '123456';
+            //$settings['host'] = 'mail.example.com';
+
             $connectionString = $this->getConnectionString($mailbox->incoming_transport, $settings);
             $this->out("Connection: $connectionString");
             $mailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
 
             $messageIds = $mailbox->searchMailbox('ALL');
             if (empty($messageIds)) {
+                $this->out("Mailbox is empty");
+
                 return;
             }
 
             foreach ($messageIds as $messageId) {
+                /** @var \PhpImap\IncomingMail $message */
                 $message = $mailbox->getMail($messageId);
-                debug($message);
+                print_r($message);
 
                 return;
             }
@@ -132,7 +140,7 @@ class FetchMailShell extends Shell
                 $result .= ':' . ($settings['port'] ?? 993);
                 $result .= '/' . ($settings['protocol'] ?? 'imap');
                 // TODO: Make this optional
-                $result .= '/notls';
+                $result .= '/ssl/novalidate-cert';
                 $result .= '}';
                 // TODO: Make this flexible
                 $result .= 'INBOX';
