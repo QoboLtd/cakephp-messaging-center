@@ -34,34 +34,24 @@ if (!isset($folder)) {
 }
 ?>
 <div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Folders</h3>
-        <div class="box-tools">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-        </button>
-        </div>
-    </div>
-    <div class="box-body no-padding">
-        <ul class="nav nav-pills nav-stacked">
-        <?php foreach ($actions as $action => $options) : ?>
-            <li class="<?= $action === $folder ? ' active' : ''; ?>">
-            <?php
-            if ('inbox' === $action) {
-                $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
-                if (0 < $unreadCount) {
-                    $options['label'] .= ' <span class="label label-primary pull-right">' . $unreadCount . '</span>';
-                }
-            }
-
-                $options['icon'] = '<i class="fa fa-' . $options['icon'] . '"></i>';
-            ?>
-            <?= $this->Html->link(
-                $options['icon'] . ' ' . $options['label'],
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', $action],
-                ['escape' => false]
-            ); ?>
-            </li>
+    <table class="table table-hover table-condensed table-vertical-align table-datatable" width="100%">
+        <thead>
+            <tr>
+                <th><?= __('Name') ?></th>
+                <th><?= __('Type') ?></th>
+                <th><?= __('Created') ?></th>
+                <th><?= __('Action') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($mailbox->get('folders') as $folder) : ?>
+            <tr>
+                <td><?= $folder->get('name') ?></td>
+                <td><?= $folder->get('type') ?></td>
+                <td><?= $folder->get('created'); ?></td>
+                <td><?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'Folders', 'action' => 'view', $folder->get('id')], ['escape' => false, 'class' => 'btn btn-default', 'title' => __('View')]) ?></td>
+            </tr>
         <?php endforeach; ?>
-        </ul>
-    </div>
+        </tbody>
+    </table>
 </div>
