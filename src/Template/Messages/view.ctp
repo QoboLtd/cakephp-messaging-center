@@ -67,7 +67,6 @@ $restoreBtn = $this->Form->postLink(
                 ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">

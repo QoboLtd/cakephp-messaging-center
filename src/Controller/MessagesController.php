@@ -59,7 +59,7 @@ class MessagesController extends AppController
         ]);
 
         // forbid viewing of others messages
-        if ($this->Auth->user('id') !== $message->to_user && $this->Auth->user('id') !== $message->from_user) {
+        if (!$this->Auth->user('is_superuser') && $this->Auth->user('id') !== $message->get('to_user') && $this->Auth->user('id') !== $message->get('from_user')) {
             throw new ForbiddenException();
         }
 
