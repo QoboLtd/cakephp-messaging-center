@@ -74,4 +74,19 @@ $options['title'] .= ' &raquo; ' . $folder->get('name');
             </div>
         </div>
     </div>
+    <div class="nav-tabs-custom">
+        <ul id="relatedTabs" class="nav nav-tabs" role="tablist">
+            <li role="presentation">
+                <a href="#manage-folders-sections" aria-controls="manage-content" role="tab" data-toggle="tab">
+                    <i class="fa fa-list-ul"></i> <i class="fa question-circle"></i> <?= __('Messages'); ?>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane" id="manage-folders-sections">
+                <?= $this->element('messages_list', ['folder' => $folder]); ?>
+            </div>
+        </div>
+    </div>
+
 </section>

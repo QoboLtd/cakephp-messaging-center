@@ -35,7 +35,7 @@ class FoldersController extends AppController
     public function view(string $id = null)
     {
         $folder = $this->Folders->get($id, [
-            'contain' => []
+            'contain' => ['Messages']
         ]);
 
         $this->set('folder', $folder);

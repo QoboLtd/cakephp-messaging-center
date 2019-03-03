@@ -57,6 +57,10 @@ class FoldersTable extends Table
             'className' => 'MessagingCenter.Folders',
             'foreignKey' => 'parent_id'
         ]);
+        $this->hasMany('Messages', [
+            'className' => 'MessagingCenter.Messages',
+            'foreignKey' => 'folder_id'
+        ]);
     }
 
     /**
