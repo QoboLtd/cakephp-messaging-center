@@ -38,7 +38,22 @@ class MailboxesController extends AppController
             'contain' => ['Folders']
         ]);
 
-        $this->set('mailbox', $mailbox);
+        $folderName = $this->request->getData('folder');
+
+        $this->loadModel('MessagingCenter.Messages');
+        if (empty($folderName) || !$this->Messages->folderExists($folderName)) {
+            $folderName = $this->Messages->getDefaultFolder();
+        }
+
+        $this->paginate = [
+            'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folderName),
+            'contain' => ['FromUser', 'ToUser'],
+            'order' => ['Messages.date_sent' => 'DESC']
+        ];
+        $messages = $this->paginate($this->Messages);
+
+        $this->set(compact('messages', 'folderName', 'mailbox'));
+        $this->set('_serialize', ['messages', 'folderName', 'mailbox']);
     }
 
     /**

@@ -34,10 +34,10 @@ class MessagesTable extends Table
     const STATUS_DELETED = 'deleted';
     const STATUS_STARRED = 'starred';
 
-    const FOLDER_INBOX = 'inbox';
-    const FOLDER_ARCHIVED = 'archived';
-    const FOLDER_SENT = 'sent';
-    const FOLDER_TRASH = 'trash';
+    const FOLDER_INBOX = 'Inbox';
+    const FOLDER_ARCHIVED = 'Archived';
+    const FOLDER_SENT = 'Sent';
+    const FOLDER_TRASH = 'Trash';
 
     /**
      * Initialize method
