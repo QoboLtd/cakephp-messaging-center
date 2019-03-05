@@ -10,48 +10,44 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$actions = [
-    'inbox' => [
-        'label' => __('Inbox'),
-        'icon' => 'inbox'
-    ],
-    'archived' => [
-        'label' => __('Archived'),
-        'icon' => 'archive'
-    ],
-    'sent' => [
-        'label' => __('Sent'),
-        'icon' => 'envelope-o'
-    ],
-    'trash' => [
-        'label' => __('Trash'),
-        'icon' => 'trash-o'
-    ]
-];
-
 if (!isset($folder)) {
-    $folder = $this->request->getParam('pass.0') ? $this->request->getParam('pass.0') : 'inbox';
+    $folder = 'inbox';
 }
 ?>
 <div class="box box-primary">
-    <table class="table table-hover table-condensed table-vertical-align table-datatable" width="100%">
-        <thead>
-            <tr>
-                <th><?= __('Name') ?></th>
-                <th><?= __('Type') ?></th>
-                <th><?= __('Created') ?></th>
-                <th><?= __('Action') ?></th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="box-header with-border">
+        <h3 class="box-title">Folders</h3>
+        <div class="box-tools">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+        </div>
+    </div>
+    <div class="box-body no-padding">
+        <ul class="nav nav-pills nav-stacked">
         <?php foreach ($mailbox->get('folders') as $folder) : ?>
-            <tr>
-                <td><?= $folder->get('name') ?></td>
-                <td><?= $folder->get('type') ?></td>
-                <td><?= $folder->get('created'); ?></td>
-                <td><?= $this->Html->link('<i class="fa fa-eye"></i>', ['controller' => 'Folders', 'action' => 'view', $folder->get('id')], ['escape' => false, 'class' => 'btn btn-default', 'title' => __('View')]) ?></td>
-            </tr>
+            <li class="<?= $folder->get('name') === $folderName ? ' active' : ''; ?>">
+            <?php
+                $label = $folder->get('name');
+                if ('Inbox' === $folder->get('name')) {
+                    $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
+                    if (0 < $unreadCount) {
+                        $label .= ' <span class="label label-primary pull-right">' . $unreadCount . '</span>';
+                    }
+                }
+
+                $icon = '<i class="fa fa-' . $folder->get('icon') . '"></i>';
+            ?>
+            <?= $this->Html->link($icon . ' ' . $label, [
+                'plugin' => 'MessagingCenter',
+                'controller' => 'Mailboxes',
+                'action' => 'view',
+                $mailbox->get('id'),
+                '?' => ['folder_id' => $folder->get('id')]
+                ],
+                ['escape' => false]
+            ); ?>
+            </li>
         <?php endforeach; ?>
-        </tbody>
-    </table>
+        </ul>
+    </div>
 </div>
