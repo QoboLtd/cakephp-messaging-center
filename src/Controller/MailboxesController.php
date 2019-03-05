@@ -69,6 +69,10 @@ class MailboxesController extends AppController
              * @var mixed[] $data
              */
             $data = $this->request->getData();
+
+            $data['incoming_settings'] = json_encode($data['IncomingSettings']);
+            $data['outgoing_settings'] = json_encode($data['OutgoingSettings']);
+
             $mailbox = $this->Mailboxes->patchEntity($mailbox, $data);
             if ($this->Mailboxes->save($mailbox)) {
                 $this->Flash->success((string)__('The mailbox has been saved.'));
@@ -110,7 +114,10 @@ class MailboxesController extends AppController
             }
             $this->Flash->error((string)__('The mailbox could not be saved. Please, try again.'));
         }
-        $this->set(compact('mailbox'));
+
+        $types = (array)Configure::read('MessagingCenter.Mailbox.types');
+
+        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports'));
     }
 
     /**
