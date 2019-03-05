@@ -21,6 +21,7 @@ use InvalidArgumentException;
  * @method \MessagingCenter\Model\Entity\Mailbox patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \MessagingCenter\Model\Entity\Mailbox[] patchEntities($entities, array $data, array $options = [])
  * @method \MessagingCenter\Model\Entity\Mailbox findOrCreate($search, callable $callback = null, $options = [])
+ * @method \Cake\ORM\Query findAllByTypeAndActive(string $type, bool $active))
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
