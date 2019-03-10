@@ -2,6 +2,7 @@
 namespace MessagingCenter\Controller;
 
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use MessagingCenter\Controller\AppController;
 
 /**
@@ -38,17 +39,24 @@ class MailboxesController extends AppController
             'contain' => ['Folders']
         ]);
 
-        $folderName = $this->request->getData('folder');
+        $folderId = $this->request->getData('folder_id');
 
-        $this->loadModel('MessagingCenter.Messages');
-        if (empty($folderName) || !$this->Messages->folderExists($folderName)) {
-            $folderName = $this->Messages->getDefaultFolder();
+        if (empty($folderId)) {
+            $folderId = $this->Mailboxes->getInboxFolder($mailbox);
         }
 
+        $this->loadModel('MessagingCenter.Folders');
+
+        $folder = $this->Folders->get($folderId);
+        $folderName = $folder->get('name');
+
+        $this->loadModel('MessagingCenter.Messages');
         $this->paginate = [
-            'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folderName),
+            'conditions' => [
+                'folder_id' => $folderId
+            ],
             'contain' => [],
-            'order' => ['Messages.date_sent' => 'DESC']
+            'order' => ['Messages.created' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
 
@@ -86,7 +94,12 @@ class MailboxesController extends AppController
         $incomingTransports = (array)Configure::read('MessagingCenter.Mailbox.incomingTransports');
         $outgoingTransports = (array)Configure::read('MessagingCenter.Mailbox.outgoingTransports');
 
-        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports'));
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
+        $users = $usersTable->find('list')
+            ->where([
+                'active' => true
+            ]);
+        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports', 'users'));
     }
 
     /**
