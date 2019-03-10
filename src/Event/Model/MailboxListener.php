@@ -53,8 +53,6 @@ class MailboxListener implements EventListenerInterface
      */
     public function createFolders(Event $event, EntityInterface $entity, ArrayObject $options) : void
     {
-        error_log(__METHOD__ . ": entity=" . print_r($entity, true) . "\n", 3, '/tmp/mail.log');
-
         if (!$entity->isNew() || $entity->getSource() != self::MAILBOX_TABLE_NAME) {
             return;
         }

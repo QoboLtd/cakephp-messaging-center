@@ -191,8 +191,9 @@ class MailboxesTable extends Table
      *
      * @param \Cake\Datasource\EntityInterface $mailbox to get default folder for
      * @return string
+     * @throws InvalidArgumentException in case of no Inbox folder found in the mailbox
      */
-    public function getInboxFolder(EntityInterface $mailbox)
+    public function getInboxFolder(EntityInterface $mailbox) : string
     {
         if (empty($mailbox->get('folders'))) {
             throw new InvalidArgumentException('No folder is created for that mailbox.');

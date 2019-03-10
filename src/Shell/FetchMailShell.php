@@ -14,16 +14,20 @@ namespace MessagingCenter\Shell;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use InvalidArgumentException;
 use MessagingCenter\Enum\IncomingTransportType;
 use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Mailbox;
+use MessagingCenter\Model\Table\MailboxesTable;
+use MessagingCenter\Model\Table\MessagesTable;
 use NinjaMutex\MutexException;
 use PhpImap\ConnectionException;
 use PhpImap\IncomingMail;
 use PhpImap\Mailbox as RemoteMailbox;
 use Qobo\Utils\Utility\Lock\FileLock;
+use Webmozart\Assert\Assert;
 
 class FetchMailShell extends Shell
 {
@@ -61,18 +65,20 @@ class FetchMailShell extends Shell
             return;
         }
 
-        /** @var \MessagingCenter\Model\Table\MailboxesTable $table */
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
-        //$query = $table->findAllByTypeAndActive((string)MailboxType::EMAIL(), true);
+        Assert::isInstanceOf($table, MailboxesTable::class);
+
+        /**
+         * @var \Cake\ORM\Query $query
+         */
         $query = $table->find()
             ->contain('Folders')
             ->where([
                 'type' => (string)MailboxType::EMAIL(),
                 'active' => true,
             ]);
-        foreach ($query->all() as $mailbox) {
-            debug($mailbox);
 
+        foreach ($query->all() as $mailbox) {
             $this->processMailbox($mailbox);
         }
     }
@@ -115,8 +121,6 @@ class FetchMailShell extends Shell
             foreach ($messageIds as $messageId) {
                 /** @var \PhpImap\IncomingMail $message */
                 $message = $remoteMailbox->getMail($messageId);
-
-                debug($message);
 
                 $this->saveMessage($message, $mailbox);
             }
@@ -169,8 +173,11 @@ class FetchMailShell extends Shell
     protected function saveMessage(IncomingMail $message, EntityInterface $mailbox) : void
     {
         $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
 
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        Assert::isInstanceOf($table, MessagesTable::class);
+
         $entity = $table->newEntity();
         $table->patchEntity($entity, [
             'subject' => $message->subject,
@@ -184,7 +191,5 @@ class FetchMailShell extends Shell
         ]);
 
         $result = $table->save($entity);
-
-        debug($entity->getErrors());
     }
 }

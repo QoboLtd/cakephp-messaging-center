@@ -4,11 +4,16 @@ namespace MessagingCenter\Controller;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use MessagingCenter\Controller\AppController;
+use MessagingCenter\Model\Table\FoldersTable;
+use MessagingCenter\Model\Table\MessagesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * Mailboxes Controller
  *
+ * @property \MessagingCenter\Model\Table\FoldersTable $Folders
  * @property \MessagingCenter\Model\Table\MailboxesTable $Mailboxes
+ * @property \MessagingCenter\Model\Table\MessagesTable $Messages
  *
  * @method \MessagingCenter\Model\Entity\Mailbox[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
@@ -46,11 +51,14 @@ class MailboxesController extends AppController
         }
 
         $this->loadModel('MessagingCenter.Folders');
+        Assert::isInstanceOf($this->Folders, FoldersTable::class);
 
         $folder = $this->Folders->get($folderId);
         $folderName = $folder->get('name');
 
         $this->loadModel('MessagingCenter.Messages');
+        Assert::isInstanceOf($this->Messages, MessagesTable::class);
+
         $this->paginate = [
             'conditions' => [
                 'folder_id' => $folderId
