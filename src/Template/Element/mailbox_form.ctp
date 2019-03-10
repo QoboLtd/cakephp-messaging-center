@@ -14,7 +14,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
-                    <?= $this->Form->control('user_id'); ?>
+                    <?= $this->Form->control('user_id', ['options' => $users]); ?>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <?php
@@ -39,13 +39,13 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-xs-12 col-md-6">
-                    <?= $this->Form->control('incoming_transport', ['options' => ['imap' => 'IMAP']]); ?>
+                    <?= $this->Form->control('incoming_transport', ['options' => ['imap4' => 'IMAP']]); ?>
                 </div>
                 <div class="col-xs-12 col-md-6"></div>
             </div>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
-                    <?= $this->Form->control('IncomingSettings.server', ['label' => 'Server address']); ?>
+                    <?= $this->Form->control('IncomingSettings.host', ['label' => 'Host address']); ?>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <?= $this->Form->control('IncomingSettings.port', ['label' => 'Port']); ?>
@@ -54,7 +54,7 @@
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <?php
-                        $label = $this->Form->label('use_ssl');
+                        $label = $this->Form->label('Use SSL');
                         echo $this->Form->control('IncomingSettings.use_ssl', [
                             'type' => 'checkbox',
                             'label' => false,
@@ -65,7 +65,19 @@
                         ]);
                     ?>
                 </div>
-                <div class="col-xs-12 col-md-6"></div>
+                <div class="col-xs-12 col-md-6">
+                    <?php
+                        $label = $this->Form->label('No Validate SSL Certificate');
+                        echo $this->Form->control('IncomingSettings.no_validate_ssl_cert', [
+                            'type' => 'checkbox',
+                            'label' => false,
+                            'class' => 'square',
+                            'templates' => [
+                                'inputContainer' => '<div class="{{required}}">' . $label . '<div class="clearfix"></div>{{content}}</div>'
+                            ]
+                        ]);
+                    ?>
+                </div>
             </div>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
@@ -90,7 +102,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
-                    <?= $this->Form->control('OutgoingSettings.server', ['label' => 'Server address']); ?>
+                    <?= $this->Form->control('OutgoingSettings.host', ['label' => 'Host address']); ?>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <?= $this->Form->control('IncomingSettings.port', ['label' => 'Port']); ?>

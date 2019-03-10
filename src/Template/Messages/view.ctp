@@ -76,9 +76,16 @@ $restoreBtn = $this->Form->postLink(
                 <div class="box-body no-padding">
                     <div class="mailbox-read-info">
                         <h3><?= h($message->subject) ?></h3>
-                        <?php $fromUser = !empty($message->fromUser) ? $message->fromUser : $message->from_user; ?>
+                        <?php $fromUser = $message->fromUser ?? $message->from_user; ?>
                         <h5>From: <?= $this->element('MessagingCenter.user', ['user' => $fromUser]) ?>
-                        <span class="mailbox-read-time pull-right"><?= h($message->date_sent->i18nFormat([\IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT])) ?></span></h5>
+                            <span class="mailbox-read-time pull-right">
+                                <?php
+                                    $dateSent = !empty($message->get('date_sent')) ?
+                                        $message->get('date_sent')->i18nFormat([\IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT]) : '';
+                                    echo h($dateSent);
+                                ?>
+                            </span>
+                        </h5>
                     </div>
                     <div class="mailbox-controls with-border text-center">
                         <div class="btn-group">

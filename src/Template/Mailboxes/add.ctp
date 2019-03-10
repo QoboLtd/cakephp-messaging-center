@@ -18,5 +18,5 @@
     </div>
 </section>
 <section class="content">
-    <?= $this->element('mailbox_form', ['mailbox' => $mailbox, 'types' => $types]) ?>
+    <?= $this->element('mailbox_form', ['mailbox' => $mailbox, 'types' => $types, 'users' => $users]) ?>
 </section>
