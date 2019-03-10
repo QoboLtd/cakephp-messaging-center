@@ -185,4 +185,31 @@ class MailboxesTable extends Table
 
         return $result;
     }
+
+    /**
+     * getInboxFolders method
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox to get default folder for
+     * @return string
+     */
+    public function getInboxFolder(EntityInterface $mailbox)
+    {
+        if (empty($mailbox->get('folders'))) {
+            throw new InvalidArgumentException('No folder is created for that mailbox.');
+        }
+
+        $inboxFolderId = null;
+        foreach ($mailbox->get('folders') as $folder) {
+            if ($folder->get('name') == 'Inbox') {
+                $inboxFolderId = $folder->get('id');
+                break;
+            }
+        }
+
+        if (empty($inboxFolderId)) {
+            throw new InvalidArgumentException('Cannot find Inbox folder in that mailbox');
+        }
+
+        return $inboxFolderId;
+    }
 }

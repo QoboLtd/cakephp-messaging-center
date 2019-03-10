@@ -123,6 +123,8 @@ class FoldersTable extends Table
 
             $result = $query->first();
 
+            error_log(__METHOD__ . ": folderName=$folderName --> found: " . print_r($result, true) . "\n", 3, '/tmp/mail.log');
+
             if (empty($result)) {
                 $folder = $this->newEntity();
                 $this->patchEntity($folder, [
@@ -132,6 +134,8 @@ class FoldersTable extends Table
                 ]);
 
                 $result = $this->save($folder);
+
+                error_log(__METHOD__ . ": folder creation errors: " . print_r($result->getErrors(), true) . "\n", 3, '/tmp/mail.log');
             }
 
             $list[$folderName] = $result;
@@ -141,6 +145,7 @@ class FoldersTable extends Table
             throw new InvalidArgumentException('Cannot create default folders for mailbox ' . $mailbox->get('name') . '!');
         }
 
+        error_log(__METHOD__ . ": folders --> " . print_r($list, true) . "\n", 3, '/tmp/mail.log');
         return $list;
     }
 }
