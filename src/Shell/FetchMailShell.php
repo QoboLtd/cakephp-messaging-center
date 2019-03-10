@@ -13,6 +13,7 @@ namespace MessagingCenter\Shell;
 
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
 use InvalidArgumentException;
 use MessagingCenter\Enum\IncomingTransportType;
@@ -20,6 +21,7 @@ use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Mailbox;
 use NinjaMutex\MutexException;
 use PhpImap\ConnectionException;
+use PhpImap\IncomingMail;
 use PhpImap\Mailbox as RemoteMailbox;
 use Qobo\Utils\Utility\Lock\FileLock;
 
@@ -60,9 +62,17 @@ class FetchMailShell extends Shell
         }
 
         /** @var \MessagingCenter\Model\Table\MailboxesTable $table */
-        $table = TableRegistry::get('MessagingCenter.Mailboxes');
-        $query = $table->findAllByTypeAndActive((string)MailboxType::EMAIL(), true);
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        //$query = $table->findAllByTypeAndActive((string)MailboxType::EMAIL(), true);
+        $query = $table->find()
+            ->contain('Folders')
+            ->where([
+                'type' => (string)MailboxType::EMAIL(),
+                'active' => true,
+            ]);
         foreach ($query->all() as $mailbox) {
+            debug($mailbox);
+
             $this->processMailbox($mailbox);
         }
     }
@@ -84,21 +94,18 @@ class FetchMailShell extends Shell
         ];
 
         try {
-            $this->out('Fetching mail for [' . $mailbox->name . ']');
+            $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
 
-            $settings = json_decode($mailbox->incoming_settings, true) ?? [];
+            $settings = json_decode($mailbox->get('incoming_settings'), true) ?? [];
             $settings = array_merge($defaultSettings, $settings);
 
-            // FIXME : This is here for testing purposes only, until Mailbox settings UI works
-            //$settings['username'] = 'user@hostname';
-            //$settings['password'] = '123456';
-            //$settings['host'] = 'mail.example.com';
+            $connectionString = $this->getConnectionString($mailbox->get('incoming_transport'), $settings);
 
-            $connectionString = $this->getConnectionString($mailbox->incoming_transport, $settings);
-            $this->out("Connection: $connectionString");
-            $mailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
+            $this->out("Connection: $connectionString; username=" . $settings['username'] . "; password=" . $settings['password']);
 
-            $messageIds = $mailbox->searchMailbox('ALL');
+            $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
+
+            $messageIds = $remoteMailbox->searchMailbox('ALL');
             if (empty($messageIds)) {
                 $this->out("Mailbox is empty");
 
@@ -107,14 +114,13 @@ class FetchMailShell extends Shell
 
             foreach ($messageIds as $messageId) {
                 /** @var \PhpImap\IncomingMail $message */
-                $message = $mailbox->getMail($messageId);
-                print_r($message);
+                $message = $remoteMailbox->getMail($messageId);
 
-                return;
+                debug($message);
+
+                $this->saveMessage($message, $mailbox);
             }
-        } catch (InvalidArgumentException $e) {
-            $this->warn($e->getMessage());
-        } catch (ConnectionException $e) {
+        } catch (InvalidArgumentException | ConnectionException $e) {
             $this->warn($e->getMessage());
         }
     }
@@ -151,5 +157,34 @@ class FetchMailShell extends Shell
         }
 
         return $result;
+    }
+
+    /**
+     * saveMessage method
+     *
+     * @param \PhpImap\IncomingMail $message received from the mailbox
+     * @param \Cake\Datasource\EntityInterface $mailbox to save message
+     * @return void
+     */
+    protected function saveMessage(IncomingMail $message, EntityInterface $mailbox) : void
+    {
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        $entity = $table->newEntity();
+        $table->patchEntity($entity, [
+            'subject' => $message->subject,
+            'content' => $message->textHtml,
+            'status' => 'new',
+            'from_user' => $message->fromAddress,
+            'from_name' => $message->fromName,
+            'to_user' => $message->toString,
+            'message_id' => $message->messageId,
+            'folder_id' => $mailboxes->getInboxFolder($mailbox),
+        ]);
+
+        $result = $table->save($entity);
+
+        debug($entity->getErrors());
     }
 }
