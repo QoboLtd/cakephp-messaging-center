@@ -54,18 +54,6 @@ class MessagesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-
-        $this->belongsTo('FromUser', [
-            'foreignKey' => 'from_user',
-            'className' => 'CakeDC/Users.Users',
-            'propertyName' => 'fromUser'
-        ]);
-
-        $this->belongsTo('ToUser', [
-            'foreignKey' => 'to_user',
-            'className' => 'CakeDC/Users.Users',
-            'propertyName' => 'toUser'
-        ]);
     }
 
     /**
@@ -81,12 +69,10 @@ class MessagesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->uuid('from_user')
             ->requirePresence('from_user', 'create')
             ->notEmpty('from_user');
 
         $validator
-            ->uuid('to_user')
             ->requirePresence('to_user', 'create')
             ->notEmpty('to_user');
 
