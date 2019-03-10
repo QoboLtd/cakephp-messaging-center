@@ -24,9 +24,9 @@ use Webmozart\Assert\Assert;
 
 class MailboxListener implements EventListenerInterface
 {
-    const MAILBOX_TABLE_NAME = 'Mailboxes';
-    const FOLDERS_TABLE_NAME = 'Folders';
-    const MESSAGES_TABLE_NAME = 'Messages';
+    const MAILBOX_TABLE_NAME = 'MessagingCenter.Mailboxes';
+    const FOLDERS_TABLE_NAME = 'MessagingCenter.Folders';
+    const MESSAGES_TABLE_NAME = 'MessagingCenter.Messages';
 
     /**
      * implementedEvents method
@@ -53,15 +53,13 @@ class MailboxListener implements EventListenerInterface
      */
     public function createFolders(Event $event, EntityInterface $entity, ArrayObject $options) : void
     {
-        if (!$entity->isNew()) {
+        error_log(__METHOD__ . ": entity=" . print_r($entity, true) . "\n", 3, '/tmp/mail.log');
+
+        if (!$entity->isNew() || $entity->getSource() != self::MAILBOX_TABLE_NAME) {
             return;
         }
 
-        if ($entity->getSource() == self::MAILBOX_TABLE_NAME) {
-            return;
-        }
-
-        $foldersTable = TableRegistry::getTableLocator()->get('FOLDERS_TABLE_NAME');
+        $foldersTable = TableRegistry::getTableLocator()->get(self::FOLDERS_TABLE_NAME);
         Assert::isInstanceOf($foldersTable, FoldersTable::class);
         $list = $foldersTable->createDefaultFolders($entity);
 
