@@ -47,7 +47,7 @@ class MailboxesController extends AppController
 
         $this->paginate = [
             'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folderName),
-            'contain' => ['FromUser', 'ToUser'],
+            'contain' => [],
             'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);

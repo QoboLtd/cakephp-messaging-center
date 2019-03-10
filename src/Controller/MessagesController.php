@@ -34,7 +34,7 @@ class MessagesController extends AppController
 
         $this->paginate = [
             'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folder),
-            'contain' => ['FromUser', 'ToUser'],
+            'contain' => [],
             'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
@@ -55,7 +55,7 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => ['FromUser', 'ToUser']
+            'contain' => []
         ]);
 
         // forbid viewing of others messages
@@ -119,7 +119,7 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => ['FromUser', 'ToUser']
+            'contain' => []
         ]);
 
         // current user's sent message
