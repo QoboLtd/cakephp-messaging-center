@@ -59,56 +59,6 @@ class MessagesControllerTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    public function testFolder(): void
-    {
-        $this->get('/messaging-center/messages/folder');
-
-        $this->assertResponseOk();
-
-        $this->assertEquals('inbox', $this->viewVariable('folder'));
-        $this->assertEquals(1, $this->viewVariable('messages')->count());
-    }
-
-    public function testFolderInbox(): void
-    {
-        $this->get('/messaging-center/messages/folder/inbox');
-
-        $this->assertResponseOk();
-
-        $this->assertEquals('inbox', $this->viewVariable('folder'));
-        $this->assertEquals(1, $this->viewVariable('messages')->count());
-    }
-
-    public function testFolderArchived(): void
-    {
-        $this->get('/messaging-center/messages/folder/archived');
-
-        $this->assertResponseOk();
-
-        $this->assertEquals('archived', $this->viewVariable('folder'));
-        $this->assertEquals(1, $this->viewVariable('messages')->count());
-    }
-
-    public function testFolderSent(): void
-    {
-        $this->get('/messaging-center/messages/folder/sent');
-
-        $this->assertResponseOk();
-
-        $this->assertEquals('sent', $this->viewVariable('folder'));
-        $this->assertTrue($this->viewVariable('messages')->isEmpty());
-    }
-
-    public function testFolderTrash(): void
-    {
-        $this->get('/messaging-center/messages/folder/trash');
-
-        $this->assertResponseOk();
-
-        $this->assertEquals('trash', $this->viewVariable('folder'));
-        $this->assertEquals(1, $this->viewVariable('messages')->count());
-    }
-
     public function testViewInboxMessage(): void
     {
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000001');
