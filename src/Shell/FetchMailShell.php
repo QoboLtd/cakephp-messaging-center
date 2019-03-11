@@ -178,6 +178,13 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
+        $result = $table->findByMessageId($message->messageId)
+            ->count();
+
+        if ($result > 0) {
+            return;
+        }
+
         $entity = $table->newEntity();
         $table->patchEntity($entity, [
             'subject' => $message->subject,
