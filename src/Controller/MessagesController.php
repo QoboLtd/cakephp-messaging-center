@@ -11,7 +11,11 @@
  */
 namespace MessagingCenter\Controller;
 
+use Cake\ORM\TableRegistry;
 use Cake\Http\Exception\ForbiddenException;
+use MessagingCenter\Model\Entity\Mailbox;
+use MessagingCenter\Model\Table\MailboxesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * Messages Controller
@@ -63,13 +67,23 @@ class MessagesController extends AppController
             throw new ForbiddenException();
         }
 
-        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'), $this->referer());
+        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
+        $mailbox = $mailboxes->get($folder->get('mailbox_id'), [
+            'contain' => [
+                'Folders' => [
+                    'sort' => ['Folders.order_no' => 'ASC']
+                ]
+            ]
+        ]);
+        Assert::isInstanceOf($mailbox, Mailbox::class);
 
         // set status to read
         if ($this->request->is(['get']) &&
             !$this->request->is(['json', 'ajax']) &&
-            $this->Messages->getNewStatus() === $message->status &&
-            $this->Messages->getSentFolder() !== $folder
+            $this->Messages->getNewStatus() === $message->get('status') &&
+            $this->Messages->getSentFolder() !== $folder->get('name')
         ) {
             $status = $this->Messages->getReadStatus();
             $message = $this->Messages->patchEntity($message, ['status' => $status]);
@@ -77,8 +91,9 @@ class MessagesController extends AppController
         }
 
         $this->set('message', $message);
-        $this->set('folder', $folder);
-        $this->set('_serialize', ['message', 'folder']);
+        $this->set('folderName', $folder->get('name'));
+        $this->set('mailbox', $mailbox);
+        $this->set('_serialize', ['message', 'folder', 'mailbox']);
     }
 
     /**

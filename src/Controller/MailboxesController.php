@@ -41,7 +41,11 @@ class MailboxesController extends AppController
     public function view(string $id = null)
     {
         $mailbox = $this->Mailboxes->get($id, [
-            'contain' => ['Folders']
+            'contain' => [
+                'Folders' => [
+                    'sort' => ['Folders.order_no' => 'ASC']
+                ]
+            ]
         ]);
 
         $folderId = $this->request->getData('folder_id');
