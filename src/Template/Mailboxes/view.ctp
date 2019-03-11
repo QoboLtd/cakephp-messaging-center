@@ -27,15 +27,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
 
 <section class="content">
     <div class="row">
-        <div class="col-md-3">
-            <?= $this->Html->link(
-                '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
-                ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
-            ); ?>
-            <?= $this->element('MessagingCenter.mailbox_details') ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
-        </div>
+        <?= $this->element('MessagingCenter.common_sidebar'); ?>
         <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
