@@ -60,6 +60,19 @@ class MailboxesFixture extends TestFixture
                 'created' => '2019-01-07 20:34:29',
                 'modified' => '2019-01-07 20:34:29'
             ],
+            [
+                'id' => '00000000-0000-0000-0000-000000000002',
+                'user_id' => '3eb99f53-16c7-4046-a1bd-8d526bdc24aa',
+                'name' => 'My Test Email',
+                'type' => 'email',
+                'incoming_transport' => 'imap4',
+                'incoming_settings' => '{"host":"imap.yandex.ru","port":"933","use_ssl":"1","no_validate_ssl_cert":"1","username":"test2019me@ya.ru","password":"XXXX"}',
+                'outgoing_transport' => 'smtp',
+                'outgoing_settings' => '{"host":"smtp.yandex.ru","port":"465","username":"test2019me@ya.ru","password":"XXXX"}',
+                'active' => 1,
+                'created' => '2019-01-07 20:34:29',
+                'modified' => '2019-01-07 20:34:29'
+            ],
         ];
         parent::init();
     }

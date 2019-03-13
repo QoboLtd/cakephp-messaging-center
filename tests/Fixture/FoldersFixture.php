@@ -23,6 +23,7 @@ class FoldersFixture extends TestFixture
         'parent_id' => ['type' => 'uuid', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'type' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'order_no' => ['type' => 'integer', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
@@ -59,7 +60,8 @@ class FoldersFixture extends TestFixture
                 'name' => 'Sent',
                 'type' => 'default',
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
+                'order_no' => 10,
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000002',
@@ -68,7 +70,8 @@ class FoldersFixture extends TestFixture
                 'name' => 'Inbox',
                 'type' => 'default',
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
+                'order_no' => 1,
             ],
         ];
         parent::init();

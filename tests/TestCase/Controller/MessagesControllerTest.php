@@ -20,7 +20,9 @@ class MessagesControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.CakeDC/Users.users',
-        'plugin.messaging_center.messages'
+        'plugin.messaging_center.messages',
+        'plugin.messaging_center.folders',
+        'plugin.messaging_center.mailboxes',
     ];
 
     /**
@@ -35,6 +37,8 @@ class MessagesControllerTest extends IntegrationTestCase
      */
     public function setUp()
     {
+        $this->disableErrorHandlerMiddleware();
+
         parent::setUp();
 
         /**
@@ -106,7 +110,7 @@ class MessagesControllerTest extends IntegrationTestCase
 
     public function testCompose(): void
     {
-        $this->get('/messaging-center/messages/compose');
+        $this->get('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002');
 
         $this->assertResponseOk();
 
@@ -123,7 +127,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'subject' => 'testComposePost message',
             'content' => 'Bla bla bla'
         ];
-        $this->post('/messaging-center/messages/compose', $data);
+        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002', $data);
 
         $this->assertResponseCode(302);
 
@@ -155,7 +159,7 @@ class MessagesControllerTest extends IntegrationTestCase
     public function testComposePostNoData(): void
     {
         $expected = $this->MessagesTable->find('all')->count();
-        $this->post('/messaging-center/messages/compose');
+        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002');
 
         $this->assertResponseOk();
         $this->assertSession('The message could not be sent. Please, try again.', 'Flash.flash.0.message');
@@ -175,7 +179,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'status' => 'Enforce custom message status',
             'date_sent' => 'Enforce custom date sent',
         ];
-        $this->post('/messaging-center/messages/compose', $data);
+        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002', $data);
 
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
