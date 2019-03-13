@@ -10,8 +10,8 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-if (!isset($folder)) {
-    $folder = 'inbox';
+if (!isset($folderName)) {
+    $folderName = 'Inbox';
 }
 ?>
 <div class="box box-primary">

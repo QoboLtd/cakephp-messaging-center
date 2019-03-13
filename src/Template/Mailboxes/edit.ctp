@@ -9,6 +9,10 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
+
+$mailbox->set('IncomingSettings', json_decode($mailbox->get('incoming_settings'), true));
+$mailbox->set('OutgoingSettings', json_decode($mailbox->get('outgoing_settings'), true));
 ?>
 <section class="content-header">
     <div class="row">
@@ -18,5 +22,5 @@
     </div>
 </section>
 <section class="content">
-    <?= $this->element('mailbox_form', ['mailbox' => $mailbox, 'types' => $types]) ?>
+    <?= $this->element('mailbox_form', ['mailbox' => $mailbox, 'types' => $types, ]) ?>
 </section>
