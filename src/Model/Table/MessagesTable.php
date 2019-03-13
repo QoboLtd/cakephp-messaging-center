@@ -54,6 +54,12 @@ class MessagesTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->belongsTo('Folders', [
+            'foreignKey' => 'folder_id',
+            'joinType' => 'INNER',
+            'className' => 'MessagingCenter.Folders'
+        ]);
+
         $this->addBehavior('Timestamp');
     }
 
