@@ -13,6 +13,7 @@ namespace MessagingCenter\Controller;
 
 use Cake\ORM\TableRegistry;
 use Cake\Http\Exception\ForbiddenException;
+use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Table\MailboxesTable;
 use Webmozart\Assert\Assert;
@@ -68,16 +69,7 @@ class MessagesController extends AppController
         }
 
         $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
-        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
-        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
-        $mailbox = $mailboxes->get($folder->get('mailbox_id'), [
-            'contain' => [
-                'Folders' => [
-                    'sort' => ['Folders.order_no' => 'ASC']
-                ]
-            ]
-        ]);
-        Assert::isInstanceOf($mailbox, Mailbox::class);
+        $mailbox = $this->getMailbox($folder->get('mailbox_id'));
 
         // set status to read
         if ($this->request->is(['get']) &&
@@ -99,9 +91,10 @@ class MessagesController extends AppController
     /**
      * Composer method
      *
+     * @param string $mailboxId to compose message for
      * @return \Cake\Http\Response|void|null Redirects on successful compose, renders view otherwise.
      */
-    public function compose()
+    public function compose(string $mailboxId)
     {
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
@@ -119,8 +112,11 @@ class MessagesController extends AppController
             }
         }
 
+        $mailbox = $this->getMailbox($mailboxId);
+
         $this->set('message', $message);
-        $this->set('_serialize', ['message']);
+        $this->set('mailbox', $mailbox);
+        $this->set('_serialize', ['message', 'mailbox']);
     }
 
     /**
@@ -134,11 +130,16 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => []
+            'contain' => ['Folders']
+        ]);
+
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        $mailbox = $mailboxes->get($message->get('folder')->get('mailbox_id'), [
+            'contain' => ['Folders']
         ]);
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->to_user) {
+        if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') !== $message->to_user) {
             $this->Flash->error((string)__('You cannot reply to a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
@@ -163,7 +164,8 @@ class MessagesController extends AppController
         }
 
         $this->set('message', $message);
-        $this->set('_serialize', ['message']);
+        $this->set('mailbox', $mailbox);
+        $this->set('_serialize', ['message', 'mailbox']);
     }
 
     /**
@@ -287,5 +289,27 @@ class MessagesController extends AppController
         }
 
         return $this->redirect(['action' => 'folder']);
+    }
+
+    /**
+     * getMailbox method
+     *
+     * @param string $mailboxId to get mailbox for
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function getMailbox(string $mailboxId)
+    {
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
+        $mailbox = $mailboxes->get($mailboxId, [
+            'contain' => [
+                'Folders' => [
+                    'sort' => ['Folders.order_no' => 'ASC']
+                ]
+            ]
+        ]);
+        Assert::isInstanceOf($mailbox, Mailbox::class);
+
+        return $mailbox;
     }
 }
