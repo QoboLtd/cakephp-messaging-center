@@ -124,7 +124,7 @@ class MailboxesController extends AppController
     public function edit(string $id = null)
     {
         $mailbox = $this->Mailboxes->get($id, [
-            'contain' => []
+            'contain' => ['Folders']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             /**
@@ -141,8 +141,15 @@ class MailboxesController extends AppController
         }
 
         $types = (array)Configure::read('MessagingCenter.Mailbox.types');
+        $incomingTransports = (array)Configure::read('MessagingCenter.Mailbox.incomingTransports');
+        $outgoingTransports = (array)Configure::read('MessagingCenter.Mailbox.outgoingTransports');
 
-        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports'));
+        $usersTable = TableRegistry::getTableLocator()->get('Users');
+        $users = $usersTable->find('list')
+            ->where([
+                'active' => true
+            ]);
+        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports', 'users'));
     }
 
     /**
