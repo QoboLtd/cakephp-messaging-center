@@ -37,8 +37,6 @@ class MessagesControllerTest extends IntegrationTestCase
      */
     public function setUp()
     {
-        $this->disableErrorHandlerMiddleware();
-
         parent::setUp();
 
         /**
@@ -68,18 +66,16 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
-        $this->assertEquals('inbox', $this->viewVariable('folder'));
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
     public function testViewSentMessage(): void
     {
-        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
-        $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000001');
+        $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000002');
 
         $this->assertResponseOk();
-        $this->assertEquals('sent', $this->viewVariable('folder'));
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
@@ -88,7 +84,6 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000002');
 
         $this->assertResponseOk();
-        $this->assertEquals('trash', $this->viewVariable('folder'));
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
@@ -97,12 +92,12 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000003');
 
         $this->assertResponseOk();
-        $this->assertEquals('archived', $this->viewVariable('folder'));
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
     public function testViewForbidden(): void
     {
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000004');
 
         $this->assertResponseCode(403);
@@ -120,6 +115,7 @@ class MessagesControllerTest extends IntegrationTestCase
 
     public function testComposePost(): void
     {
+        $mailboxId = '00000000-0000-0000-0000-000000000002';
         $expected = 1 + $this->MessagesTable->find('all')->count();
 
         $data = [
@@ -127,14 +123,15 @@ class MessagesControllerTest extends IntegrationTestCase
             'subject' => 'testComposePost message',
             'content' => 'Bla bla bla'
         ];
-        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002', $data);
+        $this->post('/messaging-center/messages/compose/' . $mailboxId, $data);
 
         $this->assertResponseCode(302);
 
         $url = [
             'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'folder'
+            'controller' => 'Mailboxes',
+            'action' => 'view',
+            $mailboxId
         ];
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
@@ -207,6 +204,7 @@ class MessagesControllerTest extends IntegrationTestCase
     public function testReplyPut(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
+        $mailboxId = '00000000-0000-0000-0000-000000000001';
         $entity = $this->MessagesTable->get($id);
 
         $expected = 1 + $this->MessagesTable->find('all')->count();
@@ -221,8 +219,9 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $url = [
             'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'folder'
+            'controller' => 'Mailboxes',
+            'action' => 'view',
+            $mailboxId
         ];
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
@@ -248,9 +247,10 @@ class MessagesControllerTest extends IntegrationTestCase
 
     public function testReplyPutSameUser(): void
     {
-        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
+        $this->markTestSkipped('Skip this test till refactoring will be completed');
 
         $id = '00000000-0000-0000-0000-000000000001';
+        $mailboxId = '00000000-0000-0000-0000-000000000001';
 
         $expected = $this->MessagesTable->find('all')->count();
 
@@ -264,9 +264,9 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $url = [
             'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
+            'controller' => 'Mailboxes',
             'action' => 'view',
-            $id
+            $mailboxId
         ];
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
@@ -286,6 +286,7 @@ class MessagesControllerTest extends IntegrationTestCase
     public function testReplyPutEnforceData(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
+        $mailboxId = '00000000-0000-0000-0000-000000000001';
         $expected = 1 + $this->MessagesTable->find('all')->count();
 
         $data = [
@@ -303,8 +304,9 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $url = [
             'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'folder'
+            'controller' => 'Mailboxes',
+            'action' => 'view',
+            $mailboxId
         ];
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());

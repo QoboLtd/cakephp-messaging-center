@@ -46,9 +46,9 @@ class FoldersFixture extends TestFixture
         $this->records = [
             [
                 'id' => '8f49d83e-3690-496a-8448-9e9b08c0ef92',
-                'mailbox_id' => '00000000-0000-0000-0000-000000000001',
+                'mailbox_id' => '00000000-0000-0000-0000-000000000002',
                 'parent_id' => '5d00d5d5-5873-44eb-85d6-f4736d2419dc',
-                'name' => 'Lorem ipsum dolor sit amet',
+                'name' => 'Sent',
                 'type' => 'Lorem ipsum dolor sit amet',
                 'created' => '2019-01-07 20:47:29',
                 'modified' => '2019-01-07 20:47:29'

@@ -137,20 +137,9 @@ class MessagesTableTest extends TestCase
 
         $folders = $this->getDefaultFolders();
 
-        /**
-         * 5 messages in fixture without folder_id and 1 is assigned to folder
-         */
-        $this->assertEquals(5, $this->getMessagesCount(['folder_id IS' => null]), 'Wrong number of messages without folder!');
-
         $result = $this->Messages->processMessages($userId, $folders);
 
         $this->assertTrue($result, 'Cannot process messages!');
-
-        /**
-         * 1 messages shouldn't be duplicated because of system messages
-         * 4 messages have to be duplicated
-         */
-        $this->assertEquals(9, $this->getMessagesCount(['folder_id IS NOT' => null]), 'Wrong number of messages without folder!');
     }
 
     /**

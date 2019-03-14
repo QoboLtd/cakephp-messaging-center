@@ -49,7 +49,7 @@ class MailboxesFixture extends TestFixture
         $this->records = [
             [
                 'id' => '00000000-0000-0000-0000-000000000001',
-                'user_id' => '3eb99f53-16c7-4046-a1bd-8d526bdc24aa',
+                'user_id' => '00000000-0000-0000-0000-000000000002',
                 'name' => 'test@system',
                 'type' => 'system',
                 'incoming_transport' => 'internal',
@@ -62,7 +62,7 @@ class MailboxesFixture extends TestFixture
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000002',
-                'user_id' => '3eb99f53-16c7-4046-a1bd-8d526bdc24aa',
+                'user_id' => '00000000-0000-0000-0000-000000000002',
                 'name' => 'My Test Email',
                 'type' => 'email',
                 'incoming_transport' => 'imap4',
