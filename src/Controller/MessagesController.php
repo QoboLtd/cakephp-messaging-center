@@ -314,7 +314,7 @@ class MessagesController extends AppController
      * @param string $mailboxId to get mailbox for
      * @return \Cake\Datasource\EntityInterface
      */
-    protected function getMailbox(string $mailboxId)
+    protected function getMailbox(string $mailboxId) : EntityInterface
     {
         $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
         Assert::isInstanceOf($mailboxes, MailboxesTable::class);
@@ -337,10 +337,15 @@ class MessagesController extends AppController
      * @param string $mailboxId owned folder
      * @return \Cake\Datasource\EntityInterface
      */
-    protected function getFolderByName(string $folderName, string $mailboxId) : string
+    protected function getFolderByName(string $folderName, string $mailboxId) : EntityInterface
     {
         $folders = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
-        $folder = $folders->findByNameAndMailboxId($folderName, $mailboxId)
+        $folder = $folders->find()
+            ->where([
+                'name' => $folderName,
+                'mailbox_id' => $mailboxId
+            ])
+            ->enableHydration(true)
             ->first();
 
         Assert::isInstanceOf($folder, EntityInterface::class);

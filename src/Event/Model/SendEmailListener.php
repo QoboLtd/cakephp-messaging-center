@@ -18,6 +18,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\Mailer\Email;
 use Cake\Utility\Inflector;
 use MessagingCenter\Event\EventName;
+use Webmozart\Assert\Assert;
 
 class SendEmailListener implements EventListenerInterface
 {
@@ -57,10 +58,13 @@ class SendEmailListener implements EventListenerInterface
          * @var \Cake\Mailer\Email $email
          */
         $email = new Email('default');
-        $result = $email->from($outgoingSettings['username'])
-            ->setTransport('custom')
-            ->to($data['to_user'])
-            ->subject($data['subject'])
-            ->send($data['content']);
+        Assert::isInstanceOf($email, Email::class);
+
+        $email->setTransport('custom');
+        $email->from($outgoingSettings['username']);
+        $email->to($data['to_user']);
+        $email->subject($data['subject']);
+
+        $result = $email->send($data['content']);
     }
 }

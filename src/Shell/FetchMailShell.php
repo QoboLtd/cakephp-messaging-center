@@ -72,11 +72,11 @@ class FetchMailShell extends Shell
          * @var \Cake\ORM\Query $query
          */
         $query = $table->find()
-            ->contain('Folders')
             ->where([
                 'type' => (string)MailboxType::EMAIL(),
                 'active' => true,
-            ]);
+            ])
+            ->contain(['Folders']);
 
         foreach ($query->all() as $mailbox) {
             $this->processMailbox($mailbox);
@@ -178,7 +178,10 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
-        $result = $table->findByMessageId($message->messageId)
+        $result = $table->find()
+            ->where([
+                'message_id' => $message->messageId
+            ])
             ->count();
 
         if ($result > 0) {
