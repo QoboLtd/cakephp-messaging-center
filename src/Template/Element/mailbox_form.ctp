@@ -117,6 +117,21 @@ $outgoingTransports = (array)Configure::read('MessagingCenter.outgoingTransports
         </div>
         <div class="row">
             <div class="col-xs-12 col-md-6">
+                <?php
+                    $label = $this->Form->label('Use SSL');
+                    echo $this->Form->control('OutgoingSettings.use_ssl', [
+                        'type' => 'checkbox',
+                        'label' => false,
+                        'class' => 'square',
+                        'templates' => [
+                            'inputContainer' => '<div class="{{required}}">' . $label . '<div class="clearfix"></div>{{content}}</div>'
+                        ]
+                    ]);
+                ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
                 <?= $this->Form->control('OutgoingSettings.username'); ?>
             </div>
             <div class="col-xs-12 col-md-6">
