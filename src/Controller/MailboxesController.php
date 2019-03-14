@@ -131,6 +131,10 @@ class MailboxesController extends AppController
              * @var mixed[] $data
              */
             $data = $this->request->getData();
+
+            $data['incoming_settings'] = json_encode($data['IncomingSettings']);
+            $data['outgoing_settings'] = json_encode($data['OutgoingSettings']);
+
             $mailbox = $this->Mailboxes->patchEntity($mailbox, $data);
             if ($this->Mailboxes->save($mailbox)) {
                 $this->Flash->success((string)__('The mailbox has been saved.'));
