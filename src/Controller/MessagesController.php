@@ -12,7 +12,11 @@
 namespace MessagingCenter\Controller;
 
 use Cake\ORM\TableRegistry;
+use Cake\Event\Event;
+use Cake\Event\EventListenerInterface;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
+use MessagingCenter\Event\EventName;
 use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Table\MailboxesTable;
@@ -96,23 +100,37 @@ class MessagesController extends AppController
      */
     public function compose(string $mailboxId)
     {
+        $mailbox = $this->getMailbox($mailboxId);
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
+            foreach ($mailbox->get('folders') as $folder) {
+                if ($folder->get('name') == 'Sent') {
+                    $sentFolderId = $folder->get('id');
+                }
+            }
+
             $data = $this->request->getData();
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
+            $data['folder_id'] = $sentFolderId;
+
             $message = $this->Messages->patchEntity($message, $data);
             if ($this->Messages->save($message)) {
                 $this->Flash->success((string)__('The message has been sent.'));
 
-                return $this->redirect(['action' => 'folder']);
+                $event = new Event((string)EventName::SEND_EMAIL(), $this, [
+                    'mailbox' => $mailbox,
+                    'data' => $data
+                ]);
+                EventManager::instance()->dispatch($event);
+                $result = $event->result;
+
+                return $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailboxId]);
             } else {
                 $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
             }
         }
-
-        $mailbox = $this->getMailbox($mailboxId);
 
         $this->set('message', $message);
         $this->set('mailbox', $mailbox);

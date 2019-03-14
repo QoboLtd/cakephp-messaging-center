@@ -20,4 +20,5 @@ class EventName extends Enum
 {
     const NOTIFY_BEFORE_RENDER = 'MessagingCenter.Notify.beforeRender';
     const CAKE_ORM_MODEL_AFTER_SAFE = 'Model.afterSave';
+    const SEND_EMAIL = 'MessagingCenter.sendEmail';
 }
