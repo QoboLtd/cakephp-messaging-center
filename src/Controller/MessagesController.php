@@ -11,11 +11,12 @@
  */
 namespace MessagingCenter\Controller;
 
-use Cake\ORM\TableRegistry;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\ORM\TableRegistry;
 use MessagingCenter\Event\EventName;
 use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Mailbox;
@@ -64,11 +65,15 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => []
+            'contain' => [
+                'Folders' => [
+                    'Mailboxes'
+                ]
+            ]
         ]);
 
         // forbid viewing of others messages
-        if (!$this->Auth->user('is_superuser') && $this->Auth->user('id') !== $message->get('to_user') && $this->Auth->user('id') !== $message->get('from_user')) {
+        if (!$this->Auth->user('is_superuser') && $message->get('folder')->get('mailbox')->get('user_id') != $this->Auth->user('id')) {
             throw new ForbiddenException();
         }
 
@@ -103,17 +108,11 @@ class MessagesController extends AppController
         $mailbox = $this->getMailbox($mailboxId);
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
-            foreach ($mailbox->get('folders') as $folder) {
-                if ($folder->get('name') == 'Sent') {
-                    $sentFolderId = $folder->get('id');
-                }
-            }
-
             $data = $this->request->getData();
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
-            $data['folder_id'] = $sentFolderId;
+            $data['folder_id'] = $this->getFolderByName('Sent', $mailboxId);
 
             $message = $this->Messages->patchEntity($message, $data);
             if ($this->Messages->save($message)) {
@@ -175,7 +174,7 @@ class MessagesController extends AppController
             if ($this->Messages->save($newMessage)) {
                 $this->Flash->success((string)__('The message has been sent.'));
 
-                return $this->redirect(['action' => 'folder']);
+                return $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')]);
             } else {
                 $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
             }
@@ -329,5 +328,23 @@ class MessagesController extends AppController
         Assert::isInstanceOf($mailbox, Mailbox::class);
 
         return $mailbox;
+    }
+
+    /**
+     * getFolderByName method
+     *
+     * @param string $folderName to find
+     * @param string $mailboxId owned folder
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function getFolderByName(string $folderName, string $mailboxId) : string
+    {
+        $folders = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
+        $folder = $folders->findByNameAndMailboxId($folderName, $mailboxId)
+            ->first();
+
+        Assert::isInstanceOf($folder, EntityInterface::class);
+
+        return $folder;
     }
 }
