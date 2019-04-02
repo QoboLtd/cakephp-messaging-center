@@ -19,7 +19,7 @@ class MailboxListenerTest extends TestCase
     ];
 
     /**
-     * @var \MessagingCenter\Model\Table\Mailboxes $mailboxes
+     * @var \Cake\ORM\Table $mailboxes
      */
     protected $mailboxes;
 

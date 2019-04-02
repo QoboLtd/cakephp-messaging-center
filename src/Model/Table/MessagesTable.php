@@ -328,7 +328,7 @@ class MessagesTable extends Table
         unset($data['id']);
 
         $userTable = TableRegistry::getTableLocator()->get('Users');
-        Assert::isInstanceOf($userTable, Users::class);
+        Assert::isInstanceOf($userTable, Table::class);
 
         $user = $userTable->get($userId);
         Assert::isInstanceOf($user, EntityInterface::class);
