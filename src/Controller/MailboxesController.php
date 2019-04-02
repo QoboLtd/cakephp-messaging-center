@@ -48,8 +48,7 @@ class MailboxesController extends AppController
             ]
         ]);
 
-        $folderId = $this->request->getData('folder_id');
-
+        $folderId = $this->request->getQuery('folder_id');
         if (empty($folderId)) {
             $folderId = $this->Mailboxes->getInboxFolder($mailbox);
         }
