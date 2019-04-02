@@ -328,19 +328,16 @@ class MessagesTable extends Table
         unset($data['id']);
 
         $userTable = TableRegistry::getTableLocator()->get('Users');
-        $user = $userTable->get($userId);
+        Assert::isInstanceOf($userTable, Users::class);
 
-        if (empty($user)) {
-            return false;
-        }
+        $user = $userTable->get($userId);
+        Assert::isInstanceOf($user, EntityInterface::class);
 
         $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
         Assert::isInstanceOf($mailboxesTable, MailboxesTable::class);
 
         $mailbox = $mailboxesTable->createDefaultMailbox($user->toArray());
-        if (empty($mailbox)) {
-            return false;
-        }
+        Assert::isInstanceOf($mailbox, EntityInterface::class);
 
         $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
         Assert::isInstanceOf($foldersTable, FoldersTable::class);
