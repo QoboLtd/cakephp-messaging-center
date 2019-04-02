@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Controller;
 
+use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\IntegrationTestCase;
 use MessagingCenter\Controller\MailboxesController;
 
@@ -16,8 +17,24 @@ class MailboxesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.messaging_center.mailboxes'
+        'plugin.CakeDC/Users.users',
+        'plugin.messaging_center.mailboxes',
+        'plugin.messaging_center.folders',
+        'plugin.messaging_center.messages',
     ];
+
+    public function setUp() : void
+    {
+        parent::setUp();
+
+        $this->enableRetainFlashMessages();
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+    }
+
+    public function tearDown() : void
+    {
+        parent::tearDown();
+    }
 
     /**
      * Test index method
@@ -26,7 +43,8 @@ class MailboxesControllerTest extends IntegrationTestCase
      */
     public function testIndex() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->get('messaging-center/mailboxes');
+        $this->assertResponseOk();
     }
 
     /**
@@ -36,7 +54,12 @@ class MailboxesControllerTest extends IntegrationTestCase
      */
     public function testView() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->get('messaging-center/mailboxes/view/00000000-0000-0000-0000-000000000001');
+
+        $this->assertResponseOk();
+        $this->assertInstanceOf(EntityInterface::class, $this->viewVariable('mailbox'));
     }
 
     /**

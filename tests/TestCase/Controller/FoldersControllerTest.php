@@ -9,7 +9,6 @@ use MessagingCenter\Controller\FoldersController;
  */
 class FoldersControllerTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
@@ -18,16 +17,6 @@ class FoldersControllerTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.messaging_center.folders'
     ];
-
-    /**
-     * Test index method
-     *
-     * @return void
-     */
-    public function testIndex() : void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
 
     /**
      * Test view method

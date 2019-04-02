@@ -48,23 +48,23 @@ class MailboxesTableTest extends TestCase
         $this->Mailboxes = $table;
 
         Configure::write('MessagingCenter', [
-                'Mailbox' => [
-                    'default' => [
-                        'mailbox_type' => 'system',
-                        'incoming_transport' => 'internal',
-                        'incoming_settings' => 'default',
-                        'outgoing_transport' => 'internal',
-                        'outgoing_settings' => 'default',
-                        'mailbox_postfix' => '@system',
-                    ]
-                ],
-                'Folder' => [
-                    'defaultType' => 'default',
-                ],
-                'systemUser' => [
-                    'name' => 'System',
-                    'id' => '00000000-0000-0000-0000-000000000000',
-                ],
+            'Mailbox' => [
+                'default' => [
+                    'mailbox_type' => 'system',
+                    'incoming_transport' => 'internal',
+                    'incoming_settings' => 'default',
+                    'outgoing_transport' => 'internal',
+                    'outgoing_settings' => 'default',
+                    'mailbox_postfix' => '@system',
+                ]
+            ],
+            'Folder' => [
+                'defaultType' => 'default',
+            ],
+            'systemUser' => [
+                'name' => 'System',
+                'id' => '00000000-0000-0000-0000-000000000000',
+            ],
         ]);
     }
 
