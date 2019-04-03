@@ -43,7 +43,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
         <div class="col-md-3">
             <?= $this->Html->link(
                 '<i class="fa fa-inbox" aria-hidden="true"></i> ' . __('Back to inbox'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', 'inbox'],
+                ['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
             <?= $this->element('MessagingCenter.folders_list') ?>
