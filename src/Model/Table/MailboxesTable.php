@@ -29,6 +29,8 @@ class MailboxesTable extends Table
 {
     const FOLDER_INBOX = 'Inbox';
     const FOLDER_SENT = 'Sent';
+    const FOLDER_ARCHIVE = 'Archive';
+    const FOLDER_TRASH = 'Trash';
 
     /**
      * Initialize method
@@ -138,6 +140,8 @@ class MailboxesTable extends Table
         return [
             self::FOLDER_INBOX,
             self::FOLDER_SENT,
+            self::FOLDER_ARCHIVE,
+            self::FOLDER_TRASH,
         ];
     }
 
