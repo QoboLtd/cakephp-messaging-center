@@ -34,6 +34,7 @@ $username = $this->element('MessagingCenter.user', [
                 ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ) ?>
+            <?= $this->element('MessagingCenter.mailbox_details') ?>
             <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">

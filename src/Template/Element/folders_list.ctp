@@ -13,6 +13,7 @@
 if (!isset($folderName)) {
     $folderName = 'Inbox';
 }
+
 ?>
 <div class="box box-primary">
     <div class="box-header with-border">
