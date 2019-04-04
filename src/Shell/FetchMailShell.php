@@ -184,7 +184,7 @@ class FetchMailShell extends Shell
                 'message_id' => $message->messageId
             ])
             ->contain([
-                'Folders' => function($q) use ($mailboxId) {
+                'Folders' => function ($q) use ($mailboxId) {
                     return $q->where(['mailbox_id' => $mailboxId]);
                 }
             ]);
