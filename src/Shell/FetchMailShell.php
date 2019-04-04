@@ -178,7 +178,13 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
+        $mailboxId = $mailbox->get('id');
         $result = $table->find()
+            ->contain([
+                'Folders' => function($q) use ($mailboxId) {
+                    return $q->where(['mailbox_id' => $mailboxId]);
+                }
+            ])
             ->where([
                 'message_id' => $message->messageId
             ])
