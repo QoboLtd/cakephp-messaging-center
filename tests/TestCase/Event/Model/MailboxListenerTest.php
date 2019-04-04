@@ -28,7 +28,25 @@ class MailboxListenerTest extends TestCase
         parent::setUp();
 
         Configure::write('Users.table', 'CakeDC/Users.Users');
-
+        Configure::write('MessagingCenter', [
+            'Mailbox' => [
+                'default' => [
+                    'mailbox_type' => 'system',
+                    'incoming_transport' => 'internal',
+                    'incoming_settings' => 'default',
+                    'outgoing_transport' => 'internal',
+                    'outgoing_settings' => 'default',
+                    'mailbox_postfix' => '@system',
+                ]
+            ],
+            'Folder' => [
+                'defaultType' => 'default',
+            ],
+            'systemUser' => [
+                'name' => 'System',
+                'id' => '00000000-0000-0000-0000-000000000000',
+            ],
+        ]);
         $this->mailboxes = TableRegistry::get('MessagingCenter.Mailboxes');
 
         // enable event tracking
