@@ -12,9 +12,10 @@
 namespace MessagingCenter\View\Cell;
 
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Table;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\View\Cell;
+use MessagingCenter\Model\Table\MailboxesTable;
 use Webmozart\Assert\Assert;
 
 /**
@@ -42,13 +43,15 @@ class InboxCell extends Cell
     public function unreadCount(string $format = '', ?EntityInterface $mailbox = null): void
     {
         $user = $this->request->getSession()->read('Auth.User');
+        Assert::isArray($user);
+
         if (trim($format) === '') {
             $format = static::UNREAD_COUNT_FORMAT;
         }
 
         if (empty($mailbox)) {
             $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
-            Assert::isInstanceOf($mailboxes, Table::class);
+            Assert::isInstanceOf($mailboxes, MailboxesTable::class);
 
             $mailbox = $mailboxes->getSystemMailbox($user);
             Assert::isInstanceOf($mailbox, EntityInterface::class);
@@ -65,6 +68,7 @@ class InboxCell extends Cell
                     return $q->where(['mailbox_id' => $mailboxId]);
                 }
             ]);
+        Assert::isInstanceOf($unread, Query::class);
 
         $this->set('unreadFormat', $format);
         $this->set('unreadCount', $unread->count());

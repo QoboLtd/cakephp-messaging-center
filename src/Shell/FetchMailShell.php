@@ -179,16 +179,17 @@ class FetchMailShell extends Shell
         Assert::isInstanceOf($table, MessagesTable::class);
 
         $mailboxId = $mailbox->get('id');
-        $result = $table->find()
+        $query = $table->find()
+            ->where([
+                'message_id' => $message->messageId
+            ])
             ->contain([
                 'Folders' => function($q) use ($mailboxId) {
                     return $q->where(['mailbox_id' => $mailboxId]);
                 }
-            ])
-            ->where([
-                'message_id' => $message->messageId
-            ])
-            ->count();
+            ]);
+        Assert::isInstanceOf($query, Query::class);
+        $result = $query->count();
 
         if ($result > 0) {
             return;

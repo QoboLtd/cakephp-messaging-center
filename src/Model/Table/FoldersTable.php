@@ -124,7 +124,7 @@ class FoldersTable extends Table
                 ]);
 
             $result = $query->first();
-            Assert::nullOrisInstanceOf($result, EntityInterface::class);
+            Assert::nullOrIsInstanceOf($result, EntityInterface::class);
 
             if (empty($result)) {
                 $folder = $this->newEntity();
