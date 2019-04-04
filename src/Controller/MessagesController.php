@@ -156,7 +156,7 @@ class MessagesController extends AppController
         ]);
 
         // current user's sent message
-        if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') !== $message->to_user) {
+        if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') !== $message->get('to_user')) {
             $this->Flash->error((string)__('You cannot reply to a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
@@ -165,7 +165,8 @@ class MessagesController extends AppController
         if ($this->request->is('put')) {
             $newMessage = $this->Messages->newEntity();
             $data = $this->request->getData();
-            $data['to_user'] = $message->from_user;
+
+            $data['to_user'] = $message->get('from_user');
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
@@ -243,7 +244,7 @@ class MessagesController extends AppController
         $status = $this->Messages->getArchivedStatus();
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->to_user) {
+        if ($this->Auth->user('id') !== $message->get('to_user')) {
             $this->Flash->error((string)__('You cannot archive a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
@@ -284,13 +285,13 @@ class MessagesController extends AppController
         $status = $this->Messages->getReadStatus();
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->to_user) {
+        if ($this->Auth->user('id') !== $message->get('to_user')) {
             $this->Flash->error((string)__('You cannot restore a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         } else {
             // inbox message
-            if (in_array($message->status, [$status, $this->Messages->getNewStatus()])) {
+            if (in_array($message->get('status'), [$status, $this->Messages->getNewStatus()])) {
                 $this->Flash->error((string)__('You cannot restore an inbox message.'));
 
                 return $this->redirect(['action' => 'view', $id]);
