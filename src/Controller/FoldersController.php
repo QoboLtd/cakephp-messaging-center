@@ -77,6 +77,7 @@ class FoldersController extends AppController
         $folder = $this->Folders->get($id, [
             'contain' => []
         ]);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             /**
              * @var mixed[] $data
@@ -90,6 +91,7 @@ class FoldersController extends AppController
             }
             $this->Flash->error((string)__('The folder could not be saved. Please, try again.'));
         }
+
         $this->set(compact('folder'));
     }
 
@@ -104,6 +106,7 @@ class FoldersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $folder = $this->Folders->get($id);
+
         if ($this->Folders->delete($folder)) {
             $this->Flash->success((string)__('The folder has been deleted.'));
         } else {
