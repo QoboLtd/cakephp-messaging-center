@@ -123,8 +123,13 @@ class MailboxesController extends AppController
     public function edit(string $id = null)
     {
         $mailbox = $this->Mailboxes->get($id, [
-            'contain' => ['Folders']
+            'contain' => [
+                'Folders' => [
+                    'sort' => ['Folders.order_no' => 'ASC']
+                ]
+            ]
         ]);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             /**
              * @var mixed[] $data
@@ -164,6 +169,8 @@ class MailboxesController extends AppController
      */
     public function delete(string $id = null)
     {
+        $this->autoRender = false;
+
         $this->request->allowMethod(['post', 'delete']);
         $mailbox = $this->Mailboxes->get($id);
         if ($this->Mailboxes->delete($mailbox)) {
