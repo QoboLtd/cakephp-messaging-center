@@ -140,7 +140,7 @@ class MailboxesTableTest extends TestCase
      *
      * @return void
      */
-    public function testGetSystemMailbox()
+    public function testGetSystemMailbox() : void
     {
         $userTable = TableRegistry::getTableLocator()->get('Users');
         $user = $userTable->get('00000000-0000-0000-0000-000000000002');
