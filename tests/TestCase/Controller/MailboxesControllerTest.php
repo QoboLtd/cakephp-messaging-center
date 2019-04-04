@@ -27,6 +27,8 @@ class MailboxesControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
+        $this->disableErrorHandlerMiddleware();
+
         $this->enableRetainFlashMessages();
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
     }
@@ -56,7 +58,7 @@ class MailboxesControllerTest extends IntegrationTestCase
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
-        $this->get('messaging-center/mailboxes/view/00000000-0000-0000-0000-000000000001');
+        $this->get('/messaging-center/mailboxes/view/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
         $this->assertInstanceOf(EntityInterface::class, $this->viewVariable('mailbox'));
@@ -69,7 +71,11 @@ class MailboxesControllerTest extends IntegrationTestCase
      */
     public function testAdd() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->get('/messaging-center/mailboxes/add');
+
+        $this->assertResponseOk();
     }
 
     /**
@@ -79,7 +85,11 @@ class MailboxesControllerTest extends IntegrationTestCase
      */
     public function testEdit() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->get('/messaging-center/mailboxes/edit/00000000-0000-0000-0000-000000000001');
+
+        $this->assertResponseOk();
     }
 
     /**
@@ -89,6 +99,10 @@ class MailboxesControllerTest extends IntegrationTestCase
      */
     public function testDelete() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->post('/messaging-center/mailboxes/delete/00000000-0000-0000-0000-000000000001');
+
+        $this->assertRedirect();
     }
 }

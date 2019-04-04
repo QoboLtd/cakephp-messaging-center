@@ -19,23 +19,17 @@ class FoldersControllerTest extends IntegrationTestCase
     ];
 
     /**
-     * Test view method
-     *
-     * @return void
-     */
-    public function testView() : void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
      * Test add method
      *
      * @return void
      */
     public function testAdd() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->get('/messaging-center/folders/add');
+
+        $this->assertResponseOk();
     }
 
     /**
@@ -45,7 +39,11 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testEdit() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->get('/messaging-center/folders/edit/00000000-0000-0000-0000-000000000001');
+
+        $this->assertResponseOk();
     }
 
     /**
@@ -55,6 +53,10 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testDelete() : void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        $this->post('/messaging-center/folders/delete/00000000-0000-0000-0000-000000000001');
+
+        $this->assertRedirect();
     }
 }
