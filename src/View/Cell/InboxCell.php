@@ -11,7 +11,11 @@
  */
 namespace MessagingCenter\View\Cell;
 
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\View\Cell;
+use Webmozart\Assert\Assert;
 
 /**
  * @property \MessagingCenter\Model\Table\MessagesTable $Messages
@@ -30,23 +34,37 @@ class InboxCell extends Cell
 
     /**
      * Pass unread emails count to the Cell View
+     *
      * @param  string $format html format styling
+     * @param \Cake\Datasource\EntityInterface $mailbox to check new messages for
      * @return void
      */
-    public function unreadCount(string $format = ''): void
+    public function unreadCount(string $format = '', ?EntityInterface $mailbox = null): void
     {
-        $userId = $this->request->getSession()->read('Auth.User.id');
-        if ('' === trim($format)) {
+        $user = $this->request->getSession()->read('Auth.User');
+        if (trim($format) === '') {
             $format = static::UNREAD_COUNT_FORMAT;
         }
 
+        if (empty($mailbox)) {
+            $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+            Assert::isInstanceOf($mailboxes, Table::class);
+
+            $mailbox = $mailboxes->getSystemMailbox($user);
+            Assert::isInstanceOf($mailbox, EntityInterface::class);
+        }
+
+        $mailboxId = $mailbox->get('id');
         $this->loadModel('MessagingCenter.Messages');
-        $unread = $this->Messages->find('all', [
-            'conditions' => [
-                'to_user' => $userId,
-                'status' => $this->Messages->getNewStatus()
-            ]
-        ]);
+        $unread = $this->Messages->find('all')
+            ->where([
+                'status' => $this->Messages->getNewStatus(),
+            ])
+            ->contain([
+                'Folders' => function ($q) use ($mailboxId) {
+                    return $q->where(['mailbox_id' => $mailboxId]);
+                }
+            ]);
 
         $this->set('unreadFormat', $format);
         $this->set('unreadCount', $unread->count());

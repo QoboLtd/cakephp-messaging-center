@@ -26,14 +26,13 @@ echo $this->Html->scriptBlock(
     ['block' => 'scriptBotton']
 );
 
-$unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
 ?>
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4>
                 <?= __('Message Box') ?>
-                <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : '' ?></small>
+                <?= $this->element('unread_count'); ?>
             </h4>
         </div>
     </div>

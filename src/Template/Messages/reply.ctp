@@ -10,8 +10,6 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
-
 $username = $this->element('MessagingCenter.user', [
     'user' => $message->get('fromUser') ? $message->fromUser : $message->from_user
 ]);
@@ -21,7 +19,7 @@ $username = $this->element('MessagingCenter.user', [
         <div class="col-xs-12 col-md-6">
             <h4>
                 <?= __('Message Box') ?>
-                <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : '' ?></small>
+                <?= $this->element('unread_count'); ?>
             </h4>
         </div>
     </div>

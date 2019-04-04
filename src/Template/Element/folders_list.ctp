@@ -30,7 +30,7 @@ if (!isset($folderName)) {
             <?php
                 $label = $folder->get('name');
                 if ('Inbox' === $folder->get('name')) {
-                    $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
+                    $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}', $mailbox])->render();
                     if (0 < $unreadCount) {
                         $label .= ' <span class="label label-primary pull-right">' . $unreadCount . '</span>';
                     }
