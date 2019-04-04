@@ -1,19 +1,19 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \Cake\Datasource\EntityInterface $qoboFolder
+ * @var \Cake\Datasource\EntityInterface $folder
  */
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Qobo Folders'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('List Folders'), ['action' => 'index']) ?></li>
     </ul>
 </nav>
 <div class="qoboFolders form large-9 medium-8 columns content">
-    <?= $this->Form->create($qoboFolder) ?>
+    <?= $this->Form->create($folder) ?>
     <fieldset>
-        <legend><?= __('Add Qobo Folder') ?></legend>
+        <legend><?= __('Add Folder') ?></legend>
         <?php
             echo $this->Form->control('mailbox_id');
             echo $this->Form->control('parent_id');

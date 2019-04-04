@@ -9,15 +9,15 @@
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Form->postLink(
                 __('Delete'),
-                ['action' => 'delete', $qoboFolder->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $qoboFolder->id)]
+                ['action' => 'delete', $folder->get('id')],
+                ['confirm' => __('Are you sure you want to delete # {0}?', $folder->get('id'))]
             )
         ?></li>
         <li><?= $this->Html->link(__('List Qobo Folders'), ['action' => 'index']) ?></li>
     </ul>
 </nav>
 <div class="qoboFolders form large-9 medium-8 columns content">
-    <?= $this->Form->create($qoboFolder) ?>
+    <?= $this->Form->create($folder) ?>
     <fieldset>
         <legend><?= __('Edit Qobo Folder') ?></legend>
         <?php
