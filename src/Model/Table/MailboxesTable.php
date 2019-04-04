@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 
 /**
  * Mailboxes Model
@@ -159,6 +160,7 @@ class MailboxesTable extends Table
         $mailboxName = $user['username'] . $options['mailbox_postfix'];
 
         $query = $this->find()
+            ->enableHydration(true)
             ->where([
                 'name' => $mailboxName,
                 'user_id' => $user['id']
@@ -205,7 +207,7 @@ class MailboxesTable extends Table
 
         $inboxFolderId = null;
         foreach ($mailbox->get('folders') as $folder) {
-            if ($folder->get('name') == 'Inbox') {
+            if ($folder->get('name') === 'Inbox') {
                 $inboxFolderId = $folder->get('id');
                 break;
             }
@@ -216,5 +218,24 @@ class MailboxesTable extends Table
         }
 
         return $inboxFolderId;
+    }
+
+    /**
+     * getSystemMailbox method
+     *
+     * @param mixed[] $user to find system mailbox
+     * @return \Cake\Datasource\EntityInterface
+     */
+    public function getSystemMailbox(array $user) : EntityInterface
+    {
+        $query = $this->find()
+            ->enableHydration(true)
+            ->where([
+                'user_id' => $user['id']
+            ]);
+        $mailbox = $query->first();
+        Assert::isInstanceOf($mailbox, EntityInterface::class, __('User ' . $user['username'] . ' does not have system mailbox!'));
+
+        return $mailbox;
     }
 }
