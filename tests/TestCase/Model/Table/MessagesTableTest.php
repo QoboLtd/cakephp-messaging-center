@@ -165,19 +165,4 @@ class MessagesTableTest extends TestCase
 
         return $folders;
     }
-
-    /**
-     * method to get count of messages with specified criteria
-     *
-     * @param mixed[] $where criteria to search messages
-     * @return int
-     */
-    protected function getMessagesCount(array $where) : int
-    {
-        $msgNum = $this->Messages->find()
-            ->where($where)
-            ->count();
-
-        return $msgNum;
-    }
 }

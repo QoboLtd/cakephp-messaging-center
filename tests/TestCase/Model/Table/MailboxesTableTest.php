@@ -2,6 +2,7 @@
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -132,5 +133,22 @@ class MailboxesTableTest extends TestCase
 
         $this->assertNotEmpty($result, 'Cannot create a default mailbox');
         $this->assertEquals($result->get('name'), 'user-1@system', 'System mailbox name is not matched');
+    }
+
+    /**
+     * testGetSystemMailbox method
+     *
+     * @return void
+     */
+    public function testGetSystemMailbox()
+    {
+        $userTable = TableRegistry::getTableLocator()->get('Users');
+        $user = $userTable->get('00000000-0000-0000-0000-000000000002');
+
+        $result = $this->Mailboxes->getSystemMailbox($user->toArray());
+
+        $this->assertNotEmpty($result, 'Cannot get system mailbox');
+        $this->assertInstanceOf(EntityInterface::class, $result, 'Fetched mailbox is invalid');
+        $this->assertEquals($result->get('type'), 'system', 'Fetched mailbox is not system');
     }
 }
