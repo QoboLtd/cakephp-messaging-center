@@ -49,7 +49,7 @@ class FetchMailShell extends Shell
      *
      * @return void
      */
-    public function main(): void
+    public function main() : void
     {
         try {
             $lock = new FileLock('fetchmail_' . md5(__FILE__) . '.lock');
@@ -77,6 +77,7 @@ class FetchMailShell extends Shell
                 'active' => true,
             ])
             ->contain(['Folders']);
+        Assert::isInstanceOf($query, Query::class);
 
         foreach ($query->all() as $mailbox) {
             $this->processMailbox($mailbox);
@@ -89,7 +90,7 @@ class FetchMailShell extends Shell
      * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox instance
      * @return void
      */
-    protected function processMailbox(Mailbox $mailbox): void
+    protected function processMailbox(Mailbox $mailbox) : void
     {
         $defaultSettings = [
             'username' => '',
@@ -138,7 +139,7 @@ class FetchMailShell extends Shell
      * @param mixed[] $settings Incoming transport settings
      * @return string
      */
-    protected function getConnectionString(string $type, array $settings): string
+    protected function getConnectionString(string $type, array $settings) : string
     {
         $result = '';
 
@@ -208,5 +209,6 @@ class FetchMailShell extends Shell
         ]);
 
         $result = $table->save($entity);
+        Assert::isInstanceOf($result, EntityInterface::class);
     }
 }
