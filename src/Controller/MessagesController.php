@@ -109,7 +109,7 @@ class MessagesController extends AppController
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $data['from_user'] = $this->Auth->user('id');
+            $data['from_user'] = (string)$this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
             $data['folder_id'] = $this->getFolderByName('Sent', $mailboxId);
@@ -166,7 +166,7 @@ class MessagesController extends AppController
             $newMessage = $this->Messages->newEntity();
             $data = $this->request->getData();
 
-            $data['to_user'] = $message->get('from_user');
+            $data['to_user'] = (string)$message->get('from_user');
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
