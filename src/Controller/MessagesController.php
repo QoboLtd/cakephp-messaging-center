@@ -110,7 +110,6 @@ class MessagesController extends AppController
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             Assert::isArray($data);
-            Assert::notEmpty($data);
 
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
@@ -169,7 +168,6 @@ class MessagesController extends AppController
             $newMessage = $this->Messages->newEntity();
             $data = $this->request->getData();
             Assert::isArray($data);
-            Assert::notEmpty($data);
 
             $data['to_user'] = $message->get('from_user');
             $data['from_user'] = $this->Auth->user('id');
