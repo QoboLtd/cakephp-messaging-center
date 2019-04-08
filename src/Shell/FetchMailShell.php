@@ -47,22 +47,22 @@ class FetchMailShell extends Shell
     /**
      * Main method for shell execution
      *
-     * @return void
+     * @return bool|int|null
      */
-    public function main() : void
+    public function main()
     {
         try {
             $lock = new FileLock('fetchmail_' . md5(__FILE__) . '.lock');
         } catch (MutexException $e) {
             $this->warn($e->getMessage());
 
-            return;
+            return null;
         }
 
         if (!$lock->lock()) {
             $this->warn('Fetching mail is already in progress');
 
-            return;
+            return null;
         }
 
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
