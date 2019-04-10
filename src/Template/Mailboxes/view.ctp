@@ -11,6 +11,7 @@
  */
 
 use Cake\Utility\Inflector;
+use MessagingCenter\Model\Table\MailboxesTable;
 
 ?>
 <section class="content-header">
@@ -62,14 +63,14 @@ use Cake\Utility\Inflector;
                         <table id="folder-table" class="table table-hover table-striped">
                             <thead>
                                 <th></th>
-                                <th><?= 'Sent' === $folderName ? __('To') : __('From') ?></th>
+                                <th><?= $folderName === MailboxesTable::FOLDER_SENT ? __('To') : __('From') ?></th>
                                 <th><?= __('Subject') ?></th>
                                 <th><?= __('Date') ?></th>
                             </thead>
                             <tbody>
                             <?php foreach ($messages as $message) : ?>
                                 <?php
-                                $messageUser = 'sent' === $folderName ? 'toUser' : 'fromUser';
+                                $messageUser = MailboxesTable::FOLDER_SENT === $folderName ? 'toUser' : 'fromUser';
                                 $messageUser = !empty($message->{$messageUser}) ?
                                     $message->{$messageUser} :
                                     $message->{Inflector::underscore($messageUser)};
@@ -83,7 +84,7 @@ use Cake\Utility\Inflector;
                                 ?>
                                 <tr>
                                     <td class="mailbox-read text-center">
-                                        <?php if ('new' === $message->status && 'Sent' !== $folderName) : ?>
+                                        <?php if ('new' === $message->status && MailboxesTable::FOLDER_SENT !== $folderName) : ?>
                                         <small><i class="fa fa-envelope-o" title="unread"></i></small>
                                         <?php endif; ?>
                                     </td>

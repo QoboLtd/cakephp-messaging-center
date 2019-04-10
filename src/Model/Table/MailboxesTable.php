@@ -207,7 +207,7 @@ class MailboxesTable extends Table
 
         $inboxFolderId = null;
         foreach ($mailbox->get('folders') as $folder) {
-            if ($folder->get('name') === 'Inbox') {
+            if ($folder->get('name') === static::FOLDER_INBOX) {
                 $inboxFolderId = $folder->get('id');
                 break;
             }

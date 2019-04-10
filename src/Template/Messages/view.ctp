@@ -10,6 +10,8 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
+use MessagesTable\Model\Table\MailboxesTable;
+
 $replySmBtn = $this->Html->link(
     '<i class="fa fa-reply"></i>',
     ['action' => 'reply', $message->id],
@@ -81,19 +83,19 @@ $restoreBtn = $this->Form->postLink(
                         <div class="btn-group">
                         <?php
                         switch ($folderName) {
-                            case 'Inbox':
+                            case MailboxesTable::FOLDER_INBOX:
                                 echo $deleteSmBtn;
                                 echo $replySmBtn;
                                 echo $archiveSmBtn;
                                 break;
 
-                            case 'Archived':
+                            case MailboxesTable::FOLDER_ARCHIVE:
                                 echo $deleteSmBtn;
                                 echo $replySmBtn;
                                 echo $restoreSmBtn;
                                 break;
 
-                            case 'Trash':
+                            case MailboxesTable::FOLDER_TRASH:
                                 echo $replySmBtn;
                                 echo $restoreSmBtn;
                                 break;
@@ -111,19 +113,19 @@ $restoreBtn = $this->Form->postLink(
                     </div>
                     <?php
                     switch ($folderName) {
-                        case 'Inbox':
+                        case MailboxesTable::FOLDER_INBOX:
                             echo $deleteBtn;
                             echo ' ';
                             echo $archiveBtn;
                             break;
 
-                        case 'Archived':
+                        case MailboxesTable::FOLDER_ARCHIVE:
                             echo $deleteBtn;
                             echo ' ';
                             echo $restoreBtn;
                             break;
 
-                        case 'Trash':
+                        case MailboxesTable::FOLDER_TRASH:
                             echo $restoreBtn;
                             break;
                     }
