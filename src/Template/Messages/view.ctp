@@ -10,7 +10,7 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-use MessagesTable\Model\Table\MailboxesTable;
+use MessagingCenter\Model\Table\MailboxesTable;
 
 $replySmBtn = $this->Html->link(
     '<i class="fa fa-reply"></i>',

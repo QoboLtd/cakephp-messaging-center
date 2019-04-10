@@ -27,8 +27,6 @@ class MailboxesControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->disableErrorHandlerMiddleware();
-
         $this->enableRetainFlashMessages();
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
     }
