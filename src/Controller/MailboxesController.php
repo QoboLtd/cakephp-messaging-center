@@ -143,7 +143,7 @@ class MailboxesController extends AppController
             if ($this->Mailboxes->save($mailbox)) {
                 $this->Flash->success((string)__('The mailbox has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $id]);
             }
             $this->Flash->error((string)__('The mailbox could not be saved. Please, try again.'));
         }

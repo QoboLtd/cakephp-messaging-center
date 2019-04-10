@@ -54,12 +54,14 @@ class FoldersController extends AppController
              * @var mixed[] $data
              */
             $data = $this->request->getData();
-            $qoboFolder = $this->Folders->patchEntity($folder, $data);
+            $this->Folders->patchEntity($folder, $data);
+
             if ($this->Folders->save($folder)) {
                 $this->Flash->success((string)__('The folder has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
+            debug($folder);
             $this->Flash->error((string)__('The folder could not be saved. Please, try again.'));
         }
         $this->set(compact('folder'));
@@ -87,7 +89,7 @@ class FoldersController extends AppController
             if ($this->Folders->save($folder)) {
                 $this->Flash->success((string)__('The folder has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $id]);
             }
             $this->Flash->error((string)__('The folder could not be saved. Please, try again.'));
         }
