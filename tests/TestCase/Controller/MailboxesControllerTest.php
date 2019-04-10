@@ -10,7 +10,6 @@ use MessagingCenter\Controller\MailboxesController;
  */
 class MailboxesControllerTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
@@ -29,11 +28,6 @@ class MailboxesControllerTest extends IntegrationTestCase
 
         $this->enableRetainFlashMessages();
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
-    }
-
-    public function tearDown() : void
-    {
-        parent::tearDown();
     }
 
     /**
@@ -72,8 +66,19 @@ class MailboxesControllerTest extends IntegrationTestCase
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->get('/messaging-center/mailboxes/add');
-
         $this->assertResponseOk();
+
+        $this->post('/messaging-center/mailboxes/add', [
+            'user_id' => '00000000-0000-0000-0000-000000000002',
+            'name' => 'New Mailbox',
+            'type' => 'email',
+            'incoming_transport' => 'internal',
+            'IncomingSettings' => ['default'],
+            'outgoing_transport' => 'internal',
+            'OutgoingSettings' => ['default'],
+            'active' => 1,
+        ]);
+        $this->assertRedirect(['action' => 'index']);
     }
 
     /**
@@ -83,11 +88,23 @@ class MailboxesControllerTest extends IntegrationTestCase
      */
     public function testEdit() : void
     {
+        $mailboxId = '00000000-0000-0000-0000-000000000001';
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
-        $this->get('/messaging-center/mailboxes/edit/00000000-0000-0000-0000-000000000001');
-
+        $this->get("/messaging-center/mailboxes/edit/$mailboxId");
         $this->assertResponseOk();
+
+        $this->post("/messaging-center/mailboxes/edit/$mailboxId", [
+            'name' => 'Edited Mailbox Name',
+            'user_id' => '00000000-0000-0000-0000-000000000002',
+            'type' => 'email',
+            'incoming_transport' => 'internal',
+            'IncomingSettings' => ['default'],
+            'outgoing_transport' => 'internal',
+            'OutgoingSettings' => ['default'],
+            'active' => 1,
+        ]);
+        $this->assertRedirect(['action' => 'view', $mailboxId]);
     }
 
     /**
@@ -100,7 +117,6 @@ class MailboxesControllerTest extends IntegrationTestCase
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->post('/messaging-center/mailboxes/delete/00000000-0000-0000-0000-000000000001');
-
-        $this->assertRedirect();
+        $this->assertRedirect(['action' => 'index']);
     }
 }

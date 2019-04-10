@@ -88,6 +88,11 @@ class FoldersTable extends Table
             ->requirePresence('type', 'create')
             ->notEmpty('type');
 
+        $validator
+            ->uuid('mailbox_id')
+            ->requirePresence('mailbox_id', 'create')
+            ->notEmpty('mailbox_id');
+
         return $validator;
     }
 

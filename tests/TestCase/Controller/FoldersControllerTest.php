@@ -24,13 +24,10 @@ class FoldersControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
+        $this->disableErrorHandlerMiddleware();
+
         $this->enableRetainFlashMessages();
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
-    }
-
-    public function tearDown() : void
-    {
-        parent::tearDown();
     }
 
     /**
@@ -43,8 +40,14 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->get('/messaging-center/folders/add');
-
         $this->assertResponseOk();
+
+        $this->post('/messaging-center/folders/add', [
+            'name' => 'Test',
+            'type' => 'system',
+            'mailbox_id' => '00000000-0000-0000-0000-000000000001'
+        ]);
+        $this->assertRedirect(['action' => 'index']);
     }
 
     /**
@@ -54,11 +57,16 @@ class FoldersControllerTest extends IntegrationTestCase
      */
     public function testEdit() : void
     {
+        $folderId = '00000000-0000-0000-0000-000000000001';
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
-        $this->get('/messaging-center/folders/edit/00000000-0000-0000-0000-000000000001');
-
+        $this->get("/messaging-center/folders/edit/$folderId");
         $this->assertResponseOk();
+
+        $this->post("/messaging-center/folders/edit/$folderId", [
+            'name' => 'New Folder Name'
+        ]);
+        $this->assertRedirect(['action' => 'view', $folderId]);
     }
 
     /**
@@ -71,8 +79,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->post('/messaging-center/folders/delete/00000000-0000-0000-0000-000000000001');
-
-        $this->assertRedirect();
+        $this->assertRedirect(['action' => 'index']);
     }
 
     /**
@@ -85,7 +92,6 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->get('/messaging-center/folders/view/00000000-0000-0000-0000-000000000001');
-
         $this->assertResponseOk();
     }
 
@@ -99,7 +105,6 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
         $this->get('/messaging-center/folders/index');
-
         $this->assertResponseOk();
     }
 }
