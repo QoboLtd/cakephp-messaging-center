@@ -16,6 +16,12 @@ return [
         'welcomeMessage' => [
             'enabled' => true,
             'projectName' => 'Project Name',
-        ]
+        ],
+        'incomingTransports' => [
+            'imap4' => 'IMAP'
+        ],
+        'outgoingTransports' => [
+            'smtp' => 'SMTP'
+        ],
     ]
 ];

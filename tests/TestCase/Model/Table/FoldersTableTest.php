@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,7 +40,25 @@ class FoldersTableTest extends TestCase
     {
         parent::setUp();
         $config = TableRegistry::getTableLocator()->exists('Folders') ? [] : ['className' => FoldersTable::class];
-
+        Configure::write('MessagingCenter', [
+            'Mailbox' => [
+                'default' => [
+                    'mailbox_type' => 'system',
+                    'incoming_transport' => 'internal',
+                    'incoming_settings' => 'default',
+                    'outgoing_transport' => 'internal',
+                    'outgoing_settings' => 'default',
+                    'mailbox_postfix' => '@system',
+                ]
+            ],
+            'Folder' => [
+                'defaultType' => 'default',
+            ],
+            'systemUser' => [
+                'name' => 'System',
+                'id' => '00000000-0000-0000-0000-000000000000',
+            ],
+        ]);
         /**
          * @var \MessagingCenter\Model\Table\FoldersTable $table
          */

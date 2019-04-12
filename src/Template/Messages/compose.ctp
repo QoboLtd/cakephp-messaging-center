@@ -26,14 +26,13 @@ echo $this->Html->scriptBlock(
     ['block' => 'scriptBotton']
 );
 
-$unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
 ?>
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4>
                 <?= __('Message Box') ?>
-                <small><?= 0 < $unreadCount ? $unreadCount . ' ' . __('new messages') : '' ?></small>
+                <?= $this->element('unread_count'); ?>
             </h4>
         </div>
     </div>
@@ -43,10 +42,11 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
         <div class="col-md-3">
             <?= $this->Html->link(
                 '<i class="fa fa-inbox" aria-hidden="true"></i> ' . __('Back to inbox'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', 'inbox'],
+                ['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
+        <?= $this->element('MessagingCenter.mailbox_details') ?>
+        <?= $this->element('MessagingCenter.folders_list') ?>
         </div>
         <div class="col-md-9">
             <div class="box box-primary">
@@ -56,6 +56,7 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                 <?= $this->Form->create($message); ?>
                 <div class="box-body">
                 <?php
+                /*
                 echo $this->Form->control('to_user', [
                     'label' => false,
                     'name' => 'to_user_label',
@@ -67,7 +68,8 @@ $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}
                     'placeholder' => 'To:',
                     'data-url' => '/api/users/lookup.json'
                 ]);
-                echo $this->Form->control('to_user', ['type' => 'hidden']);
+                */
+                echo $this->Form->control('to_user', ['label' => false, 'placeholder' => 'To:']);
                 echo $this->Form->control('subject', ['label' => false, 'placeholder' => 'Subject:']);
                 echo $this->Form->control('content', ['label' => false, 'placeholder' => 'Message:']);
                 ?>

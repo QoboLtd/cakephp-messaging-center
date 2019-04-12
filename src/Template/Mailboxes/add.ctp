@@ -9,16 +9,14 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace MessagingCenter\Event;
-
-use MyCLabs\Enum\Enum;
-
-/**
- * Event Name enum
- */
-class EventName extends Enum
-{
-    const NOTIFY_BEFORE_RENDER = 'MessagingCenter.Notify.beforeRender';
-    const CAKE_ORM_MODEL_AFTER_SAFE = 'Model.afterSave';
-    const SEND_EMAIL = 'MessagingCenter.sendEmail';
-}
+?>
+<section class="content-header">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <h4><?= __('Create {0}', ['Mailbox']);?></h4>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <?= $this->element('mailbox_form', ['mailbox' => $mailbox, 'types' => $types, 'users' => $users]) ?>
+</section>

@@ -12,6 +12,7 @@
 namespace MessagingCenter\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
@@ -34,10 +35,10 @@ class MessagesTable extends Table
     const STATUS_DELETED = 'deleted';
     const STATUS_STARRED = 'starred';
 
-    const FOLDER_INBOX = 'inbox';
-    const FOLDER_ARCHIVED = 'archived';
-    const FOLDER_SENT = 'sent';
-    const FOLDER_TRASH = 'trash';
+    const FOLDER_INBOX = 'Inbox';
+    const FOLDER_ARCHIVED = 'Archived';
+    const FOLDER_SENT = 'Sent';
+    const FOLDER_TRASH = 'Trash';
 
     /**
      * Initialize method
@@ -53,19 +54,13 @@ class MessagesTable extends Table
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
+        $this->belongsTo('Folders', [
+            'foreignKey' => 'folder_id',
+            'joinType' => 'INNER',
+            'className' => 'MessagingCenter.Folders'
+        ]);
+
         $this->addBehavior('Timestamp');
-
-        $this->belongsTo('FromUser', [
-            'foreignKey' => 'from_user',
-            'className' => 'CakeDC/Users.Users',
-            'propertyName' => 'fromUser'
-        ]);
-
-        $this->belongsTo('ToUser', [
-            'foreignKey' => 'to_user',
-            'className' => 'CakeDC/Users.Users',
-            'propertyName' => 'toUser'
-        ]);
     }
 
     /**
@@ -81,12 +76,10 @@ class MessagesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->uuid('from_user')
             ->requirePresence('from_user', 'create')
             ->notEmpty('from_user');
 
         $validator
-            ->uuid('to_user')
             ->requirePresence('to_user', 'create')
             ->notEmpty('to_user');
 
@@ -221,38 +214,19 @@ class MessagesTable extends Table
     /**
      * Get message's folder based on http referer, if not
      * matched get it from user id and message status.
-     * @param  \MessagingCenter\Model\Entity\Message $message Message enity
-     * @param  string $userId current user id
-     * @param  string $referer http referer
-     * @return string         folder name
+     * @param \Cake\Datasource\EntityInterface $message Message enity
+     * @param string $userId current user id
+     * @return \Cake\Datasource\EntityInterface folder
      */
-    public function getFolderByMessage(Message $message, string $userId, string $referer = ''): string
+    public function getFolderByMessage(EntityInterface $message, string $userId) : EntityInterface
     {
-        $result = substr($referer, strrpos($referer, '/') + 1);
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
+        Assert::isInstanceOf($table, FoldersTable::class);
 
-        if (in_array($result, $this->getFolders())) {
-            return $result;
-        }
+        $folder = $table->get($message->get('folder_id'));
+        Assert::isInstanceOf($folder, Folder::class);
 
-        if ($message->from_user !== $userId) {
-            switch ($message->status) {
-                case static::STATUS_DELETED:
-                    $result = 'trash';
-                    break;
-
-                case static::STATUS_ARCHIVED:
-                    $result = 'archived';
-                    break;
-
-                default:
-                    $result = 'inbox';
-                    break;
-            }
-        } else {
-            $result = 'sent';
-        }
-
-        return $result;
+        return $folder;
     }
 
     /**
@@ -354,19 +328,16 @@ class MessagesTable extends Table
         unset($data['id']);
 
         $userTable = TableRegistry::getTableLocator()->get('Users');
-        $user = $userTable->get($userId);
+        Assert::isInstanceOf($userTable, Table::class);
 
-        if (empty($user)) {
-            return false;
-        }
+        $user = $userTable->get($userId);
+        Assert::isInstanceOf($user, EntityInterface::class);
 
         $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
         Assert::isInstanceOf($mailboxesTable, MailboxesTable::class);
 
         $mailbox = $mailboxesTable->createDefaultMailbox($user->toArray());
-        if (empty($mailbox)) {
-            return false;
-        }
+        Assert::isInstanceOf($mailbox, EntityInterface::class);
 
         $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
         Assert::isInstanceOf($foldersTable, FoldersTable::class);

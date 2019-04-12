@@ -1,6 +1,8 @@
 <?php
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
+use MessagingCenter\Event\Model\MailboxListener;
+use MessagingCenter\Event\Model\SendEmailListener;
 use MessagingCenter\Event\Model\UserListener;
 
 // get app level config
@@ -16,4 +18,6 @@ Configure::write('MessagingCenter', array_replace_recursive(
     $config
 ));
 
+EventManager::instance()->on(new MailboxListener());
+EventManager::instance()->on(new SendEmailListener());
 EventManager::instance()->on(new UserListener());

@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 
 /**
  * Folders Model
@@ -57,6 +58,10 @@ class FoldersTable extends Table
             'className' => 'MessagingCenter.Folders',
             'foreignKey' => 'parent_id'
         ]);
+        $this->hasMany('Messages', [
+            'className' => 'MessagingCenter.Messages',
+            'foreignKey' => 'folder_id'
+        ]);
     }
 
     /**
@@ -82,6 +87,11 @@ class FoldersTable extends Table
             ->maxLength('type', 255)
             ->requirePresence('type', 'create')
             ->notEmpty('type');
+
+        $validator
+            ->uuid('mailbox_id')
+            ->requirePresence('mailbox_id', 'create')
+            ->notEmpty('mailbox_id');
 
         return $validator;
     }
@@ -110,6 +120,7 @@ class FoldersTable extends Table
     public function createDefaultFolders(EntityInterface $mailbox) : array
     {
         $list = [];
+        $order = 0;
         foreach (MailboxesTable::getDefaultFolders() as $folderName) {
             $query = $this->find()
                 ->where([
@@ -118,24 +129,28 @@ class FoldersTable extends Table
                 ]);
 
             $result = $query->first();
+            Assert::nullOrIsInstanceOf($result, EntityInterface::class);
 
             if (empty($result)) {
                 $folder = $this->newEntity();
+                Assert::isInstanceOf($folder, EntityInterface::class);
+
                 $this->patchEntity($folder, [
                     'mailbox_id' => $mailbox->get('id'),
                     'name' => $folderName,
                     'type' => (string)Configure::read('MessagingCenter.Folder.defaultType'),
+                    'order_no' => $order++,
+                    'icon' => strtolower($folderName),
                 ]);
 
                 $result = $this->save($folder);
+                Assert::isInstanceOf($result, EntityInterface::class);
             }
 
             $list[$folderName] = $result;
         }
 
-        if (empty($list)) {
-            throw new InvalidArgumentException('Cannot create default folders for mailbox ' . $mailbox->get('name') . '!');
-        }
+        Assert::notEmpty($list, 'Cannot create default folders for mailbox ' . $mailbox->get('name') . '!');
 
         return $list;
     }

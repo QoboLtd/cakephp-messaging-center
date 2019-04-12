@@ -10,6 +10,8 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
+use MessagingCenter\Model\Table\MailboxesTable;
+
 $replySmBtn = $this->Html->link(
     '<i class="fa fa-reply"></i>',
     ['action' => 'reply', $message->id],
@@ -61,14 +63,7 @@ $restoreBtn = $this->Form->postLink(
 
 <section class="content">
     <div class="row">
-        <div class="col-md-3">
-            <?= $this->Html->link(
-                '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
-                ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
-            ); ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
-        </div>
+        <?= $this->element('common_sidebar') ?>
         <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -77,27 +72,30 @@ $restoreBtn = $this->Form->postLink(
                 <div class="box-body no-padding">
                     <div class="mailbox-read-info">
                         <h3><?= h($message->subject) ?></h3>
-                        <?php $fromUser = !empty($message->fromUser) ? $message->fromUser : $message->from_user; ?>
+                        <?php $fromUser = $message->fromUser ?? $message->from_user; ?>
                         <h5>From: <?= $this->element('MessagingCenter.user', ['user' => $fromUser]) ?>
-                        <span class="mailbox-read-time pull-right"><?= h($message->date_sent->i18nFormat([\IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT])) ?></span></h5>
+                            <span class="mailbox-read-time pull-right">
+                                <?= $message->get('created')->i18nFormat([\IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT]) ?>
+                            </span>
+                        </h5>
                     </div>
                     <div class="mailbox-controls with-border text-center">
                         <div class="btn-group">
                         <?php
-                        switch ($folder) {
-                            case 'inbox':
+                        switch ($folderName) {
+                            case MailboxesTable::FOLDER_INBOX:
                                 echo $deleteSmBtn;
                                 echo $replySmBtn;
                                 echo $archiveSmBtn;
                                 break;
 
-                            case 'archived':
+                            case MailboxesTable::FOLDER_ARCHIVE:
                                 echo $deleteSmBtn;
                                 echo $replySmBtn;
                                 echo $restoreSmBtn;
                                 break;
 
-                            case 'trash':
+                            case MailboxesTable::FOLDER_TRASH:
                                 echo $replySmBtn;
                                 echo $restoreSmBtn;
                                 break;
@@ -106,7 +104,7 @@ $restoreBtn = $this->Form->postLink(
                         </div>
                     </div>
                     <div class="mailbox-read-message">
-                        <?= $this->Text->autoParagraph($message->content); ?>
+                        <?= $message->get('content') ?>
                     </div>
                 </div>
                 <div class="box-footer">
@@ -114,20 +112,20 @@ $restoreBtn = $this->Form->postLink(
                         <?= $replyBtn; ?>
                     </div>
                     <?php
-                    switch ($folder) {
-                        case 'inbox':
+                    switch ($folderName) {
+                        case MailboxesTable::FOLDER_INBOX:
                             echo $deleteBtn;
                             echo ' ';
                             echo $archiveBtn;
                             break;
 
-                        case 'archived':
+                        case MailboxesTable::FOLDER_ARCHIVE:
                             echo $deleteBtn;
                             echo ' ';
                             echo $restoreBtn;
                             break;
 
-                        case 'trash':
+                        case MailboxesTable::FOLDER_TRASH:
                             echo $restoreBtn;
                             break;
                     }

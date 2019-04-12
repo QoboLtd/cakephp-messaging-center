@@ -10,28 +10,12 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$actions = [
-    'inbox' => [
-        'label' => __('Inbox'),
-        'icon' => 'inbox'
-    ],
-    'archived' => [
-        'label' => __('Archived'),
-        'icon' => 'archive'
-    ],
-    'sent' => [
-        'label' => __('Sent'),
-        'icon' => 'envelope-o'
-    ],
-    'trash' => [
-        'label' => __('Trash'),
-        'icon' => 'trash-o'
-    ]
-];
+use MessagingCenter\Model\Table\MailboxesTable;
 
-if (!isset($folder)) {
-    $folder = $this->request->getParam('pass.0') ? $this->request->getParam('pass.0') : 'inbox';
+if (!isset($folderName)) {
+    $folderName = MailboxesTable::FOLDER_INBOX;
 }
+
 ?>
 <div class="box box-primary">
     <div class="box-header with-border">
@@ -43,21 +27,26 @@ if (!isset($folder)) {
     </div>
     <div class="box-body no-padding">
         <ul class="nav nav-pills nav-stacked">
-        <?php foreach ($actions as $action => $options) : ?>
-            <li class="<?= $action === $folder ? ' active' : ''; ?>">
+        <?php foreach ($mailbox->get('folders') as $folder) : ?>
+            <li class="<?= $folder->get('name') === $folderName ? ' active' : ''; ?>">
             <?php
-            if ('inbox' === $action) {
-                $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}'])->render();
-                if (0 < $unreadCount) {
-                    $options['label'] .= ' <span class="label label-primary pull-right">' . $unreadCount . '</span>';
+                $label = $folder->get('name');
+                if (MailboxesTable::FOLDER_INBOX === $folder->get('name')) {
+                    $unreadCount = (int)$this->cell('MessagingCenter.Inbox::unreadCount', ['{{text}}', $mailbox])->render();
+                    if (0 < $unreadCount) {
+                        $label .= ' <span class="label label-primary pull-right">' . $unreadCount . '</span>';
+                    }
                 }
-            }
 
-                $options['icon'] = '<i class="fa fa-' . $options['icon'] . '"></i>';
+                $icon = '<i class="fa fa-' . $folder->get('icon') . '"></i>';
             ?>
-            <?= $this->Html->link(
-                $options['icon'] . ' ' . $options['label'],
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'folder', $action],
+            <?= $this->Html->link($icon . ' ' . $label, [
+                'plugin' => 'MessagingCenter',
+                'controller' => 'Mailboxes',
+                'action' => 'view',
+                $mailbox->get('id'),
+                '?' => ['folder_id' => $folder->get('id')]
+                ],
                 ['escape' => false]
             ); ?>
             </li>

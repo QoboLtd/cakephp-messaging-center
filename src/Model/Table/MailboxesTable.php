@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 
 /**
  * Mailboxes Model
@@ -29,6 +30,8 @@ class MailboxesTable extends Table
 {
     const FOLDER_INBOX = 'Inbox';
     const FOLDER_SENT = 'Sent';
+    const FOLDER_ARCHIVE = 'Archive';
+    const FOLDER_TRASH = 'Trash';
 
     /**
      * Initialize method
@@ -50,6 +53,11 @@ class MailboxesTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
             'className' => 'MessagingCenter.Users'
+        ]);
+
+        $this->hasMany('Folders', [
+            'className' => 'MessagingCenter.Folders',
+            'foreignKey' => 'mailbox_id'
         ]);
     }
 
@@ -133,6 +141,8 @@ class MailboxesTable extends Table
         return [
             self::FOLDER_INBOX,
             self::FOLDER_SENT,
+            self::FOLDER_ARCHIVE,
+            self::FOLDER_TRASH,
         ];
     }
 
@@ -150,6 +160,7 @@ class MailboxesTable extends Table
         $mailboxName = $user['username'] . $options['mailbox_postfix'];
 
         $query = $this->find()
+            ->enableHydration(true)
             ->where([
                 'name' => $mailboxName,
                 'user_id' => $user['id']
@@ -179,5 +190,52 @@ class MailboxesTable extends Table
         }
 
         return $result;
+    }
+
+    /**
+     * getInboxFolders method
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox to get default folder for
+     * @return string
+     * @throws InvalidArgumentException in case of no Inbox folder found in the mailbox
+     */
+    public function getInboxFolder(EntityInterface $mailbox) : string
+    {
+        if (empty($mailbox->get('folders'))) {
+            throw new InvalidArgumentException('No folder is created for that mailbox.');
+        }
+
+        $inboxFolderId = null;
+        foreach ($mailbox->get('folders') as $folder) {
+            if ($folder->get('name') === static::FOLDER_INBOX) {
+                $inboxFolderId = $folder->get('id');
+                break;
+            }
+        }
+
+        if (empty($inboxFolderId)) {
+            throw new InvalidArgumentException('Cannot find Inbox folder in that mailbox');
+        }
+
+        return $inboxFolderId;
+    }
+
+    /**
+     * getSystemMailbox method
+     *
+     * @param mixed[] $user to find system mailbox
+     * @return \Cake\Datasource\EntityInterface
+     */
+    public function getSystemMailbox(array $user) : EntityInterface
+    {
+        $query = $this->find()
+            ->enableHydration(true)
+            ->where([
+                'user_id' => $user['id']
+            ]);
+        $mailbox = $query->first();
+        Assert::isInstanceOf($mailbox, EntityInterface::class, __('User ' . $user['username'] . ' does not have system mailbox!'));
+
+        return $mailbox;
     }
 }

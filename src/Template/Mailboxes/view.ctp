@@ -11,6 +11,7 @@
  */
 
 use Cake\Utility\Inflector;
+use MessagingCenter\Model\Table\MailboxesTable;
 
 ?>
 <section class="content-header">
@@ -26,18 +27,11 @@ use Cake\Utility\Inflector;
 
 <section class="content">
     <div class="row">
-        <div class="col-md-3">
-            <?= $this->Html->link(
-                '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
-                ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
-                ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
-            ); ?>
-            <?= $this->element('MessagingCenter.folders_list') ?>
-        </div>
+        <?= $this->element('MessagingCenter.common_sidebar'); ?>
         <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><?= Inflector::humanize($folder); ?></h3>
+                    <h3 class="box-title"><?= Inflector::humanize($folderName); ?></h3>
                 </div>
                 <div class="box-body no-padding">
                     <div class="mailbox-controls">
@@ -69,14 +63,14 @@ use Cake\Utility\Inflector;
                         <table id="folder-table" class="table table-hover table-striped">
                             <thead>
                                 <th></th>
-                                <th><?= 'sent' === $folder ? __('To') : __('From') ?></th>
+                                <th><?= $folderName === MailboxesTable::FOLDER_SENT ? __('To') : __('From') ?></th>
                                 <th><?= __('Subject') ?></th>
                                 <th><?= __('Date') ?></th>
                             </thead>
                             <tbody>
                             <?php foreach ($messages as $message) : ?>
                                 <?php
-                                $messageUser = 'sent' === $folder ? 'toUser' : 'fromUser';
+                                $messageUser = MailboxesTable::FOLDER_SENT === $folderName ? 'toUser' : 'fromUser';
                                 $messageUser = !empty($message->{$messageUser}) ?
                                     $message->{$messageUser} :
                                     $message->{Inflector::underscore($messageUser)};
@@ -90,7 +84,7 @@ use Cake\Utility\Inflector;
                                 ?>
                                 <tr>
                                     <td class="mailbox-read text-center">
-                                        <?php if ('new' === $message->status && 'sent' !== $folder) : ?>
+                                        <?php if ('new' === $message->status && MailboxesTable::FOLDER_SENT !== $folderName) : ?>
                                         <small><i class="fa fa-envelope-o" title="unread"></i></small>
                                         <?php endif; ?>
                                     </td>

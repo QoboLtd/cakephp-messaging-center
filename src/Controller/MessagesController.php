@@ -11,7 +11,17 @@
  */
 namespace MessagingCenter\Controller;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventListenerInterface;
+use Cake\Event\EventManager;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\ORM\TableRegistry;
+use MessagingCenter\Enum\MailboxType;
+use MessagingCenter\Event\EventName;
+use MessagingCenter\Model\Entity\Mailbox;
+use MessagingCenter\Model\Table\MailboxesTable;
+use Webmozart\Assert\Assert;
 
 /**
  * Messages Controller
@@ -34,7 +44,7 @@ class MessagesController extends AppController
 
         $this->paginate = [
             'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folder),
-            'contain' => ['FromUser', 'ToUser'],
+            'contain' => [],
             'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
@@ -55,21 +65,26 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => ['FromUser', 'ToUser']
+            'contain' => [
+                'Folders' => [
+                    'Mailboxes'
+                ]
+            ]
         ]);
 
         // forbid viewing of others messages
-        if ($this->Auth->user('id') !== $message->to_user && $this->Auth->user('id') !== $message->from_user) {
+        if (!$this->Auth->user('is_superuser') && $message->get('folder')->get('mailbox')->get('user_id') != $this->Auth->user('id')) {
             throw new ForbiddenException();
         }
 
-        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'), $this->referer());
+        $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
+        $mailbox = $this->getMailbox($folder->get('mailbox_id'));
 
         // set status to read
         if ($this->request->is(['get']) &&
             !$this->request->is(['json', 'ajax']) &&
-            $this->Messages->getNewStatus() === $message->status &&
-            $this->Messages->getSentFolder() !== $folder
+            $this->Messages->getNewStatus() === $message->get('status') &&
+            $this->Messages->getSentFolder() !== $folder->get('name')
         ) {
             $status = $this->Messages->getReadStatus();
             $message = $this->Messages->patchEntity($message, ['status' => $status]);
@@ -77,35 +92,50 @@ class MessagesController extends AppController
         }
 
         $this->set('message', $message);
-        $this->set('folder', $folder);
-        $this->set('_serialize', ['message', 'folder']);
+        $this->set('folderName', $folder->get('name'));
+        $this->set('mailbox', $mailbox);
+        $this->set('_serialize', ['message', 'folder', 'mailbox']);
     }
 
     /**
      * Composer method
      *
+     * @param string $mailboxId to compose message for
      * @return \Cake\Http\Response|void|null Redirects on successful compose, renders view otherwise.
      */
-    public function compose()
+    public function compose(string $mailboxId)
     {
+        $mailbox = $this->getMailbox($mailboxId);
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
+            Assert::isArray($data);
+
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
+            $data['folder_id'] = $this->getFolderByName(MailboxesTable::FOLDER_SENT, $mailboxId);
+
             $message = $this->Messages->patchEntity($message, $data);
             if ($this->Messages->save($message)) {
                 $this->Flash->success((string)__('The message has been sent.'));
 
-                return $this->redirect(['action' => 'folder']);
+                $event = new Event((string)EventName::SEND_EMAIL(), $this, [
+                    'mailbox' => $mailbox,
+                    'data' => $data
+                ]);
+                EventManager::instance()->dispatch($event);
+                $result = $event->result;
+
+                return $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailboxId]);
             } else {
                 $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
             }
         }
 
         $this->set('message', $message);
-        $this->set('_serialize', ['message']);
+        $this->set('mailbox', $mailbox);
+        $this->set('_serialize', ['message', 'mailbox']);
     }
 
     /**
@@ -119,11 +149,16 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => ['FromUser', 'ToUser']
+            'contain' => ['Folders']
+        ]);
+
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        $mailbox = $mailboxes->get($message->get('folder')->get('mailbox_id'), [
+            'contain' => ['Folders']
         ]);
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->to_user) {
+        if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') !== $message->get('to_user')) {
             $this->Flash->error((string)__('You cannot reply to a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
@@ -132,7 +167,9 @@ class MessagesController extends AppController
         if ($this->request->is('put')) {
             $newMessage = $this->Messages->newEntity();
             $data = $this->request->getData();
-            $data['to_user'] = $message->from_user;
+            Assert::isArray($data);
+
+            $data['to_user'] = $message->get('from_user');
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
@@ -141,14 +178,15 @@ class MessagesController extends AppController
             if ($this->Messages->save($newMessage)) {
                 $this->Flash->success((string)__('The message has been sent.'));
 
-                return $this->redirect(['action' => 'folder']);
+                return $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')]);
             } else {
                 $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
             }
         }
 
         $this->set('message', $message);
-        $this->set('_serialize', ['message']);
+        $this->set('mailbox', $mailbox);
+        $this->set('_serialize', ['message', 'mailbox']);
     }
 
     /**
@@ -209,7 +247,7 @@ class MessagesController extends AppController
         $status = $this->Messages->getArchivedStatus();
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->to_user) {
+        if ($this->Auth->user('id') !== $message->get('to_user')) {
             $this->Flash->error((string)__('You cannot archive a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
@@ -250,13 +288,13 @@ class MessagesController extends AppController
         $status = $this->Messages->getReadStatus();
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->to_user) {
+        if ($this->Auth->user('id') !== $message->get('to_user')) {
             $this->Flash->error((string)__('You cannot restore a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         } else {
             // inbox message
-            if (in_array($message->status, [$status, $this->Messages->getNewStatus()])) {
+            if (in_array($message->get('status'), [$status, $this->Messages->getNewStatus()])) {
                 $this->Flash->error((string)__('You cannot restore an inbox message.'));
 
                 return $this->redirect(['action' => 'view', $id]);
@@ -272,5 +310,50 @@ class MessagesController extends AppController
         }
 
         return $this->redirect(['action' => 'folder']);
+    }
+
+    /**
+     * getMailbox method
+     *
+     * @param string $mailboxId to get mailbox for
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function getMailbox(string $mailboxId) : EntityInterface
+    {
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
+        $mailbox = $mailboxes->get($mailboxId, [
+            'contain' => [
+                'Folders' => [
+                    'sort' => ['Folders.order_no' => 'ASC']
+                ]
+            ]
+        ]);
+        Assert::isInstanceOf($mailbox, Mailbox::class);
+
+        return $mailbox;
+    }
+
+    /**
+     * getFolderByName method
+     *
+     * @param string $folderName to find
+     * @param string $mailboxId owned folder
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function getFolderByName(string $folderName, string $mailboxId) : EntityInterface
+    {
+        $folders = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
+        $folder = $folders->find()
+            ->where([
+                'name' => $folderName,
+                'mailbox_id' => $mailboxId
+            ])
+            ->enableHydration(true)
+            ->first();
+
+        Assert::isInstanceOf($folder, EntityInterface::class);
+
+        return $folder;
     }
 }
