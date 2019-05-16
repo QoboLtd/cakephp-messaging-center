@@ -14,6 +14,7 @@ namespace MessagingCenter\Shell;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use InvalidArgumentException;
@@ -119,14 +120,38 @@ class FetchMailShell extends Shell
                 return;
             }
 
-            foreach ($messageIds as $messageId) {
+        } catch (Exception $e) {
+            $this->abort($e->getMessage());
+
+            return;
+        }
+
+        $this->out('Fetching headers');
+        $allMessageHeaders = $remoteMailbox->getMailsInfo($messageIds);
+        foreach ($allMessageHeaders as $messageHeader) {
+            if (!property_exists($messageHeader, 'message_id')) {
+                $this->err(sprintf('Message ID was not found for message with uid %s', $messageHeader->uid));
+
+                continue;
+            }
+
+            $messageId = trim($messageHeader->message_id);
+            if ($this->hasMessage($messageId, $mailbox)) {
+                $this->out(sprintf('Message %s already exists and it was skipped', $messageId));
+
+                continue;
+            }
+
+            try {
                 /** @var \PhpImap\IncomingMail $message */
-                $message = $remoteMailbox->getMail($messageId);
+                $message = $remoteMailbox->getMail($messageHeader->uid);
 
                 $this->saveMessage($message, $mailbox);
+                $this->out(sprintf('Message %s saved', $messageHeader->message_id));
+            } catch (InvalidArgumentException | PersistenceFailedException $e) {
+                $this->err(sprintf('Message %s can not be saved. %s', $messageHeader->message_id,
+                    $e->getMessage()));
             }
-        } catch (InvalidArgumentException | ConnectionException $e) {
-            $this->warn($e->getMessage());
         }
     }
 
@@ -165,7 +190,7 @@ class FetchMailShell extends Shell
     }
 
     /**
-     * saveMessage method
+     * Saves the message into the database, under the specified mailbox.
      *
      * @param \PhpImap\IncomingMail $message received from the mailbox
      * @param \Cake\Datasource\EntityInterface $mailbox to save message
@@ -179,23 +204,6 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
-        $mailboxId = $mailbox->get('id');
-        $query = $table->find()
-            ->where([
-                'message_id' => $message->messageId
-            ])
-            ->contain([
-                'Folders' => function ($q) use ($mailboxId) {
-                    return $q->where(['mailbox_id' => $mailboxId]);
-                }
-            ]);
-        Assert::isInstanceOf($query, Query::class);
-        $result = $query->count();
-
-        if ($result > 0) {
-            return;
-        }
-
         $entity = $table->newEntity();
         $table->patchEntity($entity, [
             'subject' => $message->subject,
@@ -208,7 +216,37 @@ class FetchMailShell extends Shell
             'folder_id' => $mailboxes->getInboxFolder($mailbox),
         ]);
 
-        $result = $table->save($entity);
-        Assert::isInstanceOf($result, EntityInterface::class);
+        $table->saveOrFail($entity);
+    }
+
+    /**
+     * Returns true only and only if the message provided already exists in database.
+     *
+     * @param \PhpImap\IncomingMail $message received from the mailbox
+     * @param \Cake\Datasource\EntityInterface $mailbox to save message
+     * @return bool
+     */
+    protected function hasMessage(string $messageId, EntityInterface $mailbox): bool
+    {
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
+
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        Assert::isInstanceOf($table, MessagesTable::class);
+
+        $mailboxId = $mailbox->get('id');
+        $query = $table->find()
+            ->where([
+                'message_id' => $messageId
+            ])
+            ->contain([
+                'Folders' => function ($q) use ($mailboxId) {
+                    return $q->where(['mailbox_id' => $mailboxId]);
+                }
+            ]);
+        Assert::isInstanceOf($query, Query::class);
+        $result = $query->count();
+
+        return ($result > 0);
     }
 }
