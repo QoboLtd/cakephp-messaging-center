@@ -18,6 +18,7 @@ use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use DateTime;
+use Exception;
 use InvalidArgumentException;
 use MessagingCenter\Enum\IncomingTransportType;
 use MessagingCenter\Enum\MailboxType;
@@ -25,7 +26,8 @@ use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Table\MailboxesTable;
 use MessagingCenter\Model\Table\MessagesTable;
 use NinjaMutex\MutexException;
-use PhpImap\ConnectionException;
+use PhpImap\Exceptions\ConnectionException;
+use PhpImap\Exceptions\InvalidParameterException;
 use PhpImap\IncomingMail;
 use PhpImap\Mailbox as RemoteMailbox;
 use Qobo\Utils\Utility\Lock\FileLock;
@@ -121,7 +123,7 @@ class FetchMailShell extends Shell
                 return;
             }
 
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException | InvalidParameterException | ConnectionException $e) {
             $this->abort($e->getMessage());
 
             return;
@@ -130,8 +132,8 @@ class FetchMailShell extends Shell
         $this->out('Fetching headers');
         $allMessageHeaders = $remoteMailbox->getMailsInfo($messageIds);
         foreach ($allMessageHeaders as $messageHeader) {
-            if (!property_exists($messageHeader, 'message_id')) {
-                $this->err(sprintf('Message ID was not found for message with uid %s', $messageHeader->uid));
+            if (!property_exists($messageHeader, 'message_id') || !property_exists($messageHeader, 'uid')) {
+                $this->err('Message ID / UID is missing');
 
                 continue;
             }
@@ -224,7 +226,7 @@ class FetchMailShell extends Shell
     /**
      * Returns true only and only if the message provided already exists in database.
      *
-     * @param \PhpImap\IncomingMail $message received from the mailbox
+     * @param string $messageId Message ID received from the mailbox
      * @param \Cake\Datasource\EntityInterface $mailbox to save message
      * @return bool
      */
