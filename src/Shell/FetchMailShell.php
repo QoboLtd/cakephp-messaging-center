@@ -148,9 +148,9 @@ class FetchMailShell extends Shell
                 $message = $remoteMailbox->getMail($messageHeader->uid);
 
                 $this->saveMessage($message, $mailbox);
-                $this->out(sprintf('Message %s saved', $messageHeader->message_id));
+                $this->out(sprintf('Message %s saved', trim($messageHeader->message_id)));
             } catch (InvalidArgumentException | PersistenceFailedException $e) {
-                $this->err(sprintf('Message %s can not be saved. %s', $messageHeader->message_id,
+                $this->err(sprintf('Message %s can not be saved. %s', trim($messageHeader->message_id),
                     $e->getMessage()));
             }
         }
