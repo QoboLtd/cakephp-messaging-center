@@ -15,6 +15,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\View\Cell;
+use InvalidArgumentException;
 use MessagingCenter\Model\Table\MailboxesTable;
 use Webmozart\Assert\Assert;
 
@@ -53,8 +54,16 @@ class InboxCell extends Cell
             $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
             Assert::isInstanceOf($mailboxes, MailboxesTable::class);
 
-            $mailbox = $mailboxes->getSystemMailbox($user);
-            Assert::isInstanceOf($mailbox, EntityInterface::class);
+            try {
+                $mailbox = $mailboxes->getSystemMailbox($user);
+                Assert::isInstanceOf($mailbox, EntityInterface::class);
+            }  catch ( InvalidArgumentException $e ) {
+                $this->set('unreadFormat', $format);
+                $this->set('unreadCount', 0);
+                $this->set('maxUnreadCount', static::MAX_UNREAD_COUNT);
+
+                return;
+            }
         }
 
         $mailboxId = $mailbox->get('id');
