@@ -17,6 +17,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use DateTime;
 use InvalidArgumentException;
 use MessagingCenter\Enum\IncomingTransportType;
 use MessagingCenter\Enum\MailboxType;
@@ -209,6 +210,7 @@ class FetchMailShell extends Shell
             'subject' => $message->subject,
             'content' => $message->textHtml,
             'status' => 'new',
+            'date_sent' => $this->extractDateTime($message),
             'from_user' => $message->fromAddress,
             'from_name' => $message->fromName,
             'to_user' => $message->toString,
@@ -248,5 +250,27 @@ class FetchMailShell extends Shell
         $result = $query->count();
 
         return ($result > 0);
+    }
+
+    /**
+     * Extracts the DateTime from the provided message
+     *
+     * @param mixed $message Email message object
+     * @return \DateTime
+     */
+    protected function extractDateTime($message): DateTime
+    {
+        if (!empty($message->udate)) {
+            $dateSent = new DateTime($message->udate);
+        } else {
+            $dateSent = DateTime::createFromFormat('Y-m-d H:i:s', $message->date);
+        }
+
+        $errors = DateTime::getLastErrors();
+        if ($dateSent !== false && empty($errors['warning_count'])) {
+            return $dateSent;
+        }
+
+        return new DateTime();
     }
 }
