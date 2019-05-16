@@ -57,7 +57,7 @@ class InboxCell extends Cell
             try {
                 $mailbox = $mailboxes->getSystemMailbox($user);
                 Assert::isInstanceOf($mailbox, EntityInterface::class);
-            }  catch ( InvalidArgumentException $e ) {
+            } catch (InvalidArgumentException $e) {
                 $this->set('unreadFormat', $format);
                 $this->set('unreadCount', 0);
                 $this->set('maxUnreadCount', static::MAX_UNREAD_COUNT);
