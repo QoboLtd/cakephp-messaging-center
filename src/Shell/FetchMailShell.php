@@ -122,7 +122,6 @@ class FetchMailShell extends Shell
 
                 return;
             }
-
         } catch (InvalidArgumentException | InvalidParameterException | ConnectionException $e) {
             $this->abort($e->getMessage());
 
@@ -152,8 +151,7 @@ class FetchMailShell extends Shell
                 $this->saveMessage($message, $mailbox);
                 $this->out(sprintf('Message %s saved', trim($messageHeader->message_id)));
             } catch (InvalidArgumentException | PersistenceFailedException $e) {
-                $this->err(sprintf('Message %s can not be saved. %s', trim($messageHeader->message_id),
-                    $e->getMessage()));
+                $this->err(sprintf('Message %s can not be saved. %s', trim($messageHeader->message_id), $e->getMessage()));
             }
         }
     }
