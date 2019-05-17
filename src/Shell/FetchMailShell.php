@@ -14,8 +14,11 @@ namespace MessagingCenter\Shell;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use DateTime;
+use Exception;
 use InvalidArgumentException;
 use MessagingCenter\Enum\IncomingTransportType;
 use MessagingCenter\Enum\MailboxType;
@@ -23,7 +26,8 @@ use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Table\MailboxesTable;
 use MessagingCenter\Model\Table\MessagesTable;
 use NinjaMutex\MutexException;
-use PhpImap\ConnectionException;
+use PhpImap\Exceptions\ConnectionException;
+use PhpImap\Exceptions\InvalidParameterException;
 use PhpImap\IncomingMail;
 use PhpImap\Mailbox as RemoteMailbox;
 use Qobo\Utils\Utility\Lock\FileLock;
@@ -118,15 +122,37 @@ class FetchMailShell extends Shell
 
                 return;
             }
+        } catch (InvalidArgumentException | InvalidParameterException | ConnectionException $e) {
+            $this->abort($e->getMessage());
 
-            foreach ($messageIds as $messageId) {
+            return;
+        }
+
+        $this->out('Fetching headers');
+        $allMessageHeaders = $remoteMailbox->getMailsInfo($messageIds);
+        foreach ($allMessageHeaders as $messageHeader) {
+            if (!property_exists($messageHeader, 'message_id') || !property_exists($messageHeader, 'uid')) {
+                $this->err('Message ID / UID is missing');
+
+                continue;
+            }
+
+            $messageId = trim($messageHeader->message_id);
+            if ($this->hasMessage($messageId, $mailbox)) {
+                $this->out(sprintf('Message %s already exists and it was skipped', $messageId));
+
+                continue;
+            }
+
+            try {
                 /** @var \PhpImap\IncomingMail $message */
-                $message = $remoteMailbox->getMail($messageId);
+                $message = $remoteMailbox->getMail($messageHeader->uid);
 
                 $this->saveMessage($message, $mailbox);
+                $this->out(sprintf('Message %s saved', trim($messageHeader->message_id)));
+            } catch (InvalidArgumentException | PersistenceFailedException $e) {
+                $this->err(sprintf('Message %s can not be saved. %s', trim($messageHeader->message_id), $e->getMessage()));
             }
-        } catch (InvalidArgumentException | ConnectionException $e) {
-            $this->warn($e->getMessage());
         }
     }
 
@@ -165,7 +191,7 @@ class FetchMailShell extends Shell
     }
 
     /**
-     * saveMessage method
+     * Saves the message into the database, under the specified mailbox.
      *
      * @param \PhpImap\IncomingMail $message received from the mailbox
      * @param \Cake\Datasource\EntityInterface $mailbox to save message
@@ -179,10 +205,38 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
+        $entity = $table->newEntity();
+        $table->patchEntity($entity, [
+            'subject' => $message->subject,
+            'content' => $message->textHtml,
+            'status' => 'new',
+            'date_sent' => $this->extractDateTime($message),
+            'from_user' => $message->fromAddress,
+            'from_name' => $message->fromName,
+            'to_user' => $message->toString,
+            'message_id' => $message->messageId,
+            'folder_id' => $mailboxes->getInboxFolder($mailbox),
+        ]);
+
+        $table->saveOrFail($entity);
+    }
+
+    /**
+     * Returns true only and only if the message provided already exists in database.
+     *
+     * @param string $messageId Message ID received from the mailbox
+     * @param \Cake\Datasource\EntityInterface $mailbox to save message
+     * @return bool
+     */
+    protected function hasMessage(string $messageId, EntityInterface $mailbox): bool
+    {
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        Assert::isInstanceOf($table, MessagesTable::class);
+
         $mailboxId = $mailbox->get('id');
         $query = $table->find()
             ->where([
-                'message_id' => $message->messageId
+                'message_id' => $messageId
             ])
             ->contain([
                 'Folders' => function ($q) use ($mailboxId) {
@@ -192,23 +246,28 @@ class FetchMailShell extends Shell
         Assert::isInstanceOf($query, Query::class);
         $result = $query->count();
 
-        if ($result > 0) {
-            return;
+        return ($result > 0);
+    }
+
+    /**
+     * Extracts the DateTime from the provided message
+     *
+     * @param mixed $message Email message object
+     * @return \DateTime
+     */
+    protected function extractDateTime($message): DateTime
+    {
+        if (!empty($message->udate)) {
+            $dateSent = new DateTime($message->udate);
+        } else {
+            $dateSent = DateTime::createFromFormat('Y-m-d H:i:s', $message->date);
         }
 
-        $entity = $table->newEntity();
-        $table->patchEntity($entity, [
-            'subject' => $message->subject,
-            'content' => $message->textHtml,
-            'status' => 'new',
-            'from_user' => $message->fromAddress,
-            'from_name' => $message->fromName,
-            'to_user' => $message->toString,
-            'message_id' => $message->messageId,
-            'folder_id' => $mailboxes->getInboxFolder($mailbox),
-        ]);
+        $errors = DateTime::getLastErrors();
+        if ($dateSent !== false && empty($errors['warning_count'])) {
+            return $dateSent;
+        }
 
-        $result = $table->save($entity);
-        Assert::isInstanceOf($result, EntityInterface::class);
+        return new DateTime();
     }
 }
