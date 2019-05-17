@@ -230,9 +230,6 @@ class FetchMailShell extends Shell
      */
     protected function hasMessage(string $messageId, EntityInterface $mailbox): bool
     {
-        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
-        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
-
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
