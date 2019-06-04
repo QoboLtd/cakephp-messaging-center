@@ -116,7 +116,7 @@ class FetchMailShell extends Shell
 
             $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
 
-            $messageIds = $this->searchMailbox($remoteMailbox, 'SINCE 04-Jun-2019');
+            $messageIds = $this->searchMailbox($remoteMailbox);
             if (empty($messageIds)) {
                 $this->out("Mailbox is empty");
 
