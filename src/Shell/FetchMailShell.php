@@ -116,7 +116,7 @@ class FetchMailShell extends Shell
 
             $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
 
-            $messageIds = $remoteMailbox->searchMailbox('ALL');
+            $messageIds = $this->searchMailbox($remoteMailbox);
             if (empty($messageIds)) {
                 $this->out("Mailbox is empty");
 
@@ -188,6 +188,31 @@ class FetchMailShell extends Shell
         }
 
         return $result;
+    }
+
+    /**
+     * Search the mailbox provided and returns an array including the message ids.
+     *
+     * It also handles intricacies for Office 365 / Exchange servers
+     *
+     * @link https://github.com/barbushin/php-imap/issues/101#issuecomment-378136507
+     * @param \PhpImap\Mailbox $remoteMailbox Remote mailbox to access and search
+     * @param string $criteria Criteria to be used when searching the mailbox
+     * @return mixed[]
+     * @throws \PhpImap\Exceptions\InvalidParameterException
+     */
+    protected function searchMailbox(RemoteMailbox $remoteMailbox, string $criteria = 'ALL'): array
+    {
+        try {
+            return $remoteMailbox->searchMailbox($criteria);
+        } catch (Exception $e) {
+            // Ugly hack to catch only the BADCHASET cases and retry with server encoding disabled
+            if (strpos($e->getMessage(), 'BADCHARSET') !== false) {
+                return $remoteMailbox->searchMailbox($criteria, true);
+            }
+
+            throw $e;
+        }
     }
 
     /**
