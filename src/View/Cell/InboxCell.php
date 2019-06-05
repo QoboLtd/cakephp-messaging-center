@@ -43,9 +43,6 @@ class InboxCell extends Cell
      */
     public function unreadCount(string $format = '', ?EntityInterface $mailbox = null): void
     {
-        $user = $this->request->getSession()->read('Auth.User');
-        Assert::isArray($user);
-
         if (trim($format) === '') {
             $format = static::UNREAD_COUNT_FORMAT;
         }
@@ -55,6 +52,9 @@ class InboxCell extends Cell
             Assert::isInstanceOf($mailboxes, MailboxesTable::class);
 
             try {
+                $user = $this->request->getSession()->read('Auth.User');
+                Assert::isArray($user);
+
                 $mailbox = $mailboxes->getSystemMailbox($user);
                 Assert::isInstanceOf($mailbox, EntityInterface::class);
             } catch (InvalidArgumentException $e) {
