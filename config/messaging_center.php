@@ -23,5 +23,11 @@ return [
         'outgoingTransports' => [
             'smtp' => 'SMTP'
         ],
+        'remote_mailbox_messages' => [
+            'markAsSeen' => false
+        ],
+        'local_mailbox_messages' => [
+            'initialStatus' => 'new'
+        ]
     ]
 ];
