@@ -110,11 +110,7 @@ class FetchMailShell extends Shell
          * @TODO Put this into database while setting up mailbox
          * @var bool
          */
-        if (Configure::read('MessagingCenter')) {
-            $markAsSeen_remote = (bool)Configure::read('MessagingCenter.remote_mailbox_messages.markAsSeen');
-        } else {
-            $markAsSeen_remote = true;
-        }
+        $markAsSeenRemote = (bool)Configure::read('MessagingCenter.remote_mailbox_messages.markAsSeen', true);
 
         try {
             $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
@@ -158,7 +154,7 @@ class FetchMailShell extends Shell
 
             try {
                 /** @var \PhpImap\IncomingMail $message */
-                $message = $remoteMailbox->getMail($messageHeader->uid, $markAsSeen_remote);
+                $message = $remoteMailbox->getMail($messageHeader->uid, $markAsSeenRemote);
 
                 $this->saveMessage($message, $mailbox);
                 $this->out(sprintf('Message %s saved', trim($messageHeader->message_id)));
@@ -247,11 +243,7 @@ class FetchMailShell extends Shell
          * @TODO Put this into database while setting up mailbox
          * @var string
          */
-        if (Configure::read('MessagingCenter')) {
-            $initialStatus = (string)Configure::read('MessagingCenter.local_mailbox_messages.initialStatus');
-        } else {
-            $initialStatus = 'new';
-        }
+        $initialStatus = (string)Configure::read('MessagingCenter.local_mailbox_messages.initialStatus', 'new');
 
         $entity = $table->newEntity();
         $table->patchEntity($entity, [
