@@ -371,7 +371,7 @@ class MessagesTable extends Table
         $content = (string)$entity->get('content');
         /** @see https://codex.wordpress.org/Function_Reference/wp_strip_all_tags */
         $content = (string)preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $content);
-        $content = strip_tags($content);
+
         $entity->set('content', $content);
     }
 }
