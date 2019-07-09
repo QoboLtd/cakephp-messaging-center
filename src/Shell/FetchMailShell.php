@@ -180,8 +180,7 @@ class FetchMailShell extends Shell
             }
         }
     }
-
-
+    
     /**
      * Build connection string
      *
