@@ -121,7 +121,7 @@ class FetchMailShell extends Shell
         ];
 
         // SINCE 01-Jan-2000
-        $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y');
+        $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);
 
         /**
          * Retrieve mark as seen remote email status from configuration.
