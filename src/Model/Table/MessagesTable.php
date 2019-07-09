@@ -11,8 +11,10 @@
  */
 namespace MessagingCenter\Model\Table;
 
+use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\I18n\Time;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
@@ -358,5 +360,18 @@ class MessagesTable extends Table
         $result = $this->save($entity);
 
         return !empty($result) ? true : false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return void|bool
+     */
+    public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options)
+    {
+        $content = (string)$entity->get('content');
+        /** @see https://codex.wordpress.org/Function_Reference/wp_strip_all_tags */
+        $content = (string)preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $content);
+        $content = strip_tags($content);
+        $entity->set('content', $content);
     }
 }
