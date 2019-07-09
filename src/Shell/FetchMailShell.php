@@ -41,10 +41,13 @@ class FetchMailShell extends Shell
      *
      * @return \Cake\Console\ConsoleOptionParser
      */
-    public function getOptionsParser(): ConsoleOptionParser
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = new ConsoleOptionParser('console');
         $parser->setDescription('Fetch mail');
+
+        $parser->addOption('since', ['short' => 's', 'help' => 'Fetch emails received since a particular date', 'default' => null]);
+        $parser->addOption('limit', ['short' => 'l', 'help' => 'Limit number of emails to fetch', 'default' => null]);
 
         return $parser;
     }
@@ -84,8 +87,18 @@ class FetchMailShell extends Shell
             ->contain(['Folders']);
         Assert::isInstanceOf($query, Query::class);
 
+        $limit = empty($this->params['limit']) ? null : (int)$this->params['limit'];
+        $since = null;
+
+        if (!empty($this->params['since'])) {
+            $time = strtotime($this->params['since']);
+            if ($time !== false) {
+                $since = (int)$time;
+            }
+        }
+
         foreach ($query->all() as $mailbox) {
-            $this->processMailbox($mailbox);
+            $this->processMailbox($mailbox, $since, $limit);
         }
     }
 
@@ -93,9 +106,11 @@ class FetchMailShell extends Shell
      * Fetch mail for a given mailbox
      *
      * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox instance
+     * @param int|null $since Timestamp to be used in since search criteria
+     * @param int|null $limit How many emails to fetch
      * @return void
      */
-    protected function processMailbox(Mailbox $mailbox) : void
+    protected function processMailbox(Mailbox $mailbox, ?int $since, ?int $limit) : void
     {
         $defaultSettings = [
             'username' => '',
@@ -104,6 +119,9 @@ class FetchMailShell extends Shell
             'port' => null,
             'protocol' => 'imap',
         ];
+
+        // SINCE 01-Jan-2000
+        $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);
 
         /**
          * Retrieve mark as seen remote email status from configuration.
@@ -124,7 +142,8 @@ class FetchMailShell extends Shell
 
             $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
 
-            $messageIds = $this->searchMailbox($remoteMailbox);
+            $remoteMailbox->setAttachmentsIgnore(true);
+            $messageIds = $this->searchMailbox($remoteMailbox, $search_criteria);
             if (empty($messageIds)) {
                 $this->out("Mailbox is empty");
 
@@ -137,6 +156,12 @@ class FetchMailShell extends Shell
         }
 
         $this->out('Fetching headers');
+
+        $messageIds = array_reverse($messageIds);
+        if (!empty($limit)) {
+            $messageIds = array_slice($messageIds, 0, $limit);
+        }
+
         $allMessageHeaders = $remoteMailbox->getMailsInfo($messageIds);
         foreach ($allMessageHeaders as $messageHeader) {
             if (!property_exists($messageHeader, 'message_id') || !property_exists($messageHeader, 'uid')) {
@@ -209,7 +234,7 @@ class FetchMailShell extends Shell
      * @return mixed[]
      * @throws \PhpImap\Exceptions\InvalidParameterException
      */
-    protected function searchMailbox(RemoteMailbox $remoteMailbox, string $criteria = 'ALL'): array
+    protected function searchMailbox(RemoteMailbox $remoteMailbox, string $criteria): array
     {
         try {
             return $remoteMailbox->searchMailbox($criteria);
@@ -238,6 +263,8 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
+        $content = $message->textPlain ?? $message->textHtml;
+
         /**
          * Retrieve initialStatus for local saved email from configuration.
          * @TODO Put this into database while setting up mailbox
@@ -248,7 +275,7 @@ class FetchMailShell extends Shell
         $entity = $table->newEntity();
         $table->patchEntity($entity, [
             'subject' => $message->subject,
-            'content' => $message->textHtml,
+            'content' => $content,
             'status' => $initialStatus,
             'date_sent' => $this->extractDateTime($message),
             'from_user' => $message->fromAddress,
