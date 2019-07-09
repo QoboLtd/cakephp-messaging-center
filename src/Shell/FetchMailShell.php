@@ -120,7 +120,6 @@ class FetchMailShell extends Shell
             'protocol' => 'imap',
         ];
 
-
         // SINCE 01-Jan-2000
         $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y');
 
@@ -263,7 +262,6 @@ class FetchMailShell extends Shell
 
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
-
 
         $content = $message->textPlain ?? $message->textHtml;
 
