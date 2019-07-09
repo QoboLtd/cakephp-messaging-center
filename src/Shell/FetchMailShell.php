@@ -13,6 +13,7 @@ namespace MessagingCenter\Shell;
 
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Query;
@@ -119,8 +120,16 @@ class FetchMailShell extends Shell
             'protocol' => 'imap',
         ];
 
+
         // SINCE 01-Jan-2000
         $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y');
+
+        /**
+         * Retrieve mark as seen remote email status from configuration.
+         * @TODO Put this into database while setting up mailbox
+         * @var bool
+         */
+        $markAsSeenRemote = (bool)Configure::read('MessagingCenter.remote_mailbox_messages.markAsSeen', true);
 
         try {
             $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
@@ -171,7 +180,7 @@ class FetchMailShell extends Shell
 
             try {
                 /** @var \PhpImap\IncomingMail $message */
-                $message = $remoteMailbox->getMail($messageHeader->uid);
+                $message = $remoteMailbox->getMail($messageHeader->uid, $markAsSeenRemote);
 
                 $this->saveMessage($message, $mailbox);
                 $this->out(sprintf('Message %s saved', trim($messageHeader->message_id)));
@@ -255,13 +264,21 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
+
         $content = $message->textPlain ?? $message->textHtml;
+
+        /**
+         * Retrieve initialStatus for local saved email from configuration.
+         * @TODO Put this into database while setting up mailbox
+         * @var string
+         */
+        $initialStatus = (string)Configure::read('MessagingCenter.local_mailbox_messages.initialStatus', 'new');
 
         $entity = $table->newEntity();
         $table->patchEntity($entity, [
             'subject' => $message->subject,
             'content' => $content,
-            'status' => 'new',
+            'status' => $initialStatus,
             'date_sent' => $this->extractDateTime($message),
             'from_user' => $message->fromAddress,
             'from_name' => $message->fromName,
