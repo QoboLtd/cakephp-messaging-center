@@ -181,6 +181,7 @@ class FetchMailShell extends Shell
         }
     }
 
+
     /**
      * Build connection string
      *
@@ -255,10 +256,19 @@ class FetchMailShell extends Shell
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($table, MessagesTable::class);
 
+        $content = $message->textPlain;
+        if (empty($content)) {
+            $content = $message->textHtml;
+
+            /** @see https://codex.wordpress.org/Function_Reference/wp_strip_all_tags */
+            $content = (string)preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $content);
+            $content = strip_tags($content);
+        }
+
         $entity = $table->newEntity();
         $table->patchEntity($entity, [
             'subject' => $message->subject,
-            'content' => $message->textHtml,
+            'content' => $content,
             'status' => 'new',
             'date_sent' => $this->extractDateTime($message),
             'from_user' => $message->fromAddress,
