@@ -62,6 +62,18 @@ class MessagesTable extends Table
             'className' => 'MessagingCenter.Folders'
         ]);
 
+        $this->belongsTo('FromUser', [
+            'foreignKey' => 'from_user',
+            'className' => 'CakeDC/Users.Users',
+            'propertyName' => 'fromUser'
+        ]);
+
+        $this->belongsTo('ToUser', [
+            'foreignKey' => 'to_user',
+            'className' => 'CakeDC/Users.Users',
+            'propertyName' => 'toUser'
+        ]);
+
         $this->addBehavior('Timestamp');
     }
 
