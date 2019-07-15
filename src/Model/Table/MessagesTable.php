@@ -99,7 +99,7 @@ class MessagesTable extends Table
 
         $validator
             ->requirePresence('subject', 'create')
-            ->notEmpty('subject');
+            ->allowEmpty('subject');
 
         $validator
             ->requirePresence('content', 'create')
