@@ -43,6 +43,7 @@ class Mailbox extends Entity
         'active' => true,
         'created' => true,
         'modified' => true,
-        'user' => true
+        'user' => true,
+        'default_folder' => true
     ];
 }

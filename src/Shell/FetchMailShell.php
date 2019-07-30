@@ -118,17 +118,11 @@ class FetchMailShell extends Shell
             'host' => 'localhost',
             'port' => null,
             'protocol' => 'imap',
+            'mail_folder' => ''
         ];
 
         // SINCE 01-Jan-2000
         $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);
-
-        /**
-         * Retrieve mark as seen remote email status from configuration.
-         * @TODO Put this into database while setting up mailbox
-         * @var bool
-         */
-        $markAsSeenRemote = (bool)Configure::read('MessagingCenter.remote_mailbox_messages.markAsSeen', true);
 
         try {
             $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
@@ -136,24 +130,51 @@ class FetchMailShell extends Shell
             $settings = json_decode($mailbox->get('incoming_settings'), true) ?? [];
             $settings = array_merge($defaultSettings, $settings);
 
-            $connectionString = $this->getConnectionString($mailbox->get('incoming_transport'), $settings);
+            $mailboxFolders = json_decode($mailbox->get('default_folder'));
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new InvalidParameterException("No folders selected under " . $mailbox->get('name') . ' mailbox');
+            }
 
-            $this->out("Connection: $connectionString; username=" . $settings['username'] . "; password=" . $settings['password']);
+            foreach ($mailboxFolders as $mailboxFolder) {
+                $settings['mail_folder'] = $mailboxFolder;
+                $connectionString = $this->getConnectionString($mailbox->get('incoming_transport'), $settings);
+                $this->out("Connection: $connectionString; username=" . $settings['username'] . "; password=" . $settings['password'] . "/Folder:" . $mailboxFolder);
 
-            $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
+                $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
 
-            $remoteMailbox->setAttachmentsIgnore(true);
-            $messageIds = $this->searchMailbox($remoteMailbox, $search_criteria);
-            if (empty($messageIds)) {
-                $this->out("Mailbox is empty");
+                $remoteMailbox->setAttachmentsIgnore(true);
+                $messageIds = $this->searchMailbox($remoteMailbox, $search_criteria);
 
-                return;
+                if (empty($messageIds)) {
+                    $this->out("Mailbox/Folder " . $mailboxFolder . " is empty");
+                    continue;
+                }
+
+                $this->readHeaders($mailbox, $remoteMailbox, $messageIds, $limit);
             }
         } catch (InvalidArgumentException | InvalidParameterException | ConnectionException $e) {
             $this->abort($e->getMessage());
 
             return;
         }
+    }
+
+    /**
+     * Read Mailbox/Folder headers
+     * @param  \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox instance
+     * @param  PhpImap\Mailbox $remoteMailbox Remotemailbox
+     * @param  mixed[]  $messageIds    Messages to be read
+     * @param int|null $limit How many emails to fetch
+     * @return void
+     */
+    private function readHeaders(Mailbox $mailbox, RemoteMailbox $remoteMailbox, array $messageIds, ?int $limit) : void
+    {
+        /**
+         * Retrieve mark as seen remote email status from configuration.
+         * @TODO Put this into database while setting up mailbox
+         * @var bool
+         */
+        $markAsSeenRemote = (bool)Configure::read('MessagingCenter.remote_mailbox_messages.markAsSeen', true);
 
         $this->out('Fetching headers');
 
@@ -163,6 +184,7 @@ class FetchMailShell extends Shell
         }
 
         $allMessageHeaders = $remoteMailbox->getMailsInfo($messageIds);
+
         foreach ($allMessageHeaders as $messageHeader) {
             if (!property_exists($messageHeader, 'message_id') || !property_exists($messageHeader, 'uid')) {
                 $this->err('Message ID / UID is missing');
@@ -198,7 +220,7 @@ class FetchMailShell extends Shell
      * @param mixed[] $settings Incoming transport settings
      * @return string
      */
-    protected function getConnectionString(string $type, array $settings) : string
+    public function getConnectionString(string $type, array $settings) : string
     {
         $result = '';
 
@@ -213,7 +235,9 @@ class FetchMailShell extends Shell
                 $result .= '/ssl/novalidate-cert';
                 $result .= '}';
                 // TODO: Make this flexible
-                $result .= 'INBOX';
+                if (!empty($settings['mail_folder'])) {
+                    $result .= $settings['mail_folder'];
+                }
 
                 break;
             default:
@@ -324,7 +348,7 @@ class FetchMailShell extends Shell
      */
     protected function extractDateTime($message): DateTime
     {
-        if (!empty($message->udate)) {
+        if (property_exists($message, 'udate')) {
             $dateSent = new DateTime($message->udate);
         } else {
             $dateSent = DateTime::createFromFormat('Y-m-d H:i:s', $message->date);
