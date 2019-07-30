@@ -6,6 +6,8 @@ use Cake\ORM\TableRegistry;
 use MessagingCenter\Controller\AppController;
 use MessagingCenter\Model\Table\FoldersTable;
 use MessagingCenter\Model\Table\MessagesTable;
+use MessagingCenter\Shell\FetchMailShell;
+use PhpImap\Mailbox as RemoteMailbox;
 use Webmozart\Assert\Assert;
 
 /**
@@ -129,15 +131,14 @@ class MailboxesController extends AppController
                 ]
             ]
         ]);
-
         if ($this->request->is(['patch', 'post', 'put'])) {
             /**
              * @var mixed[] $data
              */
             $data = $this->request->getData();
-
             $data['incoming_settings'] = json_encode($data['IncomingSettings']);
             $data['outgoing_settings'] = json_encode($data['OutgoingSettings']);
+            $data['default_folder'] = json_encode($data['default_folder']);
 
             $mailbox = $this->Mailboxes->patchEntity($mailbox, $data);
             if ($this->Mailboxes->save($mailbox)) {
@@ -151,13 +152,41 @@ class MailboxesController extends AppController
         $types = (array)Configure::read('MessagingCenter.Mailbox.types');
         $incomingTransports = (array)Configure::read('MessagingCenter.Mailbox.incomingTransports');
         $outgoingTransports = (array)Configure::read('MessagingCenter.Mailbox.outgoingTransports');
+        $allowedMailFolders = (array)Configure::read('MessagingCenter.allowedMailFolders', []);
 
         $usersTable = TableRegistry::getTableLocator()->get('Users');
         $users = $usersTable->find('list')
             ->where([
                 'active' => true
             ]);
-        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports', 'users'));
+
+        $defaultSettings = [
+            'username' => '',
+            'password' => '',
+            'host' => 'localhost',
+            'port' => null,
+            'protocol' => 'imap',
+            'mail_folder' => ''
+        ];
+
+        $settings = json_decode($mailbox->get('incoming_settings'), true) ?? [];
+        $settings = array_merge($defaultSettings, $settings);
+
+        $fetchMailShell = new FetchMailShell();
+        $connectionString = $fetchMailShell->getConnectionString($mailbox->get('incoming_transport'), $settings);
+
+        $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
+        $folders = $remoteMailbox->getMailboxes('*');
+        $selected_folder_list = json_decode($mailbox->get('default_folder'), true) ?? [];
+
+        $folder_list = [];
+        foreach ($folders as $mailbox_folder) {
+            if (in_array($mailbox_folder['shortpath'], $allowedMailFolders)) {
+                $folder_list[$mailbox_folder['shortpath']] = $mailbox_folder['shortpath'];
+            }
+        }
+
+        $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports', 'users', 'folder_list', 'selected_folder_list'));
     }
 
     /**

@@ -28,6 +28,10 @@ return [
         ],
         'local_mailbox_messages' => [
             'initialStatus' => 'new'
+        ],
+        'allowedMailFolders' => [
+            'INBOX',
+            'Sent Items'
         ]
     ]
 ];

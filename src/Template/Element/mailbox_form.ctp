@@ -4,6 +4,26 @@ use Cake\Core\Configure;
 $incomingTransports = (array)Configure::read('MessagingCenter.incomingTransports');
 $outgoingTransports = (array)Configure::read('MessagingCenter.outgoingTransports');
 
+echo $this->Html->css(
+    [
+        'AdminLTE./bower_components/select2/dist/css/select2.min',
+        'Qobo/Utils.select2-bootstrap.min',
+        'Qobo/Utils.select2-style'
+    ],
+    [
+        'block' => 'css'
+    ]
+);
+echo $this->Html->script(
+    [
+        'AdminLTE./bower_components/select2/dist/js/select2.full.min',
+        'Qobo/Utils.select2.init'
+    ],
+    [
+        'block' => 'scriptBottom'
+    ]
+);
+
 ?>
 <?= $this->Form->create($mailbox) ?>
 <div class="box box-solid">
@@ -48,7 +68,17 @@ $outgoingTransports = (array)Configure::read('MessagingCenter.outgoingTransports
             <div class="col-xs-12 col-md-6">
                 <?= $this->Form->control('incoming_transport', ['options' => $incomingTransports]); ?>
             </div>
-            <div class="col-xs-12 col-md-6"></div>
+            <div class="col-xs-12 col-md-6">
+                <?= $this->Form->select('default_folder',
+                    $folder_list,
+                    array(
+                        'multiple' => 'multiple',
+                        'class' => 'select2',
+                        'val' => $selected_folder_list
+                        )
+                    );
+                ?>
+            </div>
         </div>
         <div class="row">
             <div class="col-xs-12 col-md-6">
