@@ -47,10 +47,10 @@ class InboxCell extends Cell
             $format = static::UNREAD_COUNT_FORMAT;
         }
 
-        if (empty($mailbox)) {
-            $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
-            Assert::isInstanceOf($mailboxes, MailboxesTable::class);
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
 
+        if (empty($mailbox)) {
             try {
                 $user = $this->request->getSession()->read('Auth.User');
                 Assert::isArray($user);
@@ -66,21 +66,10 @@ class InboxCell extends Cell
             }
         }
 
-        $mailboxId = $mailbox->get('id');
-        $this->loadModel('MessagingCenter.Messages');
-        $unread = $this->Messages->find('all')
-            ->where([
-                'status' => $this->Messages->getNewStatus(),
-            ])
-            ->contain([
-                'Folders' => function ($q) use ($mailboxId) {
-                    return $q->where(['mailbox_id' => $mailboxId]);
-                }
-            ]);
-        Assert::isInstanceOf($unread, Query::class);
+        $unreadCount = $mailboxes->countUnreadMessages($mailbox);
 
         $this->set('unreadFormat', $format);
-        $this->set('unreadCount', $unread->count());
+        $this->set('unreadCount', $unreadCount);
         $this->set('maxUnreadCount', static::MAX_UNREAD_COUNT);
     }
 
@@ -91,19 +80,27 @@ class InboxCell extends Cell
      * @param  int $contentLength content excerpt length
      * @return void
      */
-    public function unreadMessages(int $limit = 10, int $contentLength = 100): void
+    public function unreadMessages(int $limit = 10, int $contentLength = 100, ?EntityInterface $mailbox = null): void
     {
-        $userId = $this->request->getSession()->read('Auth.User.id');
-        $this->loadModel('MessagingCenter.Messages');
-        $messages = $this->Messages->find('all', [
-            'conditions' => [
-                'to_user' => $userId,
-                'status' => $this->Messages->getNewStatus()
-            ],
-            'contain' => [],
-            'order' => ['Messages.date_sent' => 'DESC'],
-            'limit' => $limit
-        ]);
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
+
+        if (empty($mailbox)) {
+            try {
+                $user = $this->request->getSession()->read('Auth.User');
+                Assert::isArray($user);
+
+                $mailbox = $mailboxes->getSystemMailbox($user);
+                Assert::isInstanceOf($mailbox, EntityInterface::class);
+            } catch (InvalidArgumentException $e) {
+                $this->set('messages', []);
+                $this->set('contentLength', $contentLength);
+
+                return;
+            }
+        }
+
+        $messages = $mailboxes->getUnreadMessages($mailbox, $limit);
 
         $this->set(compact('messages', 'contentLength'));
     }

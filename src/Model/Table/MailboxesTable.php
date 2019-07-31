@@ -4,6 +4,7 @@ namespace MessagingCenter\Model\Table;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -265,5 +266,65 @@ class MailboxesTable extends Table
         Assert::isInstanceOf($mailbox, EntityInterface::class, __('User ' . $user['username'] . ' does not have system mailbox!'));
 
         return $mailbox;
+    }
+
+    /**
+     * Counts and returns the number of unread messages within the provided mailbox.
+     *
+     * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox entity
+     * @return int
+     */
+    public function countUnreadMessages(Mailbox $mailbox): int
+    {
+        return (int)$this->queryUnreadMessages($mailbox)->count();
+    }
+
+    /**
+     * Fetches and returns the unread messages within the provided mailbox.
+     *
+     * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox entity
+     * @param int|null $limit Number of records to be fetched
+     * @return \MessagingCenter\Model\Entity\Message[]
+     */
+    public function getUnreadMessages(Mailbox $mailbox, int $limit = null): array
+    {
+        $query = $this
+            ->queryUnreadMessages($mailbox)
+            ->contain(['FromUser', 'ToUser'])
+            ->order(['Messages.date_sent' => 'DESC']);
+
+        if (is_int($limit)) {
+            $query->limit($limit);
+        }
+
+        return $query->toList();
+    }
+
+    /**
+     * Prepares and returns the query for Unread Messages
+     *
+     * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox Enitty
+     * @return \Cake\ORM\Query
+     */
+    protected function queryUnreadMessages(Mailbox $mailbox): Query
+    {
+        $mailboxId = $mailbox->get('id');
+
+        $messagesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        $query = $messagesTable->find('all')
+            ->where([
+                'status' => $messagesTable->getNewStatus(),
+            ])
+            ->contain([
+                'Folders' => function (Query $q) use ($mailboxId) {
+                    return $q->where([
+                        'mailbox_id' => $mailboxId,
+                        'name' => MailboxesTable::FOLDER_INBOX,
+                    ]);
+                }
+            ]);
+        Assert::isInstanceOf($query, Query::class);
+
+        return $query;
     }
 }
