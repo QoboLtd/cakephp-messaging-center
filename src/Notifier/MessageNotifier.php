@@ -40,7 +40,7 @@ class MessageNotifier extends Notifier
     /**
      * Notification folder.
      *
-     * @var \Cake\I18n\Time
+     * @var string
      */
     protected $_folder;
 

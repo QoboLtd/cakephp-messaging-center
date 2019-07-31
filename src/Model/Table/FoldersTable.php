@@ -6,7 +6,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
-use InvalidArgumentException;
+use MessagingCenter\Model\Entity\Folder;
 use Webmozart\Assert\Assert;
 
 /**
@@ -115,7 +115,7 @@ class FoldersTable extends Table
      * createDefaultFolders method
      *
      * @param \Cake\Datasource\EntityInterface $mailbox entity.
-     * @return mixed[]
+     * @return \MessagingCenter\Model\Entity\Folder[]
      */
     public function createDefaultFolders(EntityInterface $mailbox) : array
     {
@@ -147,10 +147,11 @@ class FoldersTable extends Table
                 Assert::isInstanceOf($result, EntityInterface::class);
             }
 
-            $list[$folderName] = $result;
+            $list[] = $result;
         }
 
         Assert::notEmpty($list, 'Cannot create default folders for mailbox ' . $mailbox->get('name') . '!');
+        Assert::allIsInstanceOf($list, Folder::class);
 
         return $list;
     }

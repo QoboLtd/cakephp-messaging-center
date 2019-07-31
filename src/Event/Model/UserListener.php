@@ -71,7 +71,7 @@ class UserListener implements EventListenerInterface
 
         /** @var \MessagingCenter\Model\Table\MailboxesTable $mailboxes  */
         $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
-        $defaultMailbox = $mailboxes->createDefaultMailbox($entity->toArray(), false);
+        $defaultMailbox = $mailboxes->createDefaultMailbox($entity->toArray());
 
         if (!Configure::read('MessagingCenter.welcomeMessage.enabled')) {
             return;

@@ -300,13 +300,12 @@ class MessagesTable extends Table
     }
 
     /**
-     * @param array $folders List of folders to be checked
+     * @param \MessagingCenter\Model\Entity\Folder[] $folders List of folders to be checked
      * @param string $name Folder name that we are looking for
      * @return Folder
      */
     private function getFolderByType(array $folders, string $name): Folder
     {
-        /** @var \Cake\Datasource\EntityInterface $folder */
         foreach ($folders as $folder) {
             if ($folder->get('name') === $name) {
                 return $folder;
