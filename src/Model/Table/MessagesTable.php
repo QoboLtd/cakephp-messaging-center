@@ -106,11 +106,11 @@ class MessagesTable extends Table
 
         $validator
             ->requirePresence('from_user', 'create')
-            ->notEmpty('from_user');
+            ->allowEmpty('from_user');
 
         $validator
             ->requirePresence('to_user', 'create')
-            ->notEmpty('to_user');
+            ->allowEmpty('to_user');
 
         $validator
             ->requirePresence('subject', 'create')
