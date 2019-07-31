@@ -1,8 +1,10 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Behavior;
 
+use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use MessagingCenter\Event\Model\MailboxListener;
 use MessagingCenter\Model\Behavior\NotifyBehavior;
 
 class NotifyBehaviorTest extends TestCase
@@ -45,6 +47,8 @@ class NotifyBehaviorTest extends TestCase
          */
         $behavior = $this->Articles->behaviors()->get('Notify');
         $this->Behavior = $behavior;
+
+        EventManager::instance()->on(new MailboxListener());
     }
 
     public function tearDown()

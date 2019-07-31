@@ -1,10 +1,13 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Controller;
 
+use Cake\Event\EventManager;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 use MessagingCenter\Controller\MessagesController;
+use MessagingCenter\Event\Model\MailboxListener;
+use MessagingCenter\Event\Model\UserListener;
 use MessagingCenter\Model\Entity\Message;
 use MessagingCenter\Model\Table\MessagesTable;
 
@@ -47,6 +50,9 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $this->enableRetainFlashMessages();
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
+
+        EventManager::instance()->on(new UserListener());
+        EventManager::instance()->on(new MailboxListener());
     }
 
     /**
@@ -115,11 +121,11 @@ class MessagesControllerTest extends IntegrationTestCase
 
     public function testComposePost(): void
     {
-        $mailboxId = '00000000-0000-0000-0000-000000000002';
-        $expected = 1 + $this->MessagesTable->find('all')->count();
+        $mailboxId = '00000000-0000-0000-0000-000000000001';
+        $expected = 2 + $this->MessagesTable->find('all')->count();
 
         $data = [
-            'to_user' => '00000000-0000-0000-0000-000000000001',
+            'to_user' => '00000000-0000-0000-0000-000000000002',
             'subject' => 'testComposePost message',
             'content' => 'Bla bla bla'
         ];

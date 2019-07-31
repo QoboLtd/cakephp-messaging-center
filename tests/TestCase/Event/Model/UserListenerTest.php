@@ -7,12 +7,15 @@ use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use MessagingCenter\Event\Model\MailboxListener;
 use MessagingCenter\Event\Model\UserListener;
 
 class UserListenerTest extends TestCase
 {
     public $fixtures = [
         'plugin.CakeDC/Users.users',
+        'plugin.MessagingCenter.folders',
+        'plugin.MessagingCenter.mailboxes',
         'plugin.MessagingCenter.messages',
     ];
 
@@ -37,6 +40,7 @@ class UserListenerTest extends TestCase
         $this->Users->getEventManager()->setEventList(new EventList());
 
         EventManager::instance()->on(new UserListener());
+        EventManager::instance()->on(new MailboxListener());
     }
 
     public function tearDown()
