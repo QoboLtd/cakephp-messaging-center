@@ -78,6 +78,21 @@ class MessagesTable extends Table
     }
 
     /**
+     * @inheritDoc
+     *
+     * @param \Cake\Database\Schema\TableSchema $schema
+     * @return \Cake\Database\Schema\TableSchema
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema = parent::_initializeSchema($schema);
+
+        $schema->setColumnType('headers', 'json');
+
+        return $schema;
+    }
+
+    /**
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
