@@ -151,7 +151,7 @@ class MailboxesTable extends Table
      *
      * @param mixed[] $user to create a mailbox for
      * @return \Cake\Datasource\EntityInterface
-     * @throws InvalidArgumentException in case of no mailbox is created
+     * @throws \InvalidArgumentException in case of no mailbox is created
      */
     public function createDefaultMailbox(array $user) : EntityInterface
     {
@@ -193,7 +193,9 @@ class MailboxesTable extends Table
     }
 
     /**
-     * getInboxFolders method
+     * Returns the inbox folder for this Mailbox.
+     *
+     * The folder ID is returned.
      *
      * @param \Cake\Datasource\EntityInterface $mailbox to get default folder for
      * @return string
@@ -201,23 +203,50 @@ class MailboxesTable extends Table
      */
     public function getInboxFolder(EntityInterface $mailbox) : string
     {
-        if (empty($mailbox->get('folders'))) {
-            throw new InvalidArgumentException('No folder is created for that mailbox.');
-        }
+        $query = $this->find()
+            ->where([
+                'id' => (string)$mailbox->get('id'),
+            ])
+            ->contain(['Folders' => function ($q) {
+                return $q->where(['name' => static::FOLDER_INBOX]);
+            }]);
 
-        $inboxFolderId = null;
-        foreach ($mailbox->get('folders') as $folder) {
-            if ($folder->get('name') === static::FOLDER_INBOX) {
-                $inboxFolderId = $folder->get('id');
-                break;
-            }
-        }
-
-        if (empty($inboxFolderId)) {
+        if ($query->isEmpty()) {
             throw new InvalidArgumentException('Cannot find Inbox folder in that mailbox');
         }
 
-        return $inboxFolderId;
+        /** @var \MessagingCenter\Model\Entity\Mailbox $mailbox */
+        $mailbox = $query->firstOrFail();
+
+        /** @var \MessagingCenter\Model\Entity\Folder $folder */
+        $folder = $mailbox->get('folders')[0];
+
+        return $folder->get('id');
+    }
+
+    /**
+     * Returns all the folders available under the specified Mailbox
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox to get folders for
+     * @return \Cake\Datasource\EntityInterface[]
+     * @throws InvalidArgumentException in case of no Inbox folder found in the mailbox
+     */
+    public function getFolders(EntityInterface $mailbox) : array
+    {
+        $query = $this->find()
+            ->where([
+                'id' => (string)$mailbox->get('id'),
+            ])
+            ->contain(['Folders']);
+
+        if ($query->isEmpty()) {
+            throw new InvalidArgumentException('Cannot find folders in that mailbox');
+        }
+
+        /** @var \MessagingCenter\Model\Entity\Mailbox $mailbox */
+        $mailbox = $query->firstOrFail();
+
+        return $mailbox->get('folders');
     }
 
     /**
