@@ -13,6 +13,7 @@ namespace MessagingCenter\Model\Table;
 
 use ArrayObject;
 use Cake\Core\Configure;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
@@ -20,6 +21,7 @@ use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use InvalidArgumentException;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Message;
 use Webmozart\Assert\Assert;
@@ -298,6 +300,23 @@ class MessagesTable extends Table
     }
 
     /**
+     * @param array $folders
+     * @param string $type
+     * @return Folder
+     */
+    private function getFolderByType(array $folders, string $name): Folder
+    {
+        /** @var \Cake\Datasource\EntityInterface $folder */
+        foreach ($folders as $folder) {
+            if ($folder->get('name') === $name) {
+                return $folder;
+            }
+        }
+
+        throw new InvalidArgumentException(sprintf('Folder with name %s not found', $name));
+    }
+
+    /**
      * processMessages method
      *
      * @param string $userId who own the messages
@@ -320,12 +339,12 @@ class MessagesTable extends Table
                 continue;
             }
 
-            $folder = $folders[MailboxesTable::FOLDER_INBOX];
+            $folder = $this->getFolderByType($folders, MailboxesTable::FOLDER_INBOX);
             $copiedMessageUser = $message->get('from_user');
             $copiedMessageFolder = MailboxesTable::FOLDER_SENT;
 
             if ($message->get('from_user') == $userId) {
-                $folder = $folders[MailboxesTable::FOLDER_SENT];
+                $folder = $this->getFolderByType($folders, MailboxesTable::FOLDER_SENT);
                 $copiedMessageUser = $message->get('to_user');
                 $copiedMessageFolder = MailboxesTable::FOLDER_INBOX;
             }
@@ -372,15 +391,13 @@ class MessagesTable extends Table
         Assert::isInstanceOf($foldersTable, FoldersTable::class);
 
         $folders = $foldersTable->createDefaultFolders($mailbox);
+
         if (empty($folders)) {
             return false;
         }
 
-        if (empty($folders[$folderType]) || ! $folders[$folderType] instanceof Folder) {
-            return false;
-        }
-
-        $data['folder_id'] = $folders[$folderType]->get('id');
+        $folder = $this->getFolderByType($folders, $folderType);
+        $data['folder_id'] = $folder->get('id');
 
         $entity = $this->newEntity();
         $this->patchEntity($entity, $data);
