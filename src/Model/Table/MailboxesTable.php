@@ -290,9 +290,10 @@ class MailboxesTable extends Table
     {
         $query = $this
             ->queryUnreadMessages($mailbox)
-            ->contain(['FromUser', 'ToUser'])
-            ->order(['Messages.date_sent' => 'DESC']);
+            ->contain(['FromUser', 'ToUser']);
+        Assert::isInstanceOf($query, Query::class);
 
+        $query->order(['Messages.date_sent' => 'DESC']);
         if (is_int($limit)) {
             $query->limit($limit);
         }
@@ -311,6 +312,8 @@ class MailboxesTable extends Table
         $mailboxId = $mailbox->get('id');
 
         $messagesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        Assert::isInstanceOf($messagesTable, MessagesTable::class);
+
         $query = $messagesTable->find('all')
             ->where([
                 'status' => $messagesTable->getNewStatus(),

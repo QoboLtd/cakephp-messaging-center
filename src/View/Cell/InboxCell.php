@@ -16,6 +16,7 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\View\Cell;
 use InvalidArgumentException;
+use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Table\MailboxesTable;
 use Webmozart\Assert\Assert;
 
@@ -56,7 +57,6 @@ class InboxCell extends Cell
                 Assert::isArray($user);
 
                 $mailbox = $mailboxes->getSystemMailbox($user);
-                Assert::isInstanceOf($mailbox, EntityInterface::class);
             } catch (InvalidArgumentException $e) {
                 $this->set('unreadFormat', $format);
                 $this->set('unreadCount', 0);
@@ -66,6 +66,7 @@ class InboxCell extends Cell
             }
         }
 
+        Assert::isInstanceOf($mailbox, Mailbox::class);
         $unreadCount = $mailboxes->countUnreadMessages($mailbox);
 
         $this->set('unreadFormat', $format);
@@ -91,7 +92,6 @@ class InboxCell extends Cell
                 Assert::isArray($user);
 
                 $mailbox = $mailboxes->getSystemMailbox($user);
-                Assert::isInstanceOf($mailbox, EntityInterface::class);
             } catch (InvalidArgumentException $e) {
                 $this->set('messages', []);
                 $this->set('contentLength', $contentLength);
@@ -100,6 +100,7 @@ class InboxCell extends Cell
             }
         }
 
+        Assert::isInstanceOf($mailbox, Mailbox::class);
         $messages = $mailboxes->getUnreadMessages($mailbox, $limit);
 
         $this->set(compact('messages', 'contentLength'));
