@@ -82,7 +82,7 @@ class MessagesTable extends Table
     /**
      * @inheritDoc
      *
-     * @param \Cake\Database\Schema\TableSchema $schema
+     * @param \Cake\Database\Schema\TableSchema $schema Schema to be initialized
      * @return \Cake\Database\Schema\TableSchema
      */
     protected function _initializeSchema(TableSchema $schema)
@@ -300,8 +300,8 @@ class MessagesTable extends Table
     }
 
     /**
-     * @param array $folders
-     * @param string $type
+     * @param array $folders List of folders to be checked
+     * @param string $name Folder name that we are looking for
      * @return Folder
      */
     private function getFolderByType(array $folders, string $name): Folder
