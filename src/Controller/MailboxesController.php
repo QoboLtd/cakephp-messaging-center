@@ -66,7 +66,10 @@ class MailboxesController extends AppController
             'conditions' => [
                 'folder_id' => $folderId
             ],
-            'contain' => [],
+            'contain' => [
+                'FromUser',
+                'ToUser',
+            ],
             'order' => ['Messages.created' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
