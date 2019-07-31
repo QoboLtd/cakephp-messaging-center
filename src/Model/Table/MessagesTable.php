@@ -53,7 +53,7 @@ class MessagesTable extends Table
         parent::initialize($config);
 
         $this->setTable('qobo_messages');
-        $this->setDisplayField('id');
+        $this->setDisplayField('subject');
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Folders', [
