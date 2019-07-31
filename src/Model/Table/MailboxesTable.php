@@ -6,6 +6,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
 use MessagingCenter\Model\Entity\Folder;
@@ -206,23 +207,16 @@ class MailboxesTable extends Table
      */
     public function getInboxFolder(EntityInterface $mailbox) : string
     {
-        $query = $this->find()
+        $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
+        $query = $foldersTable
+            ->find()
             ->where([
-                'id' => (string)$mailbox->get('id'),
-            ])
-            ->contain(['Folders' => function ($q) {
-                return $q->where(['name' => static::FOLDER_INBOX]);
-            }]);
+                'mailbox_id' => (string)$mailbox->get('id'),
+                'name' => static::FOLDER_INBOX,
+            ]);
         Assert::isInstanceOf($query, QueryInterface::class);
 
-        if ($query->isEmpty()) {
-            throw new InvalidArgumentException('Cannot find Inbox folder in that mailbox');
-        }
-
-        $mailbox = $query->firstOrFail();
-        Assert::isInstanceOf($mailbox,Mailbox::class);
-
-        $folder = $mailbox->get('folders')[0];
+        $folder = $query->firstOrFail();
         Assert::isInstanceOf($folder, Folder::class);
 
         return $folder->get('id');
@@ -249,7 +243,7 @@ class MailboxesTable extends Table
         }
 
         $mailbox = $query->firstOrFail();
-        Assert::isInstanceOf($mailbox,Mailbox::class);
+        Assert::isInstanceOf($mailbox, Mailbox::class);
 
         return $mailbox->get('folders');
     }
