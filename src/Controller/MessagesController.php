@@ -68,7 +68,9 @@ class MessagesController extends AppController
             'contain' => [
                 'Folders' => [
                     'Mailboxes'
-                ]
+                ],
+                'FromUser',
+                'ToUser',
             ]
         ]);
 
