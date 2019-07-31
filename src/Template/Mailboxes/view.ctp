@@ -13,12 +13,16 @@
 use Cake\Utility\Inflector;
 use MessagingCenter\Model\Table\MailboxesTable;
 
+$userField = MailboxesTable::FOLDER_SENT === $folderName ? 'to' : 'from';
+
 ?>
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4>
-                <?= __('Message Box') ?>
+                <a href="/messaging-center/mailboxes/"><?= __('Mailboxes') ?></a>
+                »
+                <?= $mailbox->get('name') ?>
                 <?= $this->element('unread_count'); ?>
             </h4>
         </div>
@@ -63,37 +67,37 @@ use MessagingCenter\Model\Table\MailboxesTable;
                         <table id="folder-table" class="table table-hover table-striped">
                             <thead>
                                 <th></th>
-                                <th><?= $folderName === MailboxesTable::FOLDER_SENT ? __('To') : __('From') ?></th>
+                                <th><?= Inflector::humanize($userField); ?></th>
                                 <th><?= __('Subject') ?></th>
                                 <th><?= __('Date') ?></th>
                             </thead>
                             <tbody>
                             <?php foreach ($messages as $message) : ?>
                                 <?php
-                                $messageUser = MailboxesTable::FOLDER_SENT === $folderName ? 'toUser' : 'fromUser';
-                                $messageUser = !empty($message->{$messageUser}) ?
-                                    $message->{$messageUser} :
-                                    $message->{Inflector::underscore($messageUser)};
-
                                 $messageUrl = $this->Url->build([
                                     'plugin' => 'MessagingCenter',
                                     'controller' => 'Messages',
                                     'action' => 'view',
                                     $message->id
                                 ]);
+
                                 ?>
                                 <tr>
                                     <td class="mailbox-read text-center">
                                         <?php if ('new' === $message->status && MailboxesTable::FOLDER_SENT !== $folderName) : ?>
-                                        <small><i class="fa fa-envelope-o" title="unread"></i></small>
+                                            <small><i class="fa fa-envelope-o" title="unread"></i></small>
                                         <?php endif; ?>
                                     </td>
                                     <td class="mailbox-name">
                                         <a href="<?= $messageUrl ?>">
-                                            <?= $this->element('MessagingCenter.user', ['user' => $messageUser]) ?>
+                                            <?= $this->element('MessagingCenter.Messages/' . $userField, ['message' => $message]) ?>
                                         </a>
                                     </td>
-                                    <td class="mailbox-subject"><?= h($message->subject) ?></td>
+                                    <td class="mailbox-subject">
+                                        <a href="<?= $messageUrl ?>">
+                                            <?= $this->element('MessagingCenter.Messages/subject', ['message' => $message]) ?>
+                                        </a>
+                                    </td>
                                     <td class="mailbox-date">
                                         <?= h($this->Time->timeAgoInWords($message->date_sent, [
                                             'format' => 'yyyy-MM-dd HH:mm'

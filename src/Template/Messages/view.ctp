@@ -56,7 +56,12 @@ $restoreBtn = $this->Form->postLink(
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('Read Message'); ?></h4>
+            <h4>
+                <a href="/messaging-center/mailboxes/"><?= __('Mailboxes') ?></a>
+                »
+                <?= $mailbox->get('name') ?>
+                <?= $this->element('unread_count'); ?>
+            </h4>
         </div>
     </div>
 </section>
@@ -67,17 +72,20 @@ $restoreBtn = $this->Form->postLink(
         <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><?= __('Read Message'); ?></h3>
+                    <h3 class="box-title">
+                        <?= $this->element('MessagingCenter.Messages/subject', ['message' => $message]) ?>
+                    </h3>
                 </div>
                 <div class="box-body no-padding">
                     <div class="mailbox-read-info">
-                        <h3><?= h($message->subject) ?></h3>
-                        <?php $fromUser = $message->fromUser ?? $message->from_user; ?>
-                        <h5>From: <?= $this->element('MessagingCenter.user', ['user' => $fromUser]) ?>
+                        <h5>
+                            <strong><?= $this->element('MessagingCenter.Messages/from', ['message' => $message]) ?></strong>
                             <span class="mailbox-read-time pull-right">
                                 <?= $message->get('created')->i18nFormat([\IntlDateFormatter::MEDIUM, IntlDateFormatter::SHORT]) ?>
                             </span>
                         </h5>
+                        <div class="mailbox-read-time">to <?= $this->element('MessagingCenter.Messages/to', ['message' => $message]) ?></div>
+
                     </div>
                     <div class="mailbox-controls with-border text-center">
                         <div class="btn-group">
