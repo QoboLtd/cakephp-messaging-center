@@ -38,6 +38,13 @@ class MessageNotifier extends Notifier
     protected $_dateSent;
 
     /**
+     * Notification folder.
+     *
+     * @var \Cake\I18n\Time
+     */
+    protected $_folder;
+
+    /**
      * {@inheritDoc}
      */
     protected $_requiredFields = [
@@ -46,11 +53,14 @@ class MessageNotifier extends Notifier
         'subject',
         'message',
         'status',
-        'dateSent'
+        'dateSent',
+        'folder',
     ];
 
     /**
      * Map class to entity properties.
+     *
+     * Key is Class property, Value is Message entity field
      *
      * @var array
      */
@@ -60,7 +70,8 @@ class MessageNotifier extends Notifier
         'message' => 'content',
         'dateSent' => 'date_sent',
         'subject' => 'subject',
-        'status' => 'status'
+        'status' => 'status',
+        'folder' => 'folder_id',
     ];
 
     /**
@@ -97,6 +108,17 @@ class MessageNotifier extends Notifier
             $template = 'MessagingCenter.record_link';
         }
         parent::template($template);
+    }
+
+    /**
+     * Message folder setter.
+     *
+     * @param  string $folder Folder name
+     * @return void
+     */
+    public function folder(string $folder): void
+    {
+        $this->_folder = $folder;
     }
 
     /**

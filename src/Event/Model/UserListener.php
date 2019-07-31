@@ -69,6 +69,10 @@ class UserListener implements EventListenerInterface
             return;
         }
 
+        /** @var \MessagingCenter\Model\Table\MailboxesTable $mailboxes  */
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        $defaultMailbox = $mailboxes->createDefaultMailbox($entity->toArray(), false);
+
         if (!Configure::read('MessagingCenter.welcomeMessage.enabled')) {
             return;
         }
@@ -91,6 +95,7 @@ class UserListener implements EventListenerInterface
             'projectName' => $projectName,
             'subject' => $subject,
             'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
+            'folder' => $mailboxes->getInboxFolder($defaultMailbox),
         ];
         $this->Notifier->template('MessagingCenter.welcome');
 
@@ -103,8 +108,9 @@ class UserListener implements EventListenerInterface
         $this->getEventManager()->dispatch($event);
         $data = !empty($event->result) ? $event->result : $data;
 
-        $this->Notifier->subject($subject);
+        $this->Notifier->subject($data['subject']);
         $this->Notifier->message($data);
+        $this->Notifier->folder($data['folder']);
 
         $this->Notifier->send();
     }
