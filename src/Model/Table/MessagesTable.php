@@ -17,13 +17,11 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
-use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
 use MessagingCenter\Model\Entity\Folder;
-use MessagingCenter\Model\Entity\Message;
 use Webmozart\Assert\Assert;
 
 /**
