@@ -44,6 +44,10 @@ class SendEmailListener implements EventListenerInterface
      */
     public function sendEmail(Event $event, EntityInterface $mailbox, array $data) : void
     {
+        if ($mailbox->get('type') !== 'email') {
+            return;
+        }
+
         $outgoingSettings = json_decode($mailbox->get('outgoing_settings'), true);
 
         Email::configTransport('custom', [
