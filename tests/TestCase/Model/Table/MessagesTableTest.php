@@ -166,7 +166,7 @@ class MessagesTableTest extends TestCase
         return $folders;
     }
 
-    public function testSystemValidations()
+    public function testSystemValidations() : void
     {
         $entity = $this->Messages->newEntity([
             'type' => 'system',
@@ -178,7 +178,7 @@ class MessagesTableTest extends TestCase
         $this->assertTrue(array_key_exists('to_user', $entity->getErrors()));
     }
 
-    public function testEmailValidations()
+    public function testEmailValidations() : void
     {
         $entity = $this->Messages->newEntity([
             'type' => 'email',
