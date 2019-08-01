@@ -165,4 +165,28 @@ class MessagesTableTest extends TestCase
 
         return $folders;
     }
+
+    public function testSystemValidations()
+    {
+        $entity = $this->Messages->newEntity([
+            'type' => 'system',
+            'subject' => '',
+            'content' => 'Foo Foo!',
+            'status' => 'new',
+        ]);
+        $this->assertTrue(array_key_exists('from_user', $entity->getErrors()));
+        $this->assertTrue(array_key_exists('to_user', $entity->getErrors()));
+    }
+
+    public function testEmailValidations()
+    {
+        $entity = $this->Messages->newEntity([
+            'type' => 'email',
+            'subject' => '',
+            'content' => 'Foo Foo!',
+            'status' => 'new',
+        ]);
+        $this->assertTrue(array_key_exists('from_user', $entity->getErrors()));
+        $this->assertTrue(array_key_exists('to_user', $entity->getErrors()));
+    }
 }

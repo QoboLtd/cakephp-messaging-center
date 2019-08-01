@@ -106,11 +106,14 @@ class MessagesTable extends Table
 
         $validator
             ->requirePresence('from_user', 'create')
-            ->allowEmpty('from_user');
-
+            ->notEmpty('from_user', null, function ($context) {
+                return !empty($context['data']['type']) && $context['data']['type'] === 'system';
+            });
         $validator
             ->requirePresence('to_user', 'create')
-            ->allowEmpty('to_user');
+            ->notEmpty('to_user', null, function ($context) {
+                return !empty($context['data']['type']) && $context['data']['type'] === 'system';
+            });
 
         $validator
             ->requirePresence('subject', 'create')
