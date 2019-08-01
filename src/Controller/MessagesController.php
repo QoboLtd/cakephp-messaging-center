@@ -116,11 +116,15 @@ class MessagesController extends AppController
             $data['from_user'] = $this->Auth->user('id');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
-            $data['folder_id'] = $this->getFolderByName(MailboxesTable::FOLDER_SENT, $mailboxId);
 
             $message = $this->Messages->patchEntity($message, $data);
             if ($this->Messages->save($message)) {
                 $this->Flash->success((string)__('The message has been sent.'));
+
+                $this->Messages->processMessages(
+                    $this->Auth->user('id'),
+                    $mailbox->get('folders')
+                );
 
                 $event = new Event((string)EventName::SEND_EMAIL(), $this, [
                     'mailbox' => $mailbox,
