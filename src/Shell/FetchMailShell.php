@@ -138,7 +138,7 @@ class FetchMailShell extends Shell
 
             $connectionString = $this->getConnectionString($mailbox->get('incoming_transport'), $settings);
 
-            $this->out("Connection: $connectionString; username=" . $settings['username'] . "; password=" . $settings['password']);
+            $this->out("Connection: $connectionString; username=" . $settings['username'] . "; password=******");
 
             $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
 
@@ -324,7 +324,7 @@ class FetchMailShell extends Shell
      */
     protected function extractDateTime($message): DateTime
     {
-        if (!empty($message->udate)) {
+        if (property_exists($message, 'udate')) {
             $dateSent = new DateTime($message->udate);
         } else {
             $dateSent = DateTime::createFromFormat('Y-m-d H:i:s', $message->date);
