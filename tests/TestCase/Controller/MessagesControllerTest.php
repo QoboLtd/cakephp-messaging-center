@@ -171,7 +171,7 @@ class MessagesControllerTest extends IntegrationTestCase
 
     public function testComposePostEnforceData(): void
     {
-        $expected = 1 + $this->MessagesTable->find('all')->count();
+        $expected = 2 + $this->MessagesTable->find('all')->count();
 
         $data = [
             'to_user' => '00000000-0000-0000-0000-000000000001',

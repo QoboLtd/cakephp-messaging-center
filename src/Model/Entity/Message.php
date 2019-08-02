@@ -80,8 +80,15 @@ class Message extends Entity
 
         if ($this->has('headers')) {
             $headers = $this->get('headers');
-            if (!empty($headers->{$field . 'address'})) {
-                return (string)$headers->{$field . 'address'};
+
+            if (is_object($headers)) {
+                if (!empty($headers->{$field . 'address'})) {
+                    return (string)$headers->{$field . 'address'};
+                }
+            } else {
+                if (!empty($headers[$field . 'address'])) {
+                    return (string)$headers[$field . 'address'];
+                }
             }
         }
 
@@ -110,16 +117,26 @@ class Message extends Entity
         if ($this->has('headers')) {
             $headers = $this->get('headers');
 
-            if (!empty($headers->{$field})) {
-                if (! property_exists($headers->{$field}[0], 'host') || ! property_exists($headers->{$field}[0], 'mailbox')) {
-                    return [];
-                }
+            if (is_object($headers)) {
+                if (!empty($headers->{$field})) {
+                    if (! property_exists($headers->{$field}[0], 'host') || ! property_exists($headers->{$field}[0], 'mailbox')) {
+                        return [];
+                    }
 
-                return (array)Hash::format(
-                    $headers->{$field},
-                    ['{n}.mailbox', '{n}.host'],
-                    '%1$s@%2$s'
-                );
+                    return (array)Hash::format(
+                        $headers->{$field},
+                        ['{n}.mailbox', '{n}.host'],
+                        '%1$s@%2$s'
+                    );
+                }
+            } else {
+                if (!empty($headers[$field . 'address'])) {
+                    return (array)Hash::format(
+                        $headers[$field],
+                        ['{n}.mailbox', '{n}.host'],
+                        '%1$s@%2$s'
+                    );
+                }
             }
         }
 
