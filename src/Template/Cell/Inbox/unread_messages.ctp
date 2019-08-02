@@ -21,22 +21,21 @@
                 $message->id
             ]); ?>">
                 <div class="pull-left">
-                    <?php echo $this->Html->image('user-image-160x160.png', [
-                        'class' => 'img-circle',
-                        'alt' => 'User Image'
-                    ]); ?>
+                    <?= $this->element('MessagingCenter.Messages/avatar', [
+                        'message' => $message,
+                    ]) ?>
                 </div>
                 <h4>
-                    <?= $this->element('MessagingCenter.user', [
-                        'user' => !empty($message->fromUser) ? $message->fromUser : $message->from_user
+                    <?= $this->element('MessagingCenter.Messages/from', [
+                        'message' => $message,
                     ]) ?>
                     <small><i class="fa fa-clock-o"></i> <?= $this->Time->timeAgoInWords(h($message->date_sent->i18nFormat('yyyy-MM-dd HH:mm'))) ?></small>
                 </h4>
                 <p>
                     <?= $this->Text->truncate(
-                        $this->Text->stripLinks($message->content),
+                        strip_tags($message->content),
                         (int)$contentLength,
-                        ['ellipsis' => '...', 'exact' => true, 'html' => true]
+                        ['ellipsis' => '...', 'exact' => false, 'html' => true]
                     ); ?>
                 </p>
             </a>

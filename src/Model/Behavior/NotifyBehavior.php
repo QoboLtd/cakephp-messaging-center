@@ -21,7 +21,9 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use MessagingCenter\Event\EventName;
+use MessagingCenter\Model\Table\MailboxesTable;
 use MessagingCenter\Notifier\MessageNotifier;
+use Webmozart\Assert\Assert;
 
 class NotifyBehavior extends Behavior
 {
@@ -40,7 +42,7 @@ class NotifyBehavior extends Behavior
     /**
      * Notifier instance.
      *
-     * @var \MessagingCenter\Notifier\Notifier
+     * @var \MessagingCenter\Notifier\MessageNotifier
      */
     protected $Notifier = null;
 
@@ -243,9 +245,17 @@ class NotifyBehavior extends Behavior
      */
     protected function _notifyUser(string $field, EntityInterface $entity, Table $table, array $modifiedFields): void
     {
+        $usersTable = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
+        $user = $usersTable->get($entity->get($field));
+
+        $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        Assert::isInstanceOf($mailboxes, MailboxesTable::class);
+        $defaultMailbox = $mailboxes->createDefaultMailbox($user->toArray());
+
         $this->Notifier->from($this->_fromUser);
         $this->Notifier->to($entity->get($field));
         $this->Notifier->template($this->_getTemplate($field, $entity));
+        $this->Notifier->folder($mailboxes->getInboxFolder($defaultMailbox));
 
         $data = $this->_getData($field, $entity, $table, $modifiedFields);
 

@@ -278,9 +278,10 @@ class FetchMailShell extends Shell
             'content' => $content,
             'status' => $initialStatus,
             'date_sent' => $this->extractDateTime($message),
-            'from_user' => $message->fromAddress,
-            'from_name' => $message->fromName,
-            'to_user' => $message->toString,
+            'from_user' => '',
+            'from_name' => '',
+            'to_user' => '',
+            'headers' => $message->headers,
             'message_id' => $message->messageId,
             'folder_id' => $mailboxes->getInboxFolder($mailbox),
         ]);

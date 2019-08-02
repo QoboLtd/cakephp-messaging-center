@@ -9,23 +9,6 @@
  * @copyright     Copyright (c) Qobo Ltd. (https://www.qobo.biz)
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
-use Cake\Core\Configure;
-
-// enable typeahead library
-echo $this->Html->script('MessagingCenter.bootstrap-typeahead.js', ['block' => 'script']);
-echo $this->Html->script('MessagingCenter.typeahead', ['block' => 'script']);
-echo $this->Html->scriptBlock(
-    'messaging_center_typeahead.init(
-        {
-            min_length: "' . Configure::read('MessagingCenter.typeahead.min_length') . '",
-            timeout: "' . Configure::read('MessagingCenter.typeahead.timeout') . '",
-            api_token: "' . Configure::read('MessagingCenter.api.token') . '"
-        }
-    );',
-    ['block' => 'scriptBotton']
-);
-
 ?>
 <section class="content-header">
     <div class="row">
@@ -56,19 +39,6 @@ echo $this->Html->scriptBlock(
                 <?= $this->Form->create($message); ?>
                 <div class="box-body">
                 <?php
-                /*
-                echo $this->Form->control('to_user', [
-                    'label' => false,
-                    'name' => 'to_user_label',
-                    'id' => 'to_user_label',
-                    'type' => 'text',
-                    'data-type' => 'typeahead',
-                    'data-name' => 'to_user',
-                    'autocomplete' => 'off',
-                    'placeholder' => 'To:',
-                    'data-url' => '/api/users/lookup.json'
-                ]);
-                */
                 echo $this->Form->control('to_user', ['label' => false, 'placeholder' => 'To:']);
                 echo $this->Form->control('subject', ['label' => false, 'placeholder' => 'Subject:']);
                 echo $this->Form->control('content', ['label' => false, 'placeholder' => 'Message:']);

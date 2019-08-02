@@ -3,10 +3,15 @@ namespace MessagingCenter\Model\Table;
 
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\QueryInterface;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
+use MessagingCenter\Model\Entity\Folder;
+use MessagingCenter\Model\Entity\Mailbox;
 use Webmozart\Assert\Assert;
 
 /**
@@ -151,7 +156,7 @@ class MailboxesTable extends Table
      *
      * @param mixed[] $user to create a mailbox for
      * @return \Cake\Datasource\EntityInterface
-     * @throws InvalidArgumentException in case of no mailbox is created
+     * @throws \InvalidArgumentException in case of no mailbox is created
      */
     public function createDefaultMailbox(array $user) : EntityInterface
     {
@@ -193,7 +198,9 @@ class MailboxesTable extends Table
     }
 
     /**
-     * getInboxFolders method
+     * Returns the inbox folder for this Mailbox.
+     *
+     * The folder ID is returned.
      *
      * @param \Cake\Datasource\EntityInterface $mailbox to get default folder for
      * @return string
@@ -201,23 +208,45 @@ class MailboxesTable extends Table
      */
     public function getInboxFolder(EntityInterface $mailbox) : string
     {
-        if (empty($mailbox->get('folders'))) {
-            throw new InvalidArgumentException('No folder is created for that mailbox.');
+        $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
+        $query = $foldersTable
+            ->find()
+            ->where([
+                'mailbox_id' => (string)$mailbox->get('id'),
+                'name' => static::FOLDER_INBOX,
+            ]);
+        Assert::isInstanceOf($query, QueryInterface::class);
+
+        $folder = $query->firstOrFail();
+        Assert::isInstanceOf($folder, Folder::class);
+
+        return $folder->get('id');
+    }
+
+    /**
+     * Returns all the folders available under the specified Mailbox
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox to get folders for
+     * @return \Cake\Datasource\EntityInterface[]
+     * @throws InvalidArgumentException in case of no Inbox folder found in the mailbox
+     */
+    public function getFolders(EntityInterface $mailbox) : array
+    {
+        $query = $this->find()
+            ->where([
+                'id' => (string)$mailbox->get('id'),
+            ])
+            ->contain(['Folders']);
+        Assert::isInstanceOf($query, QueryInterface::class);
+
+        if ($query->isEmpty()) {
+            throw new InvalidArgumentException('Cannot find folders in that mailbox');
         }
 
-        $inboxFolderId = null;
-        foreach ($mailbox->get('folders') as $folder) {
-            if ($folder->get('name') === static::FOLDER_INBOX) {
-                $inboxFolderId = $folder->get('id');
-                break;
-            }
-        }
+        $mailbox = $query->firstOrFail();
+        Assert::isInstanceOf($mailbox, Mailbox::class);
 
-        if (empty($inboxFolderId)) {
-            throw new InvalidArgumentException('Cannot find Inbox folder in that mailbox');
-        }
-
-        return $inboxFolderId;
+        return $mailbox->get('folders');
     }
 
     /**
@@ -237,5 +266,68 @@ class MailboxesTable extends Table
         Assert::isInstanceOf($mailbox, EntityInterface::class, __('User ' . $user['username'] . ' does not have system mailbox!'));
 
         return $mailbox;
+    }
+
+    /**
+     * Counts and returns the number of unread messages within the provided mailbox.
+     *
+     * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox entity
+     * @return int
+     */
+    public function countUnreadMessages(Mailbox $mailbox): int
+    {
+        return (int)$this->queryUnreadMessages($mailbox)->count();
+    }
+
+    /**
+     * Fetches and returns the unread messages within the provided mailbox.
+     *
+     * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox entity
+     * @param int|null $limit Number of records to be fetched
+     * @return \MessagingCenter\Model\Entity\Message[]
+     */
+    public function getUnreadMessages(Mailbox $mailbox, int $limit = null): array
+    {
+        $query = $this
+            ->queryUnreadMessages($mailbox)
+            ->contain(['FromUser', 'ToUser']);
+        Assert::isInstanceOf($query, Query::class);
+
+        $query->order(['Messages.date_sent' => 'DESC']);
+        if (is_int($limit)) {
+            $query->limit($limit);
+        }
+
+        return $query->toList();
+    }
+
+    /**
+     * Prepares and returns the query for Unread Messages
+     *
+     * @param \MessagingCenter\Model\Entity\Mailbox $mailbox Mailbox Enitty
+     * @return \Cake\ORM\Query
+     */
+    protected function queryUnreadMessages(Mailbox $mailbox): Query
+    {
+        $mailboxId = $mailbox->get('id');
+
+        $messagesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        Assert::isInstanceOf($messagesTable, MessagesTable::class);
+
+        $query = $messagesTable->find('all')
+            ->where([
+                'status' => $messagesTable->getNewStatus(),
+            ])
+            ->contain([
+                'Folders' => function (Query $q) use ($mailboxId) {
+                    return $q->where([
+                        'mailbox_id' => $mailboxId,
+                        'name' => MailboxesTable::FOLDER_INBOX,
+                    ]);
+                }
+            ]);
+        Assert::isInstanceOf($query, Query::class);
+
+        return $query;
     }
 }

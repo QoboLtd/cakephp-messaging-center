@@ -13,15 +13,15 @@ namespace MessagingCenter\Model\Table;
 
 use ArrayObject;
 use Cake\Core\Configure;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
-use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use InvalidArgumentException;
 use MessagingCenter\Model\Entity\Folder;
-use MessagingCenter\Model\Entity\Message;
 use Webmozart\Assert\Assert;
 
 /**
@@ -53,7 +53,7 @@ class MessagesTable extends Table
         parent::initialize($config);
 
         $this->setTable('qobo_messages');
-        $this->setDisplayField('id');
+        $this->setDisplayField('subject');
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Folders', [
@@ -78,6 +78,21 @@ class MessagesTable extends Table
     }
 
     /**
+     * @inheritDoc
+     *
+     * @param \Cake\Database\Schema\TableSchema $schema Schema to be initialized
+     * @return \Cake\Database\Schema\TableSchema
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema = parent::_initializeSchema($schema);
+
+        $schema->setColumnType('headers', 'json');
+
+        return $schema;
+    }
+
+    /**
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
@@ -91,11 +106,14 @@ class MessagesTable extends Table
 
         $validator
             ->requirePresence('from_user', 'create')
-            ->notEmpty('from_user');
-
+            ->notEmpty('from_user', null, function ($context) {
+                return !empty($context['data']['type']) && $context['data']['type'] === 'system';
+            });
         $validator
             ->requirePresence('to_user', 'create')
-            ->notEmpty('to_user');
+            ->notEmpty('to_user', null, function ($context) {
+                return !empty($context['data']['type']) && $context['data']['type'] === 'system';
+            });
 
         $validator
             ->requirePresence('subject', 'create')
@@ -283,6 +301,22 @@ class MessagesTable extends Table
     }
 
     /**
+     * @param \MessagingCenter\Model\Entity\Folder[] $folders List of folders to be checked
+     * @param string $name Folder name that we are looking for
+     * @return Folder
+     */
+    private function getFolderByType(array $folders, string $name): Folder
+    {
+        foreach ($folders as $folder) {
+            if ($folder->get('name') === $name) {
+                return $folder;
+            }
+        }
+
+        throw new InvalidArgumentException(sprintf('Folder with name %s not found', $name));
+    }
+
+    /**
      * processMessages method
      *
      * @param string $userId who own the messages
@@ -305,12 +339,12 @@ class MessagesTable extends Table
                 continue;
             }
 
-            $folder = $folders[MailboxesTable::FOLDER_INBOX];
+            $folder = $this->getFolderByType($folders, MailboxesTable::FOLDER_INBOX);
             $copiedMessageUser = $message->get('from_user');
             $copiedMessageFolder = MailboxesTable::FOLDER_SENT;
 
             if ($message->get('from_user') == $userId) {
-                $folder = $folders[MailboxesTable::FOLDER_SENT];
+                $folder = $this->getFolderByType($folders, MailboxesTable::FOLDER_SENT);
                 $copiedMessageUser = $message->get('to_user');
                 $copiedMessageFolder = MailboxesTable::FOLDER_INBOX;
             }
@@ -357,15 +391,13 @@ class MessagesTable extends Table
         Assert::isInstanceOf($foldersTable, FoldersTable::class);
 
         $folders = $foldersTable->createDefaultFolders($mailbox);
+
         if (empty($folders)) {
             return false;
         }
 
-        if (empty($folders[$folderType]) || ! $folders[$folderType] instanceof Folder) {
-            return false;
-        }
-
-        $data['folder_id'] = $folders[$folderType]->get('id');
+        $folder = $this->getFolderByType($folders, $folderType);
+        $data['folder_id'] = $folder->get('id');
 
         $entity = $this->newEntity();
         $this->patchEntity($entity, $data);

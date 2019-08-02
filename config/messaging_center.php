@@ -6,13 +6,6 @@ return [
             'id' => '00000000-0000-0000-0000-000000000000',
             'name' => 'SYSTEM'
         ],
-        'typeahead' => [
-            'min_length' => 1,
-            'timeout' => 300
-        ],
-        'api' => [
-            'token' => null
-        ],
         'welcomeMessage' => [
             'enabled' => true,
             'projectName' => 'Project Name',
@@ -28,6 +21,22 @@ return [
         ],
         'local_mailbox_messages' => [
             'initialStatus' => 'new'
-        ]
+        ],
+        'Mailbox' => [
+            'default' => [
+                'mailbox_type' => 'system',
+                'incoming_transport' => 'internal',
+                'incoming_settings' => 'default',
+                'outgoing_transport' => 'internal',
+                'outgoing_settings' => 'default',
+                'mailbox_postfix' => '@system',
+            ],
+            'types' => [
+                'system' => 'System',
+            ],
+        ],
+        'Folder' => [
+            'defaultType' => 'default',
+        ],
     ]
 ];

@@ -29,6 +29,8 @@ class MailboxesTableTest extends TestCase
     public $fixtures = [
         'plugin.CakeDC/Users.users',
         'plugin.messaging_center.mailboxes',
+        'plugin.messaging_center.folders',
+        'plugin.messaging_center.messages',
     ];
 
     /**
@@ -150,5 +152,34 @@ class MailboxesTableTest extends TestCase
         $this->assertNotEmpty($result, 'Cannot get system mailbox');
         $this->assertInstanceOf(EntityInterface::class, $result, 'Fetched mailbox is invalid');
         $this->assertEquals($result->get('type'), 'system', 'Fetched mailbox is not system');
+    }
+
+    public function testCountUnreadMessages() : void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $unreadCount = $this->Mailboxes->countUnreadMessages($mailbox);
+        $this->assertEquals(3, $unreadCount);
+    }
+
+    public function testGetUnreadMessages() : void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $unread = $this->Mailboxes->getUnreadMessages($mailbox);
+        $this->assertEquals(3, count($unread));
+    }
+
+    public function testGetUnreadMessagesWithLimit() : void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $limit = 1;
+        $unread = $this->Mailboxes->getUnreadMessages($mailbox, $limit);
+        $this->assertEquals($limit, count($unread));
+    }
+
+    public function testGetFolders() : void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $folders = $this->Mailboxes->getFolders($mailbox);
+        $this->assertEquals(2, count($folders));
     }
 }
