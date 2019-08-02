@@ -49,16 +49,13 @@ class Message extends Entity
 
     /**
      * Virtual fields for sender and recipients
-     *
      * @var array
      */
-    protected $_virtual = ['sender', 'sender_address', 'recipients', 'recipient_addresses'];
+    //protected $_virtual = ['sender', 'sender_address', 'recipients', 'recipient_addresses'];
 
     /**
      * Returns the user display name for the specified field.
-     *
-     *
-     * @param string $field
+     * @param string $field field prefix value
      * @return string
      */
     protected function getUser(string $field) : string
@@ -83,8 +80,8 @@ class Message extends Entity
 
         if ($this->has('headers')) {
             $headers = $this->get('headers');
-            if (!empty($headers[$field . 'address'])) {
-                return (string)$headers[$field . 'address'];
+            if (!empty($headers->{$field . 'address'})) {
+                return (string)$headers->{$field . 'address'};
             }
         }
 
@@ -94,7 +91,7 @@ class Message extends Entity
     /**
      * Returns the email addresses found for the specified field
      *
-     * @param string $field
+     * @param string $field field prefix value
      * @return string[]
      */
     protected function getEmailAddresses(string $field) : array
@@ -112,9 +109,14 @@ class Message extends Entity
 
         if ($this->has('headers')) {
             $headers = $this->get('headers');
-            if (!empty($headers[$field])) {
+
+            if (!empty($headers->{$field})) {
+                if (! property_exists($headers->{$field}[0], 'host') || ! property_exists($headers->{$field}[0], 'mailbox')) {
+                    return [];
+                }
+
                 return (array)Hash::format(
-                    $headers[$field],
+                    $headers->{$field},
                     ['{n}.mailbox', '{n}.host'],
                     '%1$s@%2$s'
                 );
@@ -152,6 +154,7 @@ class Message extends Entity
     protected function _getSenderAddress(): string
     {
         $addresses = $this->getEmailAddresses('from');
+
         return empty($addresses[0]) ? '' : (string)$addresses[0];
     }
 
@@ -162,6 +165,9 @@ class Message extends Entity
      */
     protected function _getRecipientAddresses(): array
     {
-        return $this->getEmailAddresses('from');
+        $emailAddressesTo = $this->getEmailAddresses('to');
+        $emailAddressesCc = $this->getEmailAddresses('cc');
+
+        return array_merge($emailAddressesTo, $emailAddressesCc);
     }
 }

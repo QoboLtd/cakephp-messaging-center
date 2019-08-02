@@ -325,7 +325,7 @@ class FetchMailShell extends Shell
      */
     protected function extractDateTime($message): DateTime
     {
-        if (!empty($message->udate)) {
+        if (property_exists($message, 'udate')) {
             $dateSent = new DateTime($message->udate);
         } else {
             $dateSent = DateTime::createFromFormat('Y-m-d H:i:s', $message->date);
