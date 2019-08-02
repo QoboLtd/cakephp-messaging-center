@@ -51,7 +51,7 @@ class Message extends Entity
      * Virtual fields for sender and recipients
      * @var array
      */
-    //protected $_virtual = ['sender', 'sender_address', 'recipients', 'recipient_addresses'];
+    protected $_virtual = ['sender', 'sender_address', 'recipients', 'recipient_addresses'];
 
     /**
      * Returns the user display name for the specified field.
