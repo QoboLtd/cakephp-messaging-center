@@ -80,7 +80,6 @@ class Message extends Entity
 
         if ($this->has('headers')) {
             $headers = $this->get('headers');
-
             if (is_object($headers)) {
                 if (!empty($headers->{$field . 'address'})) {
                     return (string)$headers->{$field . 'address'};
@@ -116,7 +115,6 @@ class Message extends Entity
 
         if ($this->has('headers')) {
             $headers = $this->get('headers');
-
             if (is_object($headers)) {
                 if (!empty($headers->{$field})) {
                     if (! property_exists($headers->{$field}[0], 'host') || ! property_exists($headers->{$field}[0], 'mailbox')) {

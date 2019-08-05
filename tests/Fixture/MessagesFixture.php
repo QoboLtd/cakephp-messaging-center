@@ -30,7 +30,7 @@ class MessagesFixture extends TestFixture
         'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'folder_id' => ['type' => 'uuid', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
-        'headers' => ['type' => 'text', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'headers' => ['type' => 'json', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -144,7 +144,26 @@ class MessagesFixture extends TestFixture
             'created' => '2016-03-16 10:46:23',
             'modified' => '2016-03-16 10:46:23',
             'folder_id' => '00000000-0000-0000-0000-000000000003',
-            'headers' => '{"toaddress":"foo@bar.com","to":[{"mailbox":"to","host":"bar.com"}],"fromaddress":"Test2019","from":[{"personal":"Test2019","mailbox":"test2019me","host":"ya.ru"}]}'
+            'headers1' => '{"toaddress":"foo@bar.com","to":[{"mailbox":"to","host":"bar.com"}],"fromaddress":"Test2019","from":[{"personal":"Test2019","mailbox":"test2019me","host":"ya.ru"}]}',
+            'headers' => [
+                'to' => [
+                    0 => [
+                        'host' => 'bar1.com',
+                        'mailbox' => 'to',
+                    ],
+                ],
+                'Date' => 'Thu, 1 Aug 2019 16:08:44 +0300',
+                'date' => 'Thu, 1 Aug 2019 16:08:44 +0300',
+                'from' => [
+                    0 => [
+                        'host' => 'ya.ru',
+                        'mailbox' => 'test2019me',
+                        'personal' => 'Test2019',
+                    ],
+                ],
+                'toaddress' => 'foo@bar.com',
+                'fromaddress' => 'Test2019'
+            ]
         ],
     ];
 }
