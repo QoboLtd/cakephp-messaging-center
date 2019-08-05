@@ -11,7 +11,9 @@
  */
 namespace MessagingCenter\Model\Entity;
 
+use Cake\Core\Configure;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 
 /**
  * Message Entity.
@@ -44,4 +46,143 @@ class Message extends Entity
         '*' => true,
         'id' => false,
     ];
+
+    /**
+     * Virtual fields for sender and recipients
+     * @var array
+     */
+    protected $_virtual = ['sender', 'sender_address', 'recipients', 'recipient_addresses'];
+
+    /**
+     * Returns the user display name for the specified field.
+     * @param string $field field prefix value
+     * @return string
+     */
+    protected function getUser(string $field) : string
+    {
+        $user = isset($this->fromUser) ? $this->fromUser : $this->get($field . '_user');
+        $systemUser = Configure::readOrFail('MessagingCenter.systemUser');
+
+        if ($user instanceof Entity) {
+            $firstName = $user->get('first_name') ?? '';
+            $lastName = $user->get('last_name') ?? '';
+            $userName = $user->get('username') ?? '';
+
+            $fullName = trim($firstName . ' ' . $lastName);
+            $displayUser = $fullName ?: $userName;
+
+            return (string)$displayUser;
+        }
+
+        if (is_string($user) && $systemUser['id'] === $user) {
+            return (string)$systemUser['name'];
+        }
+
+        if ($this->has('headers')) {
+            $headers = $this->get('headers');
+            if (is_object($headers)) {
+                if (!empty($headers->{$field . 'address'})) {
+                    return (string)$headers->{$field . 'address'};
+                }
+            } else {
+                if (!empty($headers[$field . 'address'])) {
+                    return (string)$headers[$field . 'address'];
+                }
+            }
+        }
+
+        return (string)$user;
+    }
+
+    /**
+     * Returns the email addresses found for the specified field
+     *
+     * @param string $field field prefix value
+     * @return string[]
+     */
+    protected function getEmailAddresses(string $field) : array
+    {
+        $user = isset($this->fromUser) ? $this->fromUser : $this->get($field . 'user');
+        $systemUser = Configure::readOrFail('MessagingCenter.systemUser');
+
+        if ($user instanceof Entity) {
+            return [$user->get('email')];
+        }
+
+        if (is_string($user) && $systemUser['id'] === $user) {
+            return [];
+        }
+
+        if ($this->has('headers')) {
+            $headers = $this->get('headers');
+            if (is_object($headers)) {
+                if (!empty($headers->{$field})) {
+                    if (! property_exists($headers->{$field}[0], 'host') || ! property_exists($headers->{$field}[0], 'mailbox')) {
+                        return [];
+                    }
+
+                    return (array)Hash::format(
+                        $headers->{$field},
+                        ['{n}.mailbox', '{n}.host'],
+                        '%1$s@%2$s'
+                    );
+                }
+            } else {
+                if (!empty($headers[$field . 'address'])) {
+                    return (array)Hash::format(
+                        $headers[$field],
+                        ['{n}.mailbox', '{n}.host'],
+                        '%1$s@%2$s'
+                    );
+                }
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Returns the display name for the sender
+     *
+     * @return string
+     */
+    protected function _getSender(): string
+    {
+        return $this->getUser('from');
+    }
+
+    /**
+     * Display name for all the recipients
+     *
+     * @return string
+     */
+    protected function _getRecipients(): string
+    {
+        return $this->getUser('to');
+    }
+
+    /**
+     * Returns sender's email address
+     *
+     * @return string
+     */
+    protected function _getSenderAddress(): string
+    {
+        $addresses = $this->getEmailAddresses('from');
+
+        return empty($addresses[0]) ? '' : (string)$addresses[0];
+    }
+
+    /**
+     * Returns the email addresses for all recipients
+     *
+     * @return string[]
+     */
+    protected function _getRecipientAddresses(): array
+    {
+        $emailAddressesTo = $this->getEmailAddresses('to');
+        $emailAddressesCc = $this->getEmailAddresses('cc');
+
+        return array_merge($emailAddressesTo, $emailAddressesCc);
+    }
 }

@@ -73,6 +73,15 @@ class FoldersFixture extends TestFixture
                 'modified' => '2019-01-07 20:47:29',
                 'order_no' => 1,
             ],
+            [
+                'id' => '00000000-0000-0000-0000-000000000003',
+                'mailbox_id' => '00000000-0000-0000-0000-000000000002',
+                'parent_id' => '',
+                'name' => 'Inbox',
+                'type' => 'default',
+                'created' => '2019-01-07 20:47:29',
+                'modified' => '2019-01-07 20:47:29'
+            ],
         ];
         parent::init();
     }

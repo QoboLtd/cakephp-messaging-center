@@ -189,4 +189,24 @@ class MessagesTableTest extends TestCase
         $this->assertTrue(array_key_exists('from_user', $entity->getErrors()));
         $this->assertTrue(array_key_exists('to_user', $entity->getErrors()));
     }
+
+    public function testSystemMessageSender(): void
+    {
+        $message = $this->Messages->get(
+            '00000000-0000-0000-0000-000000000001',
+            ['contain' => ['FromUser']]
+        );
+        $this->assertEquals('first1 last1', $message->get('sender'));
+        $this->assertEquals('user-1@test.com', $message->get('sender_address'));
+    }
+
+    public function testEmailMessageSender(): void
+    {
+        $message = $this->Messages->get(
+            '00000000-0000-0000-0000-000000000007',
+            ['contain' => ['FromUser']]
+        );
+        $this->assertEquals('Test2019', $message->get('sender'));
+        $this->assertEquals('test2019me@ya.ru', $message->get('sender_address'));
+    }
 }
