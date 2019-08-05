@@ -144,7 +144,6 @@ class MessagesFixture extends TestFixture
             'created' => '2016-03-16 10:46:23',
             'modified' => '2016-03-16 10:46:23',
             'folder_id' => '00000000-0000-0000-0000-000000000003',
-            'headers1' => '{"toaddress":"foo@bar.com","to":[{"mailbox":"to","host":"bar.com"}],"fromaddress":"Test2019","from":[{"personal":"Test2019","mailbox":"test2019me","host":"ya.ru"}]}',
             'headers' => [
                 'to' => [
                     0 => [
