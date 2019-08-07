@@ -74,6 +74,11 @@ class MessagesTable extends Table
             'propertyName' => 'toUser'
         ]);
 
+        $this->hasMany('attachments', [
+            'className' => 'Burzum/FileStorage.FileStorage',
+            'foreignKey' => 'foreign_key',
+        ]);
+
         $this->addBehavior('Timestamp');
     }
 
