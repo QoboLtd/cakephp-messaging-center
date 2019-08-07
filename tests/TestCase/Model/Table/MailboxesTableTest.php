@@ -211,4 +211,10 @@ class MailboxesTableTest extends TestCase
             $mailbox->get('imap_connection')
         );
     }
+
+    public function testHasMessage(): void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $this->assertTrue($this->Mailboxes->hasMessage($mailbox, 'message-id-001'));
+    }
 }

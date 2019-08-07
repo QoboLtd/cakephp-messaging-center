@@ -21,7 +21,6 @@ use Cake\ORM\TableRegistry;
 use DateTime;
 use Exception;
 use InvalidArgumentException;
-use MessagingCenter\Enum\IncomingTransportType;
 use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Table\MailboxesTable;
@@ -106,6 +105,9 @@ class FetchMailShell extends Shell
         // SINCE 01-Jan-2000
         $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);
 
+        /** @var \MessagingCenter\Model\Table\MailboxesTable $mailboxesTable */
+        $mailboxesTable = TableRegistry::getTableLocator()->get($mailbox->getSource());
+
         /**
          * Retrieve mark as seen remote email status from configuration.
          * @TODO Put this into database while setting up mailbox
@@ -115,7 +117,6 @@ class FetchMailShell extends Shell
 
         try {
             $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
-
 
             $incomingSettings = $mailbox->get('incoming_settings');
             $connectionString = $mailbox->get('imap_connection');
@@ -153,7 +154,7 @@ class FetchMailShell extends Shell
             }
 
             $messageId = trim($messageHeader->message_id);
-            if ($this->hasMessage($messageId, $mailbox)) {
+            if ($mailboxesTable->hasMessage($mailbox, $messageId)) {
                 $this->out(sprintf('Message %s already exists and it was skipped', $messageId));
 
                 continue;
@@ -267,34 +268,6 @@ class FetchMailShell extends Shell
 
             $storageTable->saveOrFail($storage);
         }
-    }
-
-    /**
-     * Returns true only and only if the message provided already exists in database.
-     *
-     * @param string $messageId Message ID received from the mailbox
-     * @param \Cake\Datasource\EntityInterface $mailbox to save message
-     * @return bool
-     */
-    protected function hasMessage(string $messageId, EntityInterface $mailbox): bool
-    {
-        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
-        Assert::isInstanceOf($table, MessagesTable::class);
-
-        $mailboxId = $mailbox->get('id');
-        $query = $table->find()
-            ->where([
-                'message_id' => $messageId
-            ])
-            ->contain([
-                'Folders' => function ($q) use ($mailboxId) {
-                    return $q->where(['mailbox_id' => $mailboxId]);
-                }
-            ]);
-        Assert::isInstanceOf($query, Query::class);
-        $result = $query->count();
-
-        return ($result > 0);
     }
 
     /**

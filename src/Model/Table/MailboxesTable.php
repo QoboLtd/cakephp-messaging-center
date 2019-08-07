@@ -374,4 +374,33 @@ class MailboxesTable extends Table
             ])
             ->all();
     }
+
+    /**
+     * Returns true only and only if the message provided already exists in database.
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox to search for the message
+     * @param string $messageId Message ID received from the mailbox
+     * @return bool
+     */
+    public function hasMessage(EntityInterface $mailbox, string $messageId): bool
+    {
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        Assert::isInstanceOf($table, MessagesTable::class);
+
+        $mailboxId = $mailbox->get('id');
+        $query = $table->find()
+            ->where([
+                'message_id' => $messageId
+            ])
+            ->contain([
+                'Folders' => function ($q) use ($mailboxId) {
+                    return $q->where(['mailbox_id' => $mailboxId]);
+                }
+            ]);
+
+        Assert::isInstanceOf($query, Query::class);
+        $result = $query->count();
+
+        return ($result > 0);
+    }
 }

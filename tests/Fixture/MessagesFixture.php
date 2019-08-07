@@ -31,6 +31,7 @@ class MessagesFixture extends TestFixture
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'folder_id' => ['type' => 'uuid', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'headers' => ['type' => 'json', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'message_id' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -60,6 +61,7 @@ class MessagesFixture extends TestFixture
             'created' => '2016-03-16 10:46:23',
             'modified' => '2016-03-16 10:46:23',
             'folder_id' => '00000000-0000-0000-0000-000000000002',
+            'message_id' => 'message-id-001',
         ],
         [
             'id' => '00000000-0000-0000-0000-000000000002',
