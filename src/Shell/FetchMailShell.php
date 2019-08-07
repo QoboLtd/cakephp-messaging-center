@@ -73,19 +73,9 @@ class FetchMailShell extends Shell
             return null;
         }
 
+        /** @var MailboxesTable $table */
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
         Assert::isInstanceOf($table, MailboxesTable::class);
-
-        /**
-         * @var \Cake\ORM\Query $query
-         */
-        $query = $table->find()
-            ->where([
-                'type' => (string)MailboxType::EMAIL(),
-                'active' => true,
-            ])
-            ->contain(['Folders']);
-        Assert::isInstanceOf($query, Query::class);
 
         $limit = empty($this->params['limit']) ? null : (int)$this->params['limit'];
         $since = null;
@@ -97,7 +87,8 @@ class FetchMailShell extends Shell
             }
         }
 
-        foreach ($query->all() as $mailbox) {
+        $activeMailboxes = $table->getActiveMailboxes((string)MailboxType::EMAIL());
+        foreach ($activeMailboxes as $mailbox) {
             $this->processMailbox($mailbox, $since, $limit);
         }
     }

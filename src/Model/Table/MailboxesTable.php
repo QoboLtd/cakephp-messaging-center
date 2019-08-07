@@ -4,12 +4,14 @@ namespace MessagingCenter\Model\Table;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
+use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
+use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Mailbox;
 use Webmozart\Assert\Assert;
@@ -329,5 +331,30 @@ class MailboxesTable extends Table
         Assert::isInstanceOf($query, Query::class);
 
         return $query;
+    }
+
+    /**
+     * Returns all the active mailboxes.
+     *
+     * When the type is provided, only active mailboxes of the specified type are being returned
+     *
+     * @param null|string $type
+     * @return \Cake\Datasource\ResultSetInterface
+     */
+    public function getActiveMailboxes(?string $type = null): ResultSetInterface
+    {
+        $query = $this->find()->contain(['Folders']);
+        Assert::isInstanceOf($query, Query::class);
+
+        if (empty($type)) {
+            return $query->where(['active' => true])->all();
+        }
+
+        return $query
+            ->where([
+                'type' => $type,
+                'active' => true,
+            ])
+            ->all();
     }
 }
