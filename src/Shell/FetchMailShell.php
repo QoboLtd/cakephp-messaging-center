@@ -103,14 +103,6 @@ class FetchMailShell extends Shell
      */
     protected function processMailbox(Mailbox $mailbox, ?int $since, ?int $limit) : void
     {
-        $defaultSettings = [
-            'username' => '',
-            'password' => '',
-            'host' => 'localhost',
-            'port' => null,
-            'protocol' => 'imap',
-        ];
-
         // SINCE 01-Jan-2000
         $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);
 
@@ -124,15 +116,14 @@ class FetchMailShell extends Shell
         try {
             $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
 
-            $settings = json_decode($mailbox->get('incoming_settings'), true) ?? [];
-            $settings = array_merge($defaultSettings, $settings);
 
-            $connectionString = $this->getConnectionString($mailbox->get('incoming_transport'), $settings);
+            $incomingSettings = $mailbox->get('incoming_settings');
+            $connectionString = $mailbox->get('imap_connection');
 
-            $this->out("Connection: $connectionString; username=" . $settings['username'] . "; password=" . $settings['password']);
+            $this->out("Connection: $connectionString; username=" . $incomingSettings['username'] . "; password=" . $incomingSettings['password']);
 
             $tmpDir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
-            $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password'], (string)$tmpDir);
+            $remoteMailbox = new RemoteMailbox($connectionString, $incomingSettings['username'], $incomingSettings['password'], (string)$tmpDir);
 
             $messageIds = $this->searchMailbox($remoteMailbox, $search_criteria);
             if (empty($messageIds)) {
@@ -178,40 +169,6 @@ class FetchMailShell extends Shell
                 $this->err(sprintf('Message %s can not be saved. %s', trim($messageHeader->message_id), $e->getMessage()));
             }
         }
-    }
-
-    /**
-     * Build connection string
-     *
-     * Example: {localhost:993/imap/notls}INBOX
-     *
-     * @param string $type Incoming transport type
-     * @param mixed[] $settings Incoming transport settings
-     * @return string
-     */
-    protected function getConnectionString(string $type, array $settings) : string
-    {
-        $result = '';
-
-        switch ($type) {
-            case (string)IncomingTransportType::IMAP4():
-                // See more details at http://php.net/manual/en/function.imap-open.php
-                $result .= '{';
-                $result .= $settings['host'] ?? 'localhost';
-                $result .= ':' . ($settings['port'] ?? 993);
-                $result .= '/' . ($settings['protocol'] ?? 'imap');
-                // TODO: Make this optional
-                $result .= '/ssl/novalidate-cert';
-                $result .= '}';
-                // TODO: Make this flexible
-                $result .= 'INBOX';
-
-                break;
-            default:
-                throw new InvalidArgumentException("Incoming transport type [$type] is not supported");
-        }
-
-        return $result;
     }
 
     /**

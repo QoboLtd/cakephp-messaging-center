@@ -195,4 +195,20 @@ class MailboxesTableTest extends TestCase
         $mailboxes = $this->Mailboxes->getActiveMailboxes((string)MailboxType::EMAIL());
         $this->assertEquals(1, $mailboxes->count());
     }
+
+    public function testSystemConnectionString(): void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $this->expectException(\InvalidArgumentException::class);
+        $mailbox->get('imap_connection');
+    }
+
+    public function testEmailConnectionString(): void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000002');
+        $this->assertEquals(
+            '{imap.yandex.ru:933/imap/ssl/novalidate-cert}INBOX',
+            $mailbox->get('imap_connection')
+        );
+    }
 }

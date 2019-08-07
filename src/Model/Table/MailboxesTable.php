@@ -2,6 +2,7 @@
 namespace MessagingCenter\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetInterface;
@@ -136,6 +137,22 @@ class MailboxesTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param \Cake\Database\Schema\TableSchema $schema Schema to be initialized
+     * @return \Cake\Database\Schema\TableSchema
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema = parent::_initializeSchema($schema);
+
+        $schema->setColumnType('incoming_settings', 'json');
+        $schema->setColumnType('outgoing_settings', 'json');
+
+        return $schema;
     }
 
     /**
@@ -338,7 +355,7 @@ class MailboxesTable extends Table
      *
      * When the type is provided, only active mailboxes of the specified type are being returned
      *
-     * @param null|string $type
+     * @param null|string $type Mailbox type
      * @return \Cake\Datasource\ResultSetInterface
      */
     public function getActiveMailboxes(?string $type = null): ResultSetInterface
