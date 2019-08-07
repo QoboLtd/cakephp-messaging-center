@@ -160,7 +160,6 @@ class FetchMailShell extends Shell
                 /** @var \PhpImap\IncomingMail $message */
                 $message = $remoteMailbox->getMail($messageHeader->uid, $markAsSeenRemote);
 
-                // $this->saveMessage($message, $mailbox);
                 MessageFactory::fromIncomingMail($message, $mailbox);
                 $this->out(sprintf('Message %s saved', trim($messageHeader->message_id)));
             } catch (InvalidArgumentException | PersistenceFailedException $e) {
