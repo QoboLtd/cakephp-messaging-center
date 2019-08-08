@@ -140,9 +140,9 @@ class FetchMailShell extends Shell
 
             $this->out("Connection: $connectionString; username=" . $settings['username'] . "; password=" . $settings['password']);
 
-            $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password']);
+            $tmpDir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
+            $remoteMailbox = new RemoteMailbox($connectionString, $settings['username'], $settings['password'], (string)$tmpDir);
 
-            $remoteMailbox->setAttachmentsIgnore(true);
             $messageIds = $this->searchMailbox($remoteMailbox, $search_criteria);
             if (empty($messageIds)) {
                 $this->out("Mailbox is empty");
@@ -286,7 +286,39 @@ class FetchMailShell extends Shell
             'folder_id' => $mailboxes->getInboxFolder($mailbox),
         ]);
 
-        $table->saveOrFail($entity);
+        $messageCreated = $table->saveOrFail($entity);
+        $this->saveAttachments($messageCreated, $message->getAttachments());
+    }
+
+    /**
+     * Saves and links attachments with the specified message
+     *
+     * @param \Cake\Datasource\EntityInterface $message Message to be associated with attachmetns
+     * @param \PhpImap\IncomingMailAttachment[] $attachments Attachments to be saved
+     */
+    public function saveAttachments(EntityInterface $message, array $attachments): void
+    {
+        $storageTable = TableRegistry::get('Burzum/FileStorage.FileStorage');
+        foreach ($attachments as $attachment) {
+            $storage = $storageTable->newEntity([
+                'file' => [
+                    'tmp_name' => $attachment->filePath,
+                    'error' => 0,
+                    'name' => $attachment->name,
+                    'type' => null,
+                    'size' => null,
+                ]
+            ]);
+
+            $storage = $storageTable->patchEntity($storage, [
+                'model' => 'Messages',
+                'model_field' => 'attachments',
+                'foreign_key' => $message->get('id'),
+                'extension' => strtolower($storage->get('extension')),
+            ]);
+
+            $storageTable->saveOrFail($storage);
+        }
     }
 
     /**
