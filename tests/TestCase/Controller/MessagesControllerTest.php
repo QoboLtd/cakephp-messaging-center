@@ -26,6 +26,7 @@ class MessagesControllerTest extends IntegrationTestCase
         'plugin.messaging_center.messages',
         'plugin.messaging_center.folders',
         'plugin.messaging_center.mailboxes',
+        'plugin.Burzum/FileStorage.FileStorage'
     ];
 
     /**
