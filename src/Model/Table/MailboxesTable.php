@@ -399,8 +399,6 @@ class MailboxesTable extends Table
             ]);
 
         Assert::isInstanceOf($query, Query::class);
-        $result = $query->count();
-
-        return ($result > 0);
+        return !$query->isEmpty();
     }
 }
