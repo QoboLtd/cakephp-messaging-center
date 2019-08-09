@@ -71,6 +71,7 @@ class MessagesController extends AppController
                 ],
                 'FromUser',
                 'ToUser',
+                'attachments'
             ]
         ]);
 
@@ -93,10 +94,13 @@ class MessagesController extends AppController
             $this->Messages->save($message);
         }
 
+        $attachments = $message->get('attachments');
+
         $this->set('message', $message);
         $this->set('folderName', $folder->get('name'));
         $this->set('mailbox', $mailbox);
-        $this->set('_serialize', ['message', 'folder', 'mailbox']);
+        $this->set('attachments', $attachments);
+        $this->set('_serialize', ['message', 'folder', 'mailbox', 'attachments']);
     }
 
     /**
