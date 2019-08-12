@@ -50,7 +50,7 @@ class MailboxesFixture extends TestFixture
             [
                 'id' => '00000000-0000-0000-0000-000000000001',
                 'user_id' => '00000000-0000-0000-0000-000000000002',
-                'name' => 'test@system',
+                'name' => 'user-2@system',
                 'type' => 'system',
                 'incoming_transport' => 'internal',
                 'incoming_settings' => 'default',
