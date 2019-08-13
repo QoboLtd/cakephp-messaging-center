@@ -187,7 +187,7 @@ class MailboxesTableTest extends TestCase
     public function testGetAllActiveMailboxes(): void
     {
         $mailboxes = $this->Mailboxes->getActiveMailboxes();
-        $this->assertEquals(2, $mailboxes->count());
+        $this->assertEquals(3, $mailboxes->count());
     }
 
     public function testGetActiveMailboxesByType(): void

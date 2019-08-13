@@ -72,6 +72,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000002',
+                'message_id' => 'message-id-001',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000003',
