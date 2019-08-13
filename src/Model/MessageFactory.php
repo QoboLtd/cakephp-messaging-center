@@ -11,6 +11,7 @@ use MessagingCenter\Model\Entity\Message;
 use MessagingCenter\Model\Table\MailboxesTable;
 use MessagingCenter\Model\Table\MessagesTable;
 use PhpImap\IncomingMail;
+use Qobo\Utils\Utility\Convert;
 use Webmozart\Assert\Assert;
 
 class MessageFactory
@@ -39,6 +40,8 @@ class MessageFactory
          */
         $initialStatus = (string)Configure::read('MessagingCenter.local_mailbox_messages.initialStatus', 'new');
 
+        $headers = Convert::objectToArray($incomingMail->headers);
+
         $entity = $messages->newEntity([
             'subject' => $incomingMail->subject,
             'content' => $content,
@@ -47,7 +50,7 @@ class MessageFactory
             'from_user' => '',
             'from_name' => '',
             'to_user' => '',
-            'headers' => $incomingMail->headers,
+            'headers' => $headers,
             'message_id' => $incomingMail->messageId,
             'folder_id' => $mailboxes->getInboxFolder($mailbox),
         ]);
