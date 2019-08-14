@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
+use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Table\MailboxesTable;
 
 /**
@@ -181,5 +182,39 @@ class MailboxesTableTest extends TestCase
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $folders = $this->Mailboxes->getFolders($mailbox);
         $this->assertEquals(2, count($folders));
+    }
+
+    public function testGetAllActiveMailboxes(): void
+    {
+        $mailboxes = $this->Mailboxes->getActiveMailboxes();
+        $this->assertEquals(3, $mailboxes->count());
+    }
+
+    public function testGetActiveMailboxesByType(): void
+    {
+        $mailboxes = $this->Mailboxes->getActiveMailboxes((string)MailboxType::EMAIL());
+        $this->assertEquals(1, $mailboxes->count());
+    }
+
+    public function testSystemConnectionString(): void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $this->expectException(\InvalidArgumentException::class);
+        $mailbox->get('imap_connection');
+    }
+
+    public function testEmailConnectionString(): void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000002');
+        $this->assertEquals(
+            '{imap.yandex.ru:933/imap/ssl/novalidate-cert}INBOX',
+            $mailbox->get('imap_connection')
+        );
+    }
+
+    public function testHasMessage(): void
+    {
+        $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
+        $this->assertTrue($this->Mailboxes->hasMessage($mailbox, 'message-id-001'));
     }
 }

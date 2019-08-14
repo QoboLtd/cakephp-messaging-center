@@ -2,14 +2,17 @@
 namespace MessagingCenter\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
+use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
+use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Mailbox;
 use Webmozart\Assert\Assert;
@@ -134,6 +137,22 @@ class MailboxesTable extends Table
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param \Cake\Database\Schema\TableSchema $schema Schema to be initialized
+     * @return \Cake\Database\Schema\TableSchema
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema = parent::_initializeSchema($schema);
+
+        $schema->setColumnType('incoming_settings', 'json');
+        $schema->setColumnType('outgoing_settings', 'json');
+
+        return $schema;
     }
 
     /**
@@ -329,5 +348,58 @@ class MailboxesTable extends Table
         Assert::isInstanceOf($query, Query::class);
 
         return $query;
+    }
+
+    /**
+     * Returns all the active mailboxes.
+     *
+     * When the type is provided, only active mailboxes of the specified type are being returned
+     *
+     * @param null|string $type Mailbox type
+     * @return \Cake\Datasource\ResultSetInterface
+     */
+    public function getActiveMailboxes(?string $type = null): ResultSetInterface
+    {
+        $query = $this->find()->contain(['Folders']);
+        Assert::isInstanceOf($query, Query::class);
+
+        if (empty($type)) {
+            return $query->where(['active' => true])->all();
+        }
+
+        return $query
+            ->where([
+                'type' => $type,
+                'active' => true,
+            ])
+            ->all();
+    }
+
+    /**
+     * Returns true only and only if the message provided already exists in database.
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox to search for the message
+     * @param string $messageId Message ID received from the mailbox
+     * @return bool
+     */
+    public function hasMessage(EntityInterface $mailbox, string $messageId): bool
+    {
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
+        Assert::isInstanceOf($table, MessagesTable::class);
+
+        $mailboxId = $mailbox->get('id');
+        $query = $table->find()
+            ->where([
+                'message_id' => $messageId
+            ])
+            ->contain([
+                'Folders' => function ($q) use ($mailboxId) {
+                    return $q->where(['mailbox_id' => $mailboxId]);
+                }
+            ]);
+
+        Assert::isInstanceOf($query, Query::class);
+
+        return !$query->isEmpty();
     }
 }

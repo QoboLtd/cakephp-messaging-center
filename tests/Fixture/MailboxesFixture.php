@@ -86,6 +86,19 @@ class MailboxesFixture extends TestFixture
                 'created' => '2019-01-07 20:34:29',
                 'modified' => '2019-01-07 20:34:29'
             ],
+            [
+                'id' => '00000000-0000-0000-0000-000000000004',
+                'user_id' => '00000000-0000-0000-0000-000000000003',
+                'name' => 'user-3@system',
+                'type' => 'system',
+                'incoming_transport' => 'internal',
+                'incoming_settings' => 'default',
+                'outgoing_transport' => 'internal',
+                'outgoing_settings' => 'default',
+                'active' => 0,
+                'created' => '2019-01-07 20:34:29',
+                'modified' => '2019-01-07 20:34:29'
+            ],
         ];
         parent::init();
     }

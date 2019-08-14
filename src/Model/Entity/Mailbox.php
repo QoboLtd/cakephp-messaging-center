@@ -2,6 +2,8 @@
 namespace MessagingCenter\Model\Entity;
 
 use Cake\ORM\Entity;
+use InvalidArgumentException;
+use MessagingCenter\Enum\IncomingTransportType;
 
 /**
  * Mailbox Entity
@@ -45,4 +47,48 @@ class Mailbox extends Entity
         'modified' => true,
         'user' => true
     ];
+
+    protected $_virtual = ['imap_connection'];
+
+    protected $_hidden = ['imap_connection'];
+
+    /**
+     * Builds and returns the IMAP4 Connection String
+     *
+     * Example: {localhost:993/imap/notls}INBOX
+     *
+     * @return string
+     */
+    protected function _getImapConnection(): string
+    {
+        if ($this->get('incoming_transport') !== (string)IncomingTransportType::IMAP4()) {
+            throw new InvalidArgumentException();
+        }
+
+        $connectionString = '';
+
+        $defaultSettings = [
+            'username' => '',
+            'password' => '',
+            'host' => 'localhost',
+            'port' => null,
+            'protocol' => 'imap',
+        ];
+
+        $settings = $this->get('incoming_settings');
+        $settings = array_merge($defaultSettings, $settings);
+
+        // See more details at http://php.net/manual/en/function.imap-open.php
+        $connectionString .= '{';
+        $connectionString .= $settings['host'] ?? 'localhost';
+        $connectionString .= ':' . ($settings['port'] ?? 993);
+        $connectionString .= '/' . ($settings['protocol'] ?? 'imap');
+        // TODO: Make this optional
+        $connectionString .= '/ssl/novalidate-cert';
+        $connectionString .= '}';
+        // TODO: Make this flexible
+        $connectionString .= 'INBOX';
+
+        return $connectionString;
+    }
 }
