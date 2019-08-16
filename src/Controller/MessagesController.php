@@ -75,11 +75,6 @@ class MessagesController extends AppController
             ]
         ]);
 
-        // forbid viewing of others messages
-        if (!$this->Auth->user('is_superuser') && $message->get('folder')->get('mailbox')->get('user_id') != $this->Auth->user('id')) {
-            throw new ForbiddenException();
-        }
-
         $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
         $mailbox = $this->getMailbox($folder->get('mailbox_id'));
 
