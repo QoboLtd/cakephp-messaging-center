@@ -13,9 +13,7 @@ namespace MessagingCenter\Controller;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Event\EventName;
@@ -218,7 +216,7 @@ class MessagesController extends AppController
         }
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->to_user) {
+        if ($this->Auth->user('id') === $message->get('from_user')) {
             $this->Flash->error((string)__('You cannot delete a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
@@ -252,14 +250,14 @@ class MessagesController extends AppController
         $status = $this->Messages->getArchivedStatus();
 
         // current user's sent message
-        if ($this->Auth->user('id') !== $message->get('to_user')) {
+        if ($this->Auth->user('id') === $message->get('from_user')) {
             $this->Flash->error((string)__('You cannot archive a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
         } else {
             // already archived message
             if ($message->status === $status) {
-                $this->Flash->error((string)__('You cannot arcive an archived message.'));
+                $this->Flash->error((string)__('You cannot archive an archived message.'));
 
                 return $this->redirect(['action' => 'view', $id]);
             }
