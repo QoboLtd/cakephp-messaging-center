@@ -102,12 +102,12 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertInstanceOf(Message::class, $this->viewVariable('message'));
     }
 
-    public function testViewForbidden(): void
+    public function testViewOtherUserMessages(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
         $this->get('/messaging-center/messages/view/00000000-0000-0000-0000-000000000004');
 
-        $this->assertResponseCode(403);
+        $this->assertResponseCode(200);
     }
 
     public function testCompose(): void
