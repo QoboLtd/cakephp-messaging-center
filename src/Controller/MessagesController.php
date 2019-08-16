@@ -163,7 +163,7 @@ class MessagesController extends AppController
         ]);
 
         // current user's sent message
-        if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') !== $message->get('to_user')) {
+        if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') === $message->get('from_user')) {
             $this->Flash->error((string)__('You cannot reply to a sent message.'));
 
             return $this->redirect(['action' => 'view', $id]);
