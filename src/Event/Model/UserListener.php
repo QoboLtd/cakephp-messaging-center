@@ -20,6 +20,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\TableRegistry;
 use MessagingCenter\Event\EventName;
+use MessagingCenter\Model\Table\MailboxesTable;
 use MessagingCenter\Notifier\MessageNotifier;
 
 class UserListener implements EventListenerInterface
@@ -95,7 +96,7 @@ class UserListener implements EventListenerInterface
             'projectName' => $projectName,
             'subject' => $subject,
             'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
-            'folder' => $mailboxes->getInboxFolder($defaultMailbox),
+            'folder' => $mailboxes->getFolderByName($defaultMailbox, MailboxesTable::FOLDER_INBOX),
         ];
         $this->Notifier->template('MessagingCenter.welcome');
 

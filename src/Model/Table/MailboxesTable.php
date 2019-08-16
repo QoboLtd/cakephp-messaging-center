@@ -227,19 +227,33 @@ class MailboxesTable extends Table
      */
     public function getInboxFolder(EntityInterface $mailbox) : string
     {
+        deprecationWarning('MailboxesTable::getInboxFolder is deprecated. Use getFolderByName instead.');
+
+        return $this->getFolderByName($mailbox, self::FOLDER_INBOX)->get('id');
+    }
+
+    /**
+     * Returns the Folder with the specified name, under a particular Mailbox
+     *
+     * @param \Cake\Datasource\EntityInterface $mailbox Mailbox entity
+     * @param string $name Folder name
+     * @return \Cake\Datasource\EntityInterface
+     */
+    public function getFolderByName(EntityInterface $mailbox, string $name): EntityInterface
+    {
         $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
         $query = $foldersTable
             ->find()
             ->where([
                 'mailbox_id' => (string)$mailbox->get('id'),
-                'name' => static::FOLDER_INBOX,
+                'name' => $name,
             ]);
         Assert::isInstanceOf($query, QueryInterface::class);
 
         $folder = $query->firstOrFail();
         Assert::isInstanceOf($folder, Folder::class);
 
-        return $folder->get('id');
+        return $folder;
     }
 
     /**

@@ -255,7 +255,7 @@ class NotifyBehavior extends Behavior
         $this->Notifier->from($this->_fromUser);
         $this->Notifier->to($entity->get($field));
         $this->Notifier->template($this->_getTemplate($field, $entity));
-        $this->Notifier->folder($mailboxes->getInboxFolder($defaultMailbox));
+        $this->Notifier->folder($mailboxes->getFolderByName($defaultMailbox, MailboxesTable::FOLDER_INBOX)->get('id'));
 
         $data = $this->_getData($field, $entity, $table, $modifiedFields);
 
