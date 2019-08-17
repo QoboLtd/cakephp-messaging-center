@@ -32,24 +32,24 @@ class MessagesController extends AppController
 
     /**
      * Folder method
-     * @param string $folder folder name
+     * @param string $folderName Folder name
      * @return \Cake\Http\Response|void|null
      */
-    public function folder(string $folder = '')
+    public function folder(string $folderName = MailboxesTable::FOLDER_INBOX)
     {
-        if (!$this->Messages->folderExists($folder)) {
-            $folder = $this->Messages->getDefaultFolder();
-        }
+        deprecationWarning('Action Messages::folder is no longer supported. Please, use Mailboxes::view instead.');
 
-        $this->paginate = [
-            'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folder),
-            'contain' => [],
-            'order' => ['Messages.date_sent' => 'DESC']
-        ];
-        $messages = $this->paginate($this->Messages);
+        /** @var MailboxesTable $mailboxesTable */
+        $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        $mailbox = $mailboxesTable->createDefaultMailbox($this->Auth->user());
+        $folder = $mailboxesTable->getFolderByName($mailbox, $folderName);
 
-        $this->set(compact('messages', 'folder'));
-        $this->set('_serialize', ['messages', 'folder']);
+        return $this->redirect([
+            'controller' => 'Mailboxes',
+            'action' => 'view',
+            $mailbox->get('id'),
+            $folder->get('id'),
+        ]);
     }
 
     /**

@@ -242,7 +242,8 @@ class MessagesTable extends Table
      */
     public function folderExists(string $folder = ''): bool
     {
-        if (!in_array($folder, $this->getFolders())) {
+        deprecationWarning('Method MessagesTable::folderExists is deprecated');
+        if (!in_array($folder, $this->getDefaultFolders())) {
             return false;
         }
 
