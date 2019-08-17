@@ -159,14 +159,14 @@ class MailboxesTableTest extends TestCase
     {
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $unreadCount = $this->Mailboxes->countUnreadMessages($mailbox);
-        $this->assertEquals(3, $unreadCount);
+        $this->assertEquals(4, $unreadCount);
     }
 
     public function testGetUnreadMessages() : void
     {
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $unread = $this->Mailboxes->getUnreadMessages($mailbox);
-        $this->assertEquals(3, count($unread));
+        $this->assertEquals(4, count($unread));
     }
 
     public function testGetUnreadMessagesWithLimit() : void
