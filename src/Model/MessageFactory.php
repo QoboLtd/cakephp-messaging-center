@@ -52,7 +52,7 @@ class MessageFactory
             'to_user' => '',
             'headers' => $headers,
             'message_id' => $incomingMail->messageId,
-            'folder_id' => $mailboxes->getInboxFolder($mailbox),
+            'folder_id' => $mailboxes->getFolderByName($mailbox, MailboxesTable::FOLDER_INBOX),
         ]);
 
         $messageCreated = $messages->saveOrFail($entity);
