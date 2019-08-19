@@ -251,7 +251,8 @@ class MessagesController extends AppController
     /**
      * Move method
      *
-     * @param string|null $id Message id.
+     * @param string $id Message id
+     * @param string $folderId Folder id
      * @return \Cake\Http\Response|void|null
      */
     public function move(string $id, string $folderId)
