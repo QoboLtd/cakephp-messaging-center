@@ -196,6 +196,8 @@ class MessagesController extends AppController
      */
     public function delete(string $id = null)
     {
+        deprecationWarning('Action delete is deprecated. Please, use move instead.');
+
         /**
          * @var \MessagingCenter\Model\Entity\Message $message
          */
@@ -214,6 +216,8 @@ class MessagesController extends AppController
      */
     public function archive(string $id = null)
     {
+        deprecationWarning('Action archive is deprecated. Please, use move instead.');
+
         /**
          * @var \MessagingCenter\Model\Entity\Message $message
          */
@@ -234,7 +238,14 @@ class MessagesController extends AppController
     {
         deprecationWarning('Action restore is deprecated. Please, use move instead.');
 
-        return $this->setAction('move', $id);
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
+        $message = $this->Messages->get($id);
+
+        $folder = $this->Messages->getFolderByName($message, MailboxesTable::FOLDER_INBOX);
+
+        return $this->setAction('move', $id, $folder->get('id'));
     }
 
     /**
@@ -243,7 +254,7 @@ class MessagesController extends AppController
      * @param string|null $id Message id.
      * @return \Cake\Http\Response|void|null
      */
-    public function move(string $id = null, string $folderId = null)
+    public function move(string $id, string $folderId)
     {
         $this->request->allowMethod(['post', 'delete']);
         /**
