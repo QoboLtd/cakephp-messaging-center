@@ -58,6 +58,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000002',
+                'message_id' => '',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000002',
@@ -72,7 +73,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000002',
-                'message_id' => 'message-id-001',
+                'message_id' => '',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000003',
@@ -87,6 +88,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000002',
+                'message_id' => '',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000004',
@@ -101,6 +103,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000002',
+                'message_id' => '',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000005',
@@ -115,6 +118,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000002',
+                'message_id' => '',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000006',
@@ -129,6 +133,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000001',
+                'message_id' => '',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000007',
@@ -161,7 +166,8 @@ class MessagesFixture extends TestFixture
                     ],
                     'toaddress' => 'foo@bar.com',
                     'fromaddress' => 'Test2019'
-                ])
+                ]),
+                'message_id' => 'message-id-001',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000008',
@@ -176,7 +182,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000006',
-                'message_id' => '',
+                'message_id' => 'message-id-002',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000009',
@@ -191,7 +197,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000005',
-                'message_id' => '',
+                'message_id' => 'message-id-003',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000010',
@@ -206,7 +212,7 @@ class MessagesFixture extends TestFixture
                 'created' => '2016-03-16 10:46:23',
                 'modified' => '2016-03-16 10:46:23',
                 'folder_id' => '00000000-0000-0000-0000-000000000007',
-                'message_id' => '',
+                'message_id' => 'message-id-004',
             ],
         ];
 
