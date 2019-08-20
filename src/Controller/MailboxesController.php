@@ -3,8 +3,8 @@ namespace MessagingCenter\Controller;
 
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use MessagingCenter\Controller\AppController;
 use MessagingCenter\Model\Table\FoldersTable;
+use MessagingCenter\Model\Table\MailboxesTable;
 use MessagingCenter\Model\Table\MessagesTable;
 use Webmozart\Assert\Assert;
 
@@ -35,10 +35,10 @@ class MailboxesController extends AppController
      * View method
      *
      * @param string|null $id Mailbox id.
+     * @param string|null $folderId Folder id
      * @return \Cake\Http\Response|void|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view(string $id = null)
+    public function view(string $id = null, string $folderId = null)
     {
         $mailbox = $this->Mailboxes->get($id, [
             'contain' => [
@@ -48,15 +48,16 @@ class MailboxesController extends AppController
             ]
         ]);
 
-        $folderId = $this->request->getQuery('folder_id');
+        $folderId = $folderId ?? $this->request->getQuery('folder_id');
         if (empty($folderId)) {
-            $folderId = $this->Mailboxes->getInboxFolder($mailbox);
+            $folder = $this->Mailboxes->getFolderByName($mailbox, MailboxesTable::FOLDER_INBOX);
+        } else {
+            $this->loadModel('MessagingCenter.Folders');
+            Assert::isInstanceOf($this->Folders, FoldersTable::class);
+
+            $folder = $this->Folders->get($folderId);
         }
 
-        $this->loadModel('MessagingCenter.Folders');
-        Assert::isInstanceOf($this->Folders, FoldersTable::class);
-
-        $folder = $this->Folders->get($folderId);
         $folderName = $folder->get('name');
 
         $this->loadModel('MessagingCenter.Messages');
@@ -64,7 +65,7 @@ class MailboxesController extends AppController
 
         $this->paginate = [
             'conditions' => [
-                'folder_id' => $folderId
+                'folder_id' => $folder->get('id')
             ],
             'contain' => [
                 'FromUser',

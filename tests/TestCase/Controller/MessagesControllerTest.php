@@ -329,9 +329,13 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertNotEquals($data['date_sent'], $entity->date_sent);
     }
 
-    public function testDelete(): void
+    /**
+     * @dataProvider deleteDataProvider
+     */
+    public function testDelete(string $id): void
     {
-        $id = '00000000-0000-0000-0000-000000000001';
+        $mailboxId = '00000000-0000-0000-0000-000000000002';
+        $folderId = '00000000-0000-0000-0000-000000000006';
 
         $this->delete('/messaging-center/messages/delete/' . $id);
 
@@ -339,60 +343,39 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $url = [
             'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'folder'
-        ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        $this->assertEquals('deleted', $entity->get('status'));
-    }
-
-    public function testDeleteAlreadyDeleted(): void
-    {
-        $id = '00000000-0000-0000-0000-000000000002';
-
-        $this->delete('/messaging-center/messages/delete/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
+            'controller' => 'Mailboxes',
             'action' => 'view',
-            $id
+            $mailboxId,
+            $folderId,
         ];
         $this->assertRedirect($url);
 
         $entity = $this->MessagesTable->get($id);
-        $this->assertEquals('deleted', $entity->get('status'));
+        $this->assertEquals($folderId, $entity->get('folder_id'));
     }
 
-    public function testDeleteUserSent(): void
+    /**
+     * @return array[]
+     */
+    public function deleteDataProvider(): array
     {
-        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
-
-        $id = '00000000-0000-0000-0000-000000000001';
-
-        $this->delete('/messaging-center/messages/delete/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'view',
-            $id
+        return [
+            // Delete from Inbox
+            ['00000000-0000-0000-0000-000000000007'],
+            // Delete already Deleted
+            ['00000000-0000-0000-0000-000000000008'],
+            // Delete from Sent
+            ['00000000-0000-0000-0000-000000000009'],
         ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        $this->assertEquals('new', $entity->get('status'));
     }
 
-    public function testArchive(): void
+    /**
+     * @dataProvider archiveDataProvider
+     */
+    public function testArchive(string $id): void
     {
-        $id = '00000000-0000-0000-0000-000000000001';
+        $mailboxId = '00000000-0000-0000-0000-000000000002';
+        $folderId = '00000000-0000-0000-0000-000000000007';
 
         $this->post('/messaging-center/messages/archive/' . $id);
 
@@ -400,139 +383,29 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $url = [
             'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'folder'
-        ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        $this->assertEquals('archived', $entity->get('status'));
-    }
-
-    public function testArchiveAlreadyArchived(): void
-    {
-        $id = '00000000-0000-0000-0000-000000000003';
-
-        $this->post('/messaging-center/messages/archive/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
+            'controller' => 'Mailboxes',
             'action' => 'view',
-            $id
+            $mailboxId,
+            $folderId,
         ];
         $this->assertRedirect($url);
 
         $entity = $this->MessagesTable->get($id);
-        $this->assertEquals('archived', $entity->get('status'));
+        $this->assertEquals($folderId, $entity->get('folder_id'));
     }
 
-    public function testArchiveUserSent(): void
+    /**
+     * @return array[]
+     */
+    public function archiveDataProvider(): array
     {
-        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
-
-        $id = '00000000-0000-0000-0000-000000000001';
-
-        $this->post('/messaging-center/messages/archive/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'view',
-            $id
+        return [
+            // Archive from Inbox
+            ['00000000-0000-0000-0000-000000000007'],
+            // Delete already Archived
+            ['00000000-0000-0000-0000-000000000010'],
+            // Archive from Sent
+            ['00000000-0000-0000-0000-000000000009'],
         ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        $this->assertEquals('new', $entity->get('status'));
-    }
-
-    public function testRestoreDeleted(): void
-    {
-        $id = '00000000-0000-0000-0000-000000000002';
-
-        $this->post('/messaging-center/messages/restore/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'folder'
-        ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        $this->assertNotEquals('archived', $entity->get('status'));
-    }
-
-    public function testRestoreArchived(): void
-    {
-        $id = '00000000-0000-0000-0000-000000000003';
-
-        $this->post('/messaging-center/messages/restore/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'folder'
-        ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        $this->assertNotEquals('archived', $entity->get('status'));
-    }
-
-    public function testRestoreNotArchived(): void
-    {
-        $id = '00000000-0000-0000-0000-000000000001';
-
-        $this->post('/messaging-center/messages/restore/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'view',
-            $id
-        ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        $this->assertEquals('new', $entity->get('status'));
-    }
-
-    public function testRestoreUserSent(): void
-    {
-        $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000001']);
-
-        $id = '00000000-0000-0000-0000-000000000001';
-
-        $this->post('/messaging-center/messages/restore/' . $id);
-
-        $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Messages',
-            'action' => 'view',
-            $id
-        ];
-        $this->assertRedirect($url);
-
-        $entity = $this->MessagesTable->get($id);
-        /**
-         * @var \Cake\Http\Session $session
-         */
-        $session = $this->_requestSession;
-        $this->assertEquals($session->read('Auth.User.id'), $entity->get('from_user'));
-        $this->assertEquals('new', $entity->get('status'));
     }
 }

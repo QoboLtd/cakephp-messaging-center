@@ -14,6 +14,7 @@ namespace MessagingCenter\Model\Entity;
 use Cake\Core\Configure;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
+use MessagingCenter\Model\Table\MessagesTable;
 
 /**
  * Message Entity.
@@ -164,5 +165,23 @@ class Message extends Entity
         $emailAddressesCc = $this->getEmailAddresses('cc');
 
         return array_merge($emailAddressesTo, $emailAddressesCc);
+    }
+
+    /**
+     * Moves this message to the specified folder
+     *
+     * @param \MessagingCenter\Model\Entity\Folder $folder Folder to move the message under
+     */
+    public function moveToFolder(Folder $folder): void
+    {
+        $this->set('folder_id', $folder->get('id'));
+    }
+
+    /**
+     * Marks the message as read
+     */
+    public function markAsRead(): void
+    {
+        $this->set('status', MessagesTable::STATUS_READ);
     }
 }

@@ -17,6 +17,7 @@ use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Event\EventName;
+use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Table\MailboxesTable;
 use Webmozart\Assert\Assert;
@@ -31,24 +32,24 @@ class MessagesController extends AppController
 
     /**
      * Folder method
-     * @param string $folder folder name
+     * @param string $folderName Folder name
      * @return \Cake\Http\Response|void|null
      */
-    public function folder(string $folder = '')
+    public function folder(string $folderName = MailboxesTable::FOLDER_INBOX)
     {
-        if (!$this->Messages->folderExists($folder)) {
-            $folder = $this->Messages->getDefaultFolder();
-        }
+        deprecationWarning('Action Messages::folder is no longer supported. Please, use Mailboxes::view instead.');
 
-        $this->paginate = [
-            'conditions' => $this->Messages->getConditionsByFolder($this->Auth->user('id'), $folder),
-            'contain' => [],
-            'order' => ['Messages.date_sent' => 'DESC']
-        ];
-        $messages = $this->paginate($this->Messages);
+        /** @var MailboxesTable $mailboxesTable */
+        $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+        $mailbox = $mailboxesTable->createDefaultMailbox($this->Auth->user());
+        $folder = $mailboxesTable->getFolderByName($mailbox, $folderName);
 
-        $this->set(compact('messages', 'folder'));
-        $this->set('_serialize', ['messages', 'folder']);
+        return $this->redirect([
+            'controller' => 'Mailboxes',
+            'action' => 'view',
+            $mailbox->get('id'),
+            $folder->get('id'),
+        ]);
     }
 
     /**
@@ -77,13 +78,8 @@ class MessagesController extends AppController
         $mailbox = $this->getMailbox($folder->get('mailbox_id'));
 
         // set status to read
-        if ($this->request->is(['get']) &&
-            !$this->request->is(['json', 'ajax']) &&
-            $this->Messages->getNewStatus() === $message->get('status') &&
-            $this->Messages->getSentFolder() !== $folder->get('name')
-        ) {
-            $status = $this->Messages->getReadStatus();
-            $message = $this->Messages->patchEntity($message, ['status' => $status]);
+        if ($this->request->is(['get']) && !$this->request->is(['json', 'ajax'])) {
+            $message->markAsRead();
             $this->Messages->save($message);
         }
 
@@ -196,91 +192,70 @@ class MessagesController extends AppController
      * Delete method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Http\Response|void|null Redirects to folder.
+     * @return \Cake\Http\Response|void|null
      */
     public function delete(string $id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        deprecationWarning('Action delete is deprecated. Please, use move instead.');
+
         /**
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id);
 
-        $status = $this->Messages->getDeletedStatus();
+        $folder = $this->Messages->getFolderByName($message, MailboxesTable::FOLDER_TRASH);
 
-        // already deleted message
-        if ($message->status === $status) {
-            $this->Flash->error((string)__('You cannot delete a deleted message.'));
-
-            return $this->redirect(['action' => 'view', $id]);
-        }
-
-        // current user's sent message
-        if ($this->Auth->user('id') === $message->get('from_user')) {
-            $this->Flash->error((string)__('You cannot delete a sent message.'));
-
-            return $this->redirect(['action' => 'view', $id]);
-        }
-
-        $message = $this->Messages->patchEntity($message, ['status' => $status]);
-
-        if ($this->Messages->save($message)) {
-            $this->Flash->success((string)__('The message has been deleted.'));
-        } else {
-            $this->Flash->error((string)__('The message could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'folder']);
+        return $this->setAction('move', $id, $folder->get('id'));
     }
 
     /**
      * Archive method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Http\Response|void|null Redirects to folder.
+     * @return \Cake\Http\Response|void|null
      */
     public function archive(string $id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        deprecationWarning('Action archive is deprecated. Please, use move instead.');
+
         /**
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id);
 
-        $status = $this->Messages->getArchivedStatus();
+        $folder = $this->Messages->getFolderByName($message, MailboxesTable::FOLDER_ARCHIVE);
 
-        // current user's sent message
-        if ($this->Auth->user('id') === $message->get('from_user')) {
-            $this->Flash->error((string)__('You cannot archive a sent message.'));
-
-            return $this->redirect(['action' => 'view', $id]);
-        } else {
-            // already archived message
-            if ($message->status === $status) {
-                $this->Flash->error((string)__('You cannot archive an archived message.'));
-
-                return $this->redirect(['action' => 'view', $id]);
-            }
-        }
-
-        $message = $this->Messages->patchEntity($message, ['status' => $status]);
-
-        if ($this->Messages->save($message)) {
-            $this->Flash->success((string)__('The message has been archived.'));
-        } else {
-            $this->Flash->error((string)__('The message could not be archived. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'folder']);
+        return $this->setAction('move', $id, $folder->get('id'));
     }
 
     /**
      * Restore method
      *
      * @param string|null $id Message id.
-     * @return \Cake\Http\Response|void|null Redirects to folder.
+     * @return \Cake\Http\Response|void|null
      */
     public function restore(string $id = null)
+    {
+        deprecationWarning('Action restore is deprecated. Please, use move instead.');
+
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
+        $message = $this->Messages->get($id);
+
+        $folder = $this->Messages->getFolderByName($message, MailboxesTable::FOLDER_INBOX);
+
+        return $this->setAction('move', $id, $folder->get('id'));
+    }
+
+    /**
+     * Move method
+     *
+     * @param string $id Message id
+     * @param string $folderId Folder id
+     * @return \Cake\Http\Response|void|null
+     */
+    public function move(string $id, string $folderId)
     {
         $this->request->allowMethod(['post', 'delete']);
         /**
@@ -288,31 +263,19 @@ class MessagesController extends AppController
          */
         $message = $this->Messages->get($id);
 
-        $status = $this->Messages->getReadStatus();
+        $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
+        $folder = $foldersTable->get($folderId);
+        Assert::isInstanceOf($folder, Folder::class);
 
-        // current user's sent message
-        if ($this->Auth->user('id') !== $message->get('to_user')) {
-            $this->Flash->error((string)__('You cannot restore a sent message.'));
-
-            return $this->redirect(['action' => 'view', $id]);
-        } else {
-            // inbox message
-            if (in_array($message->get('status'), [$status, $this->Messages->getNewStatus()])) {
-                $this->Flash->error((string)__('You cannot restore an inbox message.'));
-
-                return $this->redirect(['action' => 'view', $id]);
-            }
-        }
-
-        $message = $this->Messages->patchEntity($message, ['status' => $status]);
+        $message->moveToFolder($folder);
 
         if ($this->Messages->save($message)) {
-            $this->Flash->success((string)__('The message has been restored.'));
+            $this->Flash->success((string)__('The message has been moved to {0}.', $folder->get('name')));
         } else {
-            $this->Flash->error((string)__('The message could not be restored. Please, try again.'));
+            $this->Flash->error((string)__('The message could not be moved. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'folder']);
+        return $this->redirect(['controller' => 'mailboxes', 'action' => 'view', $folder->get('mailbox_id'), $folder->get('id')]);
     }
 
     /**

@@ -50,7 +50,7 @@ class MailboxesControllerTest extends IntegrationTestCase
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
-        $this->get('/messaging-center/mailboxes/view/00000000-0000-0000-0000-000000000001');
+        $this->get('/messaging-center/mailboxes/view/00000000-0000-0000-0000-000000000002');
 
         $this->assertResponseOk();
         $this->assertInstanceOf(EntityInterface::class, $this->viewVariable('mailbox'));
