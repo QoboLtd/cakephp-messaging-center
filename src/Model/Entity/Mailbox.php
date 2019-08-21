@@ -3,7 +3,6 @@ namespace MessagingCenter\Model\Entity;
 
 use Cake\Core\Configure;
 use Cake\ORM\Entity;
-use InvalidArgumentException;
 use MessagingCenter\Enum\IncomingTransportType;
 use Webmozart\Assert\Assert;
 
@@ -64,7 +63,7 @@ class Mailbox extends Entity
     protected function _getImapConnection(): string
     {
         if ($this->get('incoming_transport') !== (string)IncomingTransportType::IMAP4()) {
-            throw new InvalidArgumentException();
+            return '';
         }
 
         $connectionString = '';
