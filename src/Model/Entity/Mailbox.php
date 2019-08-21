@@ -1,9 +1,11 @@
 <?php
 namespace MessagingCenter\Model\Entity;
 
+use Cake\Core\Configure;
 use Cake\ORM\Entity;
 use InvalidArgumentException;
 use MessagingCenter\Enum\IncomingTransportType;
+use Webmozart\Assert\Assert;
 
 /**
  * Mailbox Entity
@@ -67,22 +69,18 @@ class Mailbox extends Entity
 
         $connectionString = '';
 
-        $defaultSettings = [
-            'username' => '',
-            'password' => '',
-            'host' => 'localhost',
-            'port' => null,
-            'protocol' => 'imap',
-        ];
+        $defaultSettings = Configure::readOrFail('MessagingCenter.Mailbox.default.incoming_settings');
+        Assert::keyExists($defaultSettings, 'host');
+        Assert::keyExists($defaultSettings, 'port');
+        Assert::keyExists($defaultSettings, 'protocol');
 
-        $settings = $this->get('incoming_settings');
-        $settings = array_merge($defaultSettings, $settings);
+        $settings = array_merge($defaultSettings, $this->get('incoming_settings'));
 
         // See more details at http://php.net/manual/en/function.imap-open.php
         $connectionString .= '{';
-        $connectionString .= $settings['host'] ?? 'localhost';
-        $connectionString .= ':' . ($settings['port'] ?? 993);
-        $connectionString .= '/' . ($settings['protocol'] ?? 'imap');
+        $connectionString .= $settings['host'];
+        $connectionString .= ':' . $settings['port'];
+        $connectionString .= '/' . $settings['protocol'];
         // TODO: Make this optional
         $connectionString .= '/ssl/novalidate-cert';
         $connectionString .= '}';
