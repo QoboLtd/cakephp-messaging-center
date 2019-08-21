@@ -157,7 +157,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($session->read('Auth.User.id'), $entity->from_user);
         $this->assertEquals('new', $entity->status);
         $time = new Time();
-        $this->assertEquals($time->i18nFormat(), $entity->date_sent->i18nFormat());
+        $this->assertEquals($time->i18nFormat(), $entity->date_sent->i18nFormat(), '', 1);
     }
 
     public function testComposePostNoData(): void

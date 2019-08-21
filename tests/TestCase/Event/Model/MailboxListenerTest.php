@@ -54,9 +54,9 @@ class MailboxListenerTest extends TestCase
             'name' => 'mytest@system',
             'type' => 'system',
             'incoming_transport' => 'internal',
-            'incoming_settings' => 'default',
+            'incoming_settings' => Configure::read('MessagingCenter.Mailbox.default.incoming_settings'),
             'outgoing_transport' => 'internal',
-            'outgoing_settings' => 'default',
+            'outgoing_settings' => Configure::read('MessagingCenter.Mailbox.default.outgoing_settings'),
             'active' => 1,
         ];
 
