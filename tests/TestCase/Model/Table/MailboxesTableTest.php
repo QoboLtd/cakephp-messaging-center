@@ -1,7 +1,6 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
-use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
@@ -50,26 +49,6 @@ class MailboxesTableTest extends TestCase
          */
         $table = TableRegistry::getTableLocator()->get('Mailboxes', $config);
         $this->Mailboxes = $table;
-
-        Configure::write('MessagingCenter', [
-            'Mailbox' => [
-                'default' => [
-                    'mailbox_type' => 'system',
-                    'incoming_transport' => 'internal',
-                    'incoming_settings' => 'default',
-                    'outgoing_transport' => 'internal',
-                    'outgoing_settings' => 'default',
-                    'mailbox_postfix' => '@system',
-                ]
-            ],
-            'Folder' => [
-                'defaultType' => 'default',
-            ],
-            'systemUser' => [
-                'name' => 'System',
-                'id' => '00000000-0000-0000-0000-000000000000',
-            ],
-        ]);
     }
 
     /**
