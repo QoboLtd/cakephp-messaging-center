@@ -1,8 +1,6 @@
 <?php
 namespace MessagingCenter\Controller;
 
-use MessagingCenter\Controller\AppController;
-
 /**
  * Folders Controller
  *

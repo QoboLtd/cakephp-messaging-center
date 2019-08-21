@@ -12,7 +12,6 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
-use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Mailbox;
 use Webmozart\Assert\Assert;

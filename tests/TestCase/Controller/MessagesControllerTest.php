@@ -5,7 +5,6 @@ use Cake\Event\EventManager;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
-use MessagingCenter\Controller\MessagesController;
 use MessagingCenter\Event\Model\MailboxListener;
 use MessagingCenter\Event\Model\UserListener;
 use MessagingCenter\Model\Entity\Message;

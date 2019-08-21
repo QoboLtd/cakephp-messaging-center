@@ -5,7 +5,6 @@ use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use MessagingCenter\Event\Model\MailboxListener;
-use MessagingCenter\Model\Behavior\NotifyBehavior;
 
 class NotifyBehaviorTest extends TestCase
 {

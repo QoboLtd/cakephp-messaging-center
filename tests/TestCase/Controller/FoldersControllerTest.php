@@ -2,7 +2,6 @@
 namespace MessagingCenter\Test\TestCase\Controller;
 
 use Cake\TestSuite\IntegrationTestCase;
-use MessagingCenter\Controller\FoldersController;
 
 /**
  * MessagingCenter\Controller\FoldersController Test Case

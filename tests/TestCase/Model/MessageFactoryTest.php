@@ -6,8 +6,6 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\MessageFactory;
-use MessagingCenter\Model\Table\MailboxesTable;
-use MessagingCenter\Model\Table\MessagesTable;
 use PhpImap\DataPartInfo;
 use PhpImap\IncomingMail;
 use Webmozart\Assert\Assert;
