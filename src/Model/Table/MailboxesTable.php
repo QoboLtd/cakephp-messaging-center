@@ -100,8 +100,7 @@ class MailboxesTable extends Table
             ->notEmpty('incoming_transport');
 
         $validator
-            ->scalar('incoming_settings')
-            ->maxLength('incoming_settings', 4294967295)
+            ->isArray('incoming_settings')
             ->requirePresence('incoming_settings', 'create')
             ->notEmpty('incoming_settings');
 
@@ -112,8 +111,7 @@ class MailboxesTable extends Table
             ->notEmpty('outgoing_transport');
 
         $validator
-            ->scalar('outgoing_settings')
-            ->maxLength('outgoing_settings', 4294967295)
+            ->isArray('outgoing_settings')
             ->requirePresence('outgoing_settings', 'create')
             ->notEmpty('outgoing_settings');
 

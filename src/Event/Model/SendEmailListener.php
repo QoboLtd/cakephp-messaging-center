@@ -48,7 +48,7 @@ class SendEmailListener implements EventListenerInterface
             return;
         }
 
-        $outgoingSettings = json_decode($mailbox->get('outgoing_settings'), true);
+        $outgoingSettings = $mailbox->get('outgoing_settings');
 
         Email::configTransport('custom', [
             'host' => (!empty($outgoingSettings['use_ssl']) ? 'ssl://' : '') . $outgoingSettings['host'],
