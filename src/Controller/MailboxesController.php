@@ -71,7 +71,7 @@ class MailboxesController extends AppController
                 'FromUser',
                 'ToUser',
             ],
-            'order' => ['Messages.created' => 'DESC']
+            'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
 
