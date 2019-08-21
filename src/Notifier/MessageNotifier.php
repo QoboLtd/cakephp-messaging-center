@@ -13,6 +13,7 @@ namespace MessagingCenter\Notifier;
 
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use Webmozart\Assert\Assert;
 
 class MessageNotifier extends Notifier
 {
@@ -118,6 +119,7 @@ class MessageNotifier extends Notifier
      */
     public function folder(string $folder): void
     {
+        Assert::uuid($folder);
         $this->_folder = $folder;
     }
 
