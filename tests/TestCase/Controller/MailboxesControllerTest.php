@@ -3,7 +3,6 @@ namespace MessagingCenter\Test\TestCase\Controller;
 
 use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\IntegrationTestCase;
-use MessagingCenter\Controller\MailboxesController;
 
 /**
  * MessagingCenter\Controller\MailboxesController Test Case

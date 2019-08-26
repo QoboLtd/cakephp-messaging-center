@@ -1,7 +1,6 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Table;
 
-use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
@@ -49,26 +48,6 @@ class MessagesTableTest extends TestCase
          */
         $table = TableRegistry::get('MessagingCenter.Messages', $config);
         $this->Messages = $table;
-
-        Configure::write('MessagingCenter', [
-            'Mailbox' => [
-                'default' => [
-                    'mailbox_type' => 'system',
-                    'incoming_transport' => 'internal',
-                    'incoming_settings' => 'default',
-                    'outgoing_transport' => 'internal',
-                    'outgoing_settings' => 'default',
-                    'mailbox_postfix' => '@system',
-                ]
-            ],
-            'Folder' => [
-                'defaultType' => 'default',
-            ],
-            'systemUser' => [
-                'name' => 'System',
-                'id' => '00000000-0000-0000-0000-000000000000',
-            ],
-        ]);
     }
 
     /**

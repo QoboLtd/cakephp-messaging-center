@@ -18,6 +18,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Event\Event;
 use Cake\I18n\Time;
+use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
@@ -143,7 +144,21 @@ class MessagesTable extends Table
         $validator
             ->allowEmpty('related_id');
 
+        $validator
+            ->uuid('folder_id')
+            ->notEmpty('folder_id');
+
         return $validator;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildRules(RulesChecker $rules) : RulesChecker
+    {
+        $rules->add($rules->existsIn('folder_id', 'Folders'));
+
+        return $rules;
     }
 
     /**

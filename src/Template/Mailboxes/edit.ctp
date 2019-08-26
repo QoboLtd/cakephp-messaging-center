@@ -11,8 +11,8 @@
  */
 
 
-$mailbox->set('IncomingSettings', json_decode($mailbox->get('incoming_settings'), true));
-$mailbox->set('OutgoingSettings', json_decode($mailbox->get('outgoing_settings'), true));
+$mailbox->set('IncomingSettings', $mailbox->get('incoming_settings'));
+$mailbox->set('OutgoingSettings', $mailbox->get('outgoing_settings'));
 ?>
 <section class="content-header">
     <div class="row">

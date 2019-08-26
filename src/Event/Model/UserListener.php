@@ -96,7 +96,7 @@ class UserListener implements EventListenerInterface
             'projectName' => $projectName,
             'subject' => $subject,
             'adminName' => Configure::readOrFail('MessagingCenter.systemUser.name'),
-            'folder' => $mailboxes->getFolderByName($defaultMailbox, MailboxesTable::FOLDER_INBOX),
+            'folder' => $mailboxes->getFolderByName($defaultMailbox, MailboxesTable::FOLDER_INBOX)->get('id'),
         ];
         $this->Notifier->template('MessagingCenter.welcome');
 

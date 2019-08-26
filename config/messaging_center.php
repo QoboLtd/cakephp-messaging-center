@@ -26,9 +26,21 @@ return [
             'default' => [
                 'mailbox_type' => 'system',
                 'incoming_transport' => 'internal',
-                'incoming_settings' => 'default',
+                'incoming_settings' => [
+                    'username' => '',
+                    'password' => '',
+                    'host' => 'localhost',
+                    'port' => 993,
+                    'protocol' => 'imap'
+                ],
                 'outgoing_transport' => 'internal',
-                'outgoing_settings' => 'default',
+                'outgoing_settings' => [
+                    'username' => '',
+                    'password' => '',
+                    'host' => 'localhost',
+                    'port' => 465,
+                    'protocol' => 'smtp'
+                ],
                 'mailbox_postfix' => '@system',
             ],
             'types' => [

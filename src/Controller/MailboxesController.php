@@ -71,7 +71,7 @@ class MailboxesController extends AppController
                 'FromUser',
                 'ToUser',
             ],
-            'order' => ['Messages.created' => 'DESC']
+            'order' => ['Messages.date_sent' => 'DESC']
         ];
         $messages = $this->paginate($this->Messages);
 
@@ -93,8 +93,8 @@ class MailboxesController extends AppController
              */
             $data = $this->request->getData();
 
-            $data['incoming_settings'] = json_encode($data['IncomingSettings']);
-            $data['outgoing_settings'] = json_encode($data['OutgoingSettings']);
+            $data['incoming_settings'] = $data['IncomingSettings'];
+            $data['outgoing_settings'] = $data['OutgoingSettings'];
 
             $mailbox = $this->Mailboxes->patchEntity($mailbox, $data);
             if ($this->Mailboxes->save($mailbox)) {
@@ -140,8 +140,8 @@ class MailboxesController extends AppController
              */
             $data = $this->request->getData();
 
-            $data['incoming_settings'] = json_encode($data['IncomingSettings']);
-            $data['outgoing_settings'] = json_encode($data['OutgoingSettings']);
+            $data['incoming_settings'] = $data['IncomingSettings'];
+            $data['outgoing_settings'] = $data['OutgoingSettings'];
 
             $mailbox = $this->Mailboxes->patchEntity($mailbox, $data);
             if ($this->Mailboxes->save($mailbox)) {

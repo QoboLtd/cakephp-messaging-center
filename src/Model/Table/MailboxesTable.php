@@ -12,7 +12,6 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
-use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Mailbox;
 use Webmozart\Assert\Assert;
@@ -100,8 +99,7 @@ class MailboxesTable extends Table
             ->notEmpty('incoming_transport');
 
         $validator
-            ->scalar('incoming_settings')
-            ->maxLength('incoming_settings', 4294967295)
+            ->isArray('incoming_settings')
             ->requirePresence('incoming_settings', 'create')
             ->notEmpty('incoming_settings');
 
@@ -112,8 +110,7 @@ class MailboxesTable extends Table
             ->notEmpty('outgoing_transport');
 
         $validator
-            ->scalar('outgoing_settings')
-            ->maxLength('outgoing_settings', 4294967295)
+            ->isArray('outgoing_settings')
             ->requirePresence('outgoing_settings', 'create')
             ->notEmpty('outgoing_settings');
 

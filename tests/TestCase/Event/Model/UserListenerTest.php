@@ -2,7 +2,6 @@
 namespace MessagingCenter\Test\TestCase\Event\Model;
 
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
