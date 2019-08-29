@@ -1,6 +1,7 @@
 <?php
 namespace MessagingCenter\Test\TestCase\Model\Behavior;
 
+use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -90,7 +91,9 @@ class NotifyBehaviorTest extends TestCase
 
         $expected = [
             'subject' => 'Article: New Article',
-            'content' => 'Article record <a href="/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n"
+            'content' => 'Article record <a href="/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n",
+            'from_user' => Configure::readOrFail('MessagingCenter.systemUser.id'),
+            'sender' => Configure::readOrFail('MessagingCenter.systemUser.name'),
         ];
 
         $table = TableRegistry::get('MessagingCenter.Messages');
@@ -101,6 +104,8 @@ class NotifyBehaviorTest extends TestCase
 
         $this->assertEquals($expected['subject'], $entity->get('subject'));
         $this->assertEquals($expected['content'], $entity->get('content'));
+        $this->assertEquals($expected['from_user'], $entity->get('from_user'));
+        $this->assertEquals($expected['sender'], $entity->get('sender'));
     }
 
     public function testAfterSaveModified(): void
