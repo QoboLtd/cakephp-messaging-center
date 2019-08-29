@@ -61,7 +61,7 @@ class Message extends Entity
      */
     protected function getUser(string $field) : string
     {
-        $user = $this->has($field . 'User') ? $this->get($field . 'User') : $this->get($field . 'user');
+        $user = $this->has($field . 'User') ? $this->get($field . 'User') : $this->get($field . '_user');
         $systemUser = Configure::readOrFail('MessagingCenter.systemUser');
 
         if ($user instanceof Entity) {
@@ -97,7 +97,7 @@ class Message extends Entity
      */
     protected function getEmailAddresses(string $field) : array
     {
-        $user = $this->has($field . 'User') ? $this->get($field . 'User') : $this->get($field . 'user');
+        $user = $this->has($field . 'User') ? $this->get($field . 'User') : $this->get($field . '_user');
         $systemUser = Configure::readOrFail('MessagingCenter.systemUser');
 
         if ($user instanceof Entity) {
