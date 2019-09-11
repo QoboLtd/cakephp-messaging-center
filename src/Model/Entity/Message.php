@@ -110,6 +110,9 @@ class Message extends Entity
 
         if ($this->has('headers')) {
             $headers = $this->get('headers');
+            if (empty($headers[$field][0]['mailbox']) || empty($headers[$field][0]['host'])) {
+                return [];
+            }
             if (!empty($headers[$field . 'address'])) {
                 return (array)Hash::format(
                     $headers[$field],
