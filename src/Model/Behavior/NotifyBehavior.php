@@ -245,8 +245,7 @@ class NotifyBehavior extends Behavior
      */
     protected function _notifyUser(string $field, EntityInterface $entity, Table $table, array $modifiedFields): void
     {
-        $usersTable = TableRegistry::getTableLocator()->get('CakeDC/Users.Users');
-        $user = $usersTable->get($entity->get($field));
+        $user = $this->_usersTable->get($entity->get($field));
 
         $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
         Assert::isInstanceOf($mailboxes, MailboxesTable::class);
