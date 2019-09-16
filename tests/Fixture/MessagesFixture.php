@@ -214,6 +214,39 @@ class MessagesFixture extends TestFixture
                 'folder_id' => '00000000-0000-0000-0000-000000000007',
                 'message_id' => 'message-id-004',
             ],
+            [
+                'id' => '00000000-0000-0000-0000-000000000011',
+                'from_user' => '',
+                'to_user' => '',
+                'subject' => 'Invalid To Email address header',
+                'content' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+                'date_sent' => '2016-03-16 10:46:23',
+                'status' => 'new',
+                'related_model' => '',
+                'related_id' => '',
+                'created' => '2016-03-16 10:46:23',
+                'modified' => '2016-03-16 10:46:23',
+                'folder_id' => '00000000-0000-0000-0000-000000000003',
+                'headers' => json_encode([
+                    'to' => [
+                        0 => [
+                            'mailbox' => 'Undisclosed recipients'
+                        ],
+                    ],
+                    'Date' => 'Thu, 1 Aug 2019 16:08:44 +0300',
+                    'date' => 'Thu, 1 Aug 2019 16:08:44 +0300',
+                    'from' => [
+                        0 => [
+                            'host' => 'ya.ru',
+                            'mailbox' => 'test2019me',
+                            'personal' => 'Test2019',
+                        ],
+                    ],
+                    'toaddress' => 'Undisclosed recipients: ;',
+                    'fromaddress' => 'Test2019'
+                ]),
+                'message_id' => 'message-id-100',
+            ],
         ];
 
         parent::init();

@@ -188,4 +188,11 @@ class MessagesTableTest extends TestCase
         $this->assertEquals('Test2019', $message->get('sender'));
         $this->assertEquals('test2019me@ya.ru', $message->get('sender_address'));
     }
+
+    public function testEmailHeader(): void
+    {
+        $message = $this->Messages->get('00000000-0000-0000-0000-000000000011');
+        $recipientAddresses = $message->get('recipient_addresses');
+        $this->assertEquals([], $recipientAddresses);
+    }
 }
