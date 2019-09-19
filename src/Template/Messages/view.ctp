@@ -112,7 +112,7 @@ $restoreBtn = $this->Form->postLink(
                         </div>
                     </div>
                     <div class="mailbox-read-message">
-                        <?= $message->get('content') ?>
+                        <?= nl2br($message->get('content')) ?>
                     </div>
                 </div>
                 <div class="box-footer">
