@@ -2,10 +2,10 @@
 
 namespace MessagingCenter\Transport;
 
-interface ReceiverInterface
+interface StoreInterface
 {
     /**
      * @return \MessagingCenter\Model\Entity\Message[]
      */
-    public function recieve(): array;
+    public function getMessages(): array;
 }
