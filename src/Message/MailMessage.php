@@ -48,7 +48,6 @@ class MailMessage implements MessageInterface
     {
         if (empty($this->incomingMail)) {
             $this->incomingMail = call_user_func($this->loadCallback);
-
         }
 
         return $this->incomingMail;
