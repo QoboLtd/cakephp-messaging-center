@@ -14,6 +14,7 @@ namespace MessagingCenter\Model\Entity;
 use Cake\Core\Configure;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
+use MessagingCenter\Message\MessageInterface;
 use MessagingCenter\Model\Table\MessagesTable;
 
 /**
@@ -31,7 +32,7 @@ use MessagingCenter\Model\Table\MessagesTable;
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  */
-class Message extends Entity
+class Message extends Entity implements MessageInterface
 {
 
     /**
@@ -168,6 +169,14 @@ class Message extends Entity
         $emailAddressesCc = $this->getEmailAddresses('cc');
 
         return array_merge($emailAddressesTo, $emailAddressesCc);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUniqueId(): string
+    {
+        return $this->get('message_id');
     }
 
     /**

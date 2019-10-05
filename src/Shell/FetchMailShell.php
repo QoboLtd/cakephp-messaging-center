@@ -16,16 +16,14 @@ use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
-use Exception;
 use InvalidArgumentException;
 use MessagingCenter\Enum\MailboxType;
+use MessagingCenter\Message\MailMessage;
 use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\MessageFactory;
 use MessagingCenter\Model\Table\MailboxesTable;
+use MessagingCenter\Store\ImapStore;
 use NinjaMutex\MutexException;
-use PhpImap\Exceptions\ConnectionException;
-use PhpImap\Exceptions\InvalidParameterException;
-use PhpImap\Mailbox as RemoteMailbox;
 use Qobo\Utils\Utility\Lock\FileLock;
 use Webmozart\Assert\Assert;
 
@@ -99,10 +97,7 @@ class FetchMailShell extends Shell
     protected function processMailbox(Mailbox $mailbox, ?int $since, ?int $limit) : void
     {
         // SINCE 01-Jan-2000
-        $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);
-
-        /** @var \MessagingCenter\Model\Table\MailboxesTable $mailboxesTable */
-        $mailboxesTable = TableRegistry::getTableLocator()->get($mailbox->getSource());
+        $searchCriteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);
 
         /**
          * Retrieve mark as seen remote email status from configuration.
@@ -111,85 +106,38 @@ class FetchMailShell extends Shell
          */
         $markAsSeenRemote = (bool)Configure::read('MessagingCenter.remote_mailbox_messages.markAsSeen', true);
 
-        try {
-            $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
+        /** @var \MessagingCenter\Model\Table\MailboxesTable $mailboxesTable */
+        $mailboxesTable = TableRegistry::getTableLocator()->get($mailbox->getSource());
 
-            $incomingSettings = $mailbox->get('incoming_settings');
-            $connectionString = $mailbox->get('imap_connection');
+        $this->out('Fetching mail for [' . $mailbox->get('name') . ']');
 
-            $this->out("Connection: $connectionString; username=" . $incomingSettings['username'] . "; password=" . $incomingSettings['password']);
+        $settings = $mailbox->get('incoming_settings');
+        $settings['markAsSeen'] = $markAsSeenRemote;
+        $imapStore = new ImapStore($settings);
 
-            $tmpDir = ini_get('upload_tmp_dir') ? ini_get('upload_tmp_dir') : sys_get_temp_dir();
-            $remoteMailbox = new RemoteMailbox($connectionString, $incomingSettings['username'], $incomingSettings['password'], (string)$tmpDir);
+        $this->out(sprintf(
+            "Connection: %s; username=%s; password=%s",
+            $imapStore->getConnectionString(),
+            $imapStore->getConfig('username'),
+            $imapStore->getConfig('password')
+        ));
 
-            $messageIds = $this->searchMailbox($remoteMailbox, $search_criteria);
-            if (empty($messageIds)) {
-                $this->out("Mailbox is empty");
-
-                return;
-            }
-        } catch (InvalidArgumentException | InvalidParameterException | ConnectionException $e) {
-            $this->abort($e->getMessage());
-
-            return;
-        }
-
-        $this->out('Fetching headers');
-
-        $messageIds = array_reverse($messageIds);
-        if (!empty($limit)) {
-            $messageIds = array_slice($messageIds, 0, $limit);
-        }
-
-        $allMessageHeaders = $remoteMailbox->getMailsInfo($messageIds);
-        foreach ($allMessageHeaders as $messageHeader) {
-            if (!property_exists($messageHeader, 'message_id') || !property_exists($messageHeader, 'uid')) {
-                $this->err('Message ID / UID is missing');
-
-                continue;
-            }
-
-            $messageId = trim($messageHeader->message_id);
-            if ($mailboxesTable->hasMessage($mailbox, $messageId)) {
-                $this->out(sprintf('Message %s already exists and it was skipped', $messageId));
+        $messages = $imapStore->searchMessages([$searchCriteria], $limit);
+        foreach ($messages as $message) {
+            if ($mailboxesTable->hasMessage($mailbox, $message->getUniqueId())) {
+                $this->out(sprintf('Message %s already exists and it was skipped', $message->getUniqueId()));
 
                 continue;
             }
 
             try {
-                /** @var \PhpImap\IncomingMail $message */
-                $message = $remoteMailbox->getMail($messageHeader->uid, $markAsSeenRemote);
-
-                MessageFactory::fromIncomingMail($message, $mailbox);
-                $this->out(sprintf('Message %s saved', trim($messageHeader->message_id)));
+                // @todo add a method to return the message type so that factory can call the right factory method
+                Assert::isInstanceOf($message, MailMessage::class);
+                MessageFactory::fromIncomingMail($message->getIncomingMail(), $mailbox);
+                $this->out(sprintf('Message %s saved', $message->getUniqueId()));
             } catch (InvalidArgumentException | PersistenceFailedException $e) {
-                $this->err(sprintf('Message %s can not be saved. %s', trim($messageHeader->message_id), $e->getMessage()));
+                $this->err(sprintf('Message %s can not be saved. %s', $message->getUniqueId(), $e->getMessage()));
             }
-        }
-    }
-
-    /**
-     * Search the mailbox provided and returns an array including the message ids.
-     *
-     * It also handles intricacies for Office 365 / Exchange servers
-     *
-     * @link https://github.com/barbushin/php-imap/issues/101#issuecomment-378136507
-     * @param \PhpImap\Mailbox $remoteMailbox Remote mailbox to access and search
-     * @param string $criteria Criteria to be used when searching the mailbox
-     * @return mixed[]
-     * @throws \PhpImap\Exceptions\InvalidParameterException
-     */
-    protected function searchMailbox(RemoteMailbox $remoteMailbox, string $criteria): array
-    {
-        try {
-            return $remoteMailbox->searchMailbox($criteria);
-        } catch (Exception $e) {
-            // Ugly hack to catch only the BADCHASET cases and retry with server encoding disabled
-            if (strpos($e->getMessage(), 'BADCHARSET') !== false) {
-                return $remoteMailbox->searchMailbox($criteria, true);
-            }
-
-            throw $e;
         }
     }
 }
