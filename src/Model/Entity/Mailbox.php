@@ -62,6 +62,7 @@ class Mailbox extends Entity
      */
     protected function _getImapConnection(): string
     {
+        // @todo deprecate the method
         if ($this->get('incoming_transport') !== (string)IncomingTransportType::IMAP4()) {
             return '';
         }
