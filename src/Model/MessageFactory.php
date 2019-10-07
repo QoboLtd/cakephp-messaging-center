@@ -31,7 +31,7 @@ class MessageFactory
         $messages = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($messages, MessagesTable::class);
 
-        $content = $incomingMail->textPlain ?? $incomingMail->textHtml;
+        $content = !empty($incomingMail->textPlain) ? $incomingMail->textPlain : $incomingMail->textHtml;
 
         /**
          * Retrieve initialStatus for local saved email from configuration.
