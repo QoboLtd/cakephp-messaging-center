@@ -101,6 +101,14 @@ class MessagesController extends AppController
     public function compose(string $mailboxId)
     {
         $mailbox = $this->getMailbox($mailboxId);
+        if (MailboxType::SYSTEM !== $mailbox->get('type')) {
+            $this->Flash->error(
+                sprintf((string)__('Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+            );
+
+            return $this->redirect($this->referer());
+        }
+
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
