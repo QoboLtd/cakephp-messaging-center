@@ -164,6 +164,14 @@ class MessagesController extends AppController
             'contain' => ['Folders']
         ]);
 
+        if (MailboxType::SYSTEM !== $mailbox->get('type')) {
+            $this->Flash->error(
+                sprintf((string)__('Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+            );
+
+            return $this->redirect($this->referer());
+        }
+
         // current user's sent message
         if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') === $message->get('from_user')) {
             $this->Flash->error((string)__('You cannot reply to a sent message.'));
