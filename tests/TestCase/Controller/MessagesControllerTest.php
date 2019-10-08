@@ -159,6 +159,24 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($time->i18nFormat(), $entity->date_sent->i18nFormat(), '', 1);
     }
 
+    public function testComposeShouldFailForNonInternalMailboxes(): void
+    {
+        $expected = $this->MessagesTable->find('all')->count();
+
+        $mailboxId = '00000000-0000-0000-0000-000000000002';
+        $this->get('/messaging-center/messages/compose/' . $mailboxId);
+        $this->assertResponseCode(302);
+
+        $this->post('/messaging-center/messages/compose/' . $mailboxId, [
+            'to_user' => '00000000-0000-0000-0000-000000000002',
+            'subject' => 'testComposePost message',
+            'content' => 'Bla bla bla'
+        ]);
+        $this->assertResponseCode(302);
+
+        $this->assertSame($expected, $this->MessagesTable->find('all')->count());
+    }
+
     public function testComposePostNoData(): void
     {
         $expected = $this->MessagesTable->find('all')->count();
@@ -249,6 +267,23 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($time->i18nFormat(), $newEntity->date_sent->i18nFormat());
         // verify existing message was not affected.
         $this->assertEquals($entity->toArray(), $this->MessagesTable->get($id)->toArray());
+    }
+
+    public function testReplyShouldFailForNonInternalMailboxes(): void
+    {
+        $expected = $this->MessagesTable->find('all')->count();
+
+        $messageId = '00000000-0000-0000-0000-000000000007';
+        $this->get('/messaging-center/messages/reply/' . $messageId);
+        $this->assertResponseCode(302);
+
+        $this->put('/messaging-center/messages/reply/' . $messageId, [
+            'subject' => 'testReplyPut message',
+            'content' => 'Bla bla bla'
+        ]);
+        $this->assertResponseCode(302);
+
+        $this->assertSame($expected, $this->MessagesTable->find('all')->count());
     }
 
     public function testReplyPutSameUser(): void
