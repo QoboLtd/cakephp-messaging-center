@@ -111,7 +111,7 @@ class MessagesControllerTest extends IntegrationTestCase
 
     public function testCompose(): void
     {
-        $this->get('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002');
+        $this->get('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
 
@@ -180,7 +180,7 @@ class MessagesControllerTest extends IntegrationTestCase
     public function testComposePostNoData(): void
     {
         $expected = $this->MessagesTable->find('all')->count();
-        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002');
+        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
         $this->assertSession('The message could not be sent. Please, try again.', 'Flash.flash.0.message');
@@ -200,7 +200,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'status' => 'Enforce custom message status',
             'date_sent' => 'Enforce custom date sent',
         ];
-        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002', $data);
+        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000001', $data);
 
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
