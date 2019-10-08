@@ -287,11 +287,11 @@ class MessagesController extends AppController
 
         if ($this->Messages->save($message)) {
             $this->Flash->success((string)__('The message has been moved to {0}.', $folder->get('name')));
+
+            return $this->redirect(['controller' => 'mailboxes', 'action' => 'view', $folder->get('mailbox_id'), $folder->get('id')]);
         } else {
             $this->Flash->error((string)__('The message could not be moved. Please, try again.'));
         }
-
-        return $this->redirect(['controller' => 'mailboxes', 'action' => 'view', $folder->get('mailbox_id'), $folder->get('id')]);
     }
 
     /**
