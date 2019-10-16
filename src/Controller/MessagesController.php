@@ -283,6 +283,15 @@ class MessagesController extends AppController
         $folder = $foldersTable->get($folderId);
         Assert::isInstanceOf($folder, Folder::class);
 
+        $mailbox = $this->loadModel('MessagingCenter.Mailboxes')->get($folder->get('mailbox_id'));
+        if (MailboxType::SYSTEM !== $mailbox->get('type')) {
+            $this->Flash->error(
+                sprintf((string)__('Moving messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+            );
+
+            return $this->redirect($this->referer());
+        }
+
         $message->moveToFolder($folder);
 
         if ($this->Messages->save($message)) {
