@@ -483,7 +483,7 @@ class MessagesControllerTest extends IntegrationTestCase
     }
 
     /**
-     * @return string[]][]
+     * @return string[][]
      */
     public function restoreDataProvider(): array
     {
