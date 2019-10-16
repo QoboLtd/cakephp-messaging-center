@@ -59,7 +59,7 @@ class FoldersController extends AppController
 
                 return $this->redirect(['action' => 'index']);
             }
-            debug($folder);
+
             $this->Flash->error((string)__('The folder could not be saved. Please, try again.'));
         }
         $this->set(compact('folder'));
