@@ -160,7 +160,7 @@ class MailboxesTableTest extends TestCase
     {
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $folders = $this->Mailboxes->getFolders($mailbox);
-        $this->assertEquals(2, count($folders));
+        $this->assertEquals(4, count($folders));
     }
 
     public function testGetAllActiveMailboxes(): void
