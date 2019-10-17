@@ -101,6 +101,14 @@ class MessagesController extends AppController
     public function compose(string $mailboxId)
     {
         $mailbox = $this->getMailbox($mailboxId);
+        if (MailboxType::SYSTEM !== $mailbox->get('type')) {
+            $this->Flash->error(
+                sprintf((string)__('Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+            );
+
+            return $this->redirect($this->referer());
+        }
+
         $message = $this->Messages->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
@@ -155,6 +163,14 @@ class MessagesController extends AppController
         $mailbox = $mailboxes->get($message->get('folder')->get('mailbox_id'), [
             'contain' => ['Folders']
         ]);
+
+        if (MailboxType::SYSTEM !== $mailbox->get('type')) {
+            $this->Flash->error(
+                sprintf((string)__('Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+            );
+
+            return $this->redirect($this->referer());
+        }
 
         // current user's sent message
         if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') === $message->get('from_user')) {
@@ -267,15 +283,24 @@ class MessagesController extends AppController
         $folder = $foldersTable->get($folderId);
         Assert::isInstanceOf($folder, Folder::class);
 
+        $mailbox = $this->loadModel('MessagingCenter.Mailboxes')->get($folder->get('mailbox_id'));
+        if (MailboxType::SYSTEM !== $mailbox->get('type')) {
+            $this->Flash->error(
+                sprintf((string)__('Moving messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+            );
+
+            return $this->redirect($this->referer());
+        }
+
         $message->moveToFolder($folder);
 
         if ($this->Messages->save($message)) {
             $this->Flash->success((string)__('The message has been moved to {0}.', $folder->get('name')));
+
+            return $this->redirect(['controller' => 'mailboxes', 'action' => 'view', $folder->get('mailbox_id'), $folder->get('id')]);
         } else {
             $this->Flash->error((string)__('The message could not be moved. Please, try again.'));
         }
-
-        return $this->redirect(['controller' => 'mailboxes', 'action' => 'view', $folder->get('mailbox_id'), $folder->get('id')]);
     }
 
     /**

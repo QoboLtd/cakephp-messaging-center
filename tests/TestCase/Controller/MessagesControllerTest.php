@@ -111,7 +111,7 @@ class MessagesControllerTest extends IntegrationTestCase
 
     public function testCompose(): void
     {
-        $this->get('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002');
+        $this->get('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
 
@@ -159,10 +159,28 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($time->i18nFormat(), $entity->date_sent->i18nFormat(), '', 1);
     }
 
+    public function testComposeMustFailForNonSystemMailboxes(): void
+    {
+        $expected = $this->MessagesTable->find('all')->count();
+
+        $mailboxId = '00000000-0000-0000-0000-000000000002';
+        $this->get('/messaging-center/messages/compose/' . $mailboxId);
+        $this->assertResponseCode(302);
+
+        $this->post('/messaging-center/messages/compose/' . $mailboxId, [
+            'to_user' => '00000000-0000-0000-0000-000000000002',
+            'subject' => 'testComposePost message',
+            'content' => 'Bla bla bla'
+        ]);
+        $this->assertResponseCode(302);
+
+        $this->assertSame($expected, $this->MessagesTable->find('all')->count());
+    }
+
     public function testComposePostNoData(): void
     {
         $expected = $this->MessagesTable->find('all')->count();
-        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002');
+        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000001');
 
         $this->assertResponseOk();
         $this->assertSession('The message could not be sent. Please, try again.', 'Flash.flash.0.message');
@@ -182,7 +200,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'status' => 'Enforce custom message status',
             'date_sent' => 'Enforce custom date sent',
         ];
-        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000002', $data);
+        $this->post('/messaging-center/messages/compose/00000000-0000-0000-0000-000000000001', $data);
 
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
@@ -249,6 +267,23 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($time->i18nFormat(), $newEntity->date_sent->i18nFormat());
         // verify existing message was not affected.
         $this->assertEquals($entity->toArray(), $this->MessagesTable->get($id)->toArray());
+    }
+
+    public function testReplyMustFailForNonSystemMailboxes(): void
+    {
+        $expected = $this->MessagesTable->find('all')->count();
+
+        $messageId = '00000000-0000-0000-0000-000000000007';
+        $this->get('/messaging-center/messages/reply/' . $messageId);
+        $this->assertResponseCode(302);
+
+        $this->put('/messaging-center/messages/reply/' . $messageId, [
+            'subject' => 'testReplyPut message',
+            'content' => 'Bla bla bla'
+        ]);
+        $this->assertResponseCode(302);
+
+        $this->assertSame($expected, $this->MessagesTable->find('all')->count());
     }
 
     public function testReplyPutSameUser(): void
@@ -333,24 +368,20 @@ class MessagesControllerTest extends IntegrationTestCase
      */
     public function testDelete(string $id): void
     {
-        $mailboxId = '00000000-0000-0000-0000-000000000002';
-        $folderId = '00000000-0000-0000-0000-000000000006';
+        $trashFolderId = '00000000-0000-0000-0000-000000000008';
 
         $this->delete('/messaging-center/messages/delete/' . $id);
 
         $this->assertResponseCode(302);
-
-        $url = [
+        $this->assertRedirect([
             'plugin' => 'MessagingCenter',
             'controller' => 'Mailboxes',
             'action' => 'view',
-            $mailboxId,
-            $folderId,
-        ];
-        $this->assertRedirect($url);
+            '00000000-0000-0000-0000-000000000001',
+            $trashFolderId,
+        ]);
 
-        $entity = $this->MessagesTable->get($id);
-        $this->assertEquals($folderId, $entity->get('folder_id'));
+        $this->assertSame($trashFolderId, $this->MessagesTable->get($id)->get('folder_id'));
     }
 
     /**
@@ -360,12 +391,25 @@ class MessagesControllerTest extends IntegrationTestCase
     {
         return [
             // Delete from Inbox
-            ['00000000-0000-0000-0000-000000000007'],
+            ['00000000-0000-0000-0000-000000000001'],
             // Delete already Deleted
-            ['00000000-0000-0000-0000-000000000008'],
+            ['00000000-0000-0000-0000-000000000012'],
+            // Delete from Archive
+            ['00000000-0000-0000-0000-000000000013'],
             // Delete from Sent
-            ['00000000-0000-0000-0000-000000000009'],
+            ['00000000-0000-0000-0000-000000000006'],
         ];
+    }
+
+    public function testDeleteMustFailForNonSystemMailboxes() : void
+    {
+        $id = '00000000-0000-0000-0000-000000000007';
+        $expected = $this->MessagesTable->get($id)->toArray();
+
+        $this->delete('/messaging-center/messages/delete/' . $id);
+
+        $this->assertResponseCode(302);
+        $this->assertEquals($expected, $this->MessagesTable->get($id)->toArray());
     }
 
     /**
@@ -373,24 +417,20 @@ class MessagesControllerTest extends IntegrationTestCase
      */
     public function testArchive(string $id): void
     {
-        $mailboxId = '00000000-0000-0000-0000-000000000002';
-        $folderId = '00000000-0000-0000-0000-000000000007';
+        $archiveFolderId = '00000000-0000-0000-0000-000000000009';
 
         $this->post('/messaging-center/messages/archive/' . $id);
 
         $this->assertResponseCode(302);
-
-        $url = [
+        $this->assertRedirect([
             'plugin' => 'MessagingCenter',
             'controller' => 'Mailboxes',
             'action' => 'view',
-            $mailboxId,
-            $folderId,
-        ];
-        $this->assertRedirect($url);
+            '00000000-0000-0000-0000-000000000001',
+            $archiveFolderId,
+        ]);
 
-        $entity = $this->MessagesTable->get($id);
-        $this->assertEquals($folderId, $entity->get('folder_id'));
+        $this->assertSame($archiveFolderId, $this->MessagesTable->get($id)->get('folder_id'));
     }
 
     /**
@@ -400,11 +440,73 @@ class MessagesControllerTest extends IntegrationTestCase
     {
         return [
             // Archive from Inbox
-            ['00000000-0000-0000-0000-000000000007'],
-            // Delete already Archived
-            ['00000000-0000-0000-0000-000000000010'],
+            ['00000000-0000-0000-0000-000000000001'],
+            // Archive from Delete
+            ['00000000-0000-0000-0000-000000000012'],
+            // Archive already Archived
+            ['00000000-0000-0000-0000-000000000013'],
             // Archive from Sent
-            ['00000000-0000-0000-0000-000000000009'],
+            ['00000000-0000-0000-0000-000000000006'],
         ];
+    }
+
+    public function testArchiveMustFailForNonSystemMailboxes() : void
+    {
+        $id = '00000000-0000-0000-0000-000000000007';
+        $expected = $this->MessagesTable->get($id)->toArray();
+
+        $this->delete('/messaging-center/messages/archive/' . $id);
+
+        $this->assertResponseCode(302);
+        $this->assertEquals($expected, $this->MessagesTable->get($id)->toArray());
+    }
+
+    /**
+     * @dataProvider restoreDataProvider
+     */
+    public function testRestore(string $id): void
+    {
+        $inboxFolderId = '00000000-0000-0000-0000-000000000002';
+
+        $this->post('/messaging-center/messages/restore/' . $id);
+
+        $this->assertResponseCode(302);
+        $this->assertRedirect([
+            'plugin' => 'MessagingCenter',
+            'controller' => 'Mailboxes',
+            'action' => 'view',
+            '00000000-0000-0000-0000-000000000001',
+            $inboxFolderId,
+        ]);
+
+        $this->assertSame($inboxFolderId, $this->MessagesTable->get($id)->get('folder_id'));
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function restoreDataProvider(): array
+    {
+        return [
+            // Restore already on Inbox
+            ['00000000-0000-0000-0000-000000000001'],
+            // Restore from Delete
+            ['00000000-0000-0000-0000-000000000012'],
+            // Restore from Archive
+            ['00000000-0000-0000-0000-000000000013'],
+            // Restore from Sent
+            ['00000000-0000-0000-0000-000000000006'],
+        ];
+    }
+
+    public function testRestoreMustFailForNonSystemMailboxes() : void
+    {
+        $id = '00000000-0000-0000-0000-000000000007';
+        $expected = $this->MessagesTable->get($id)->toArray();
+
+        $this->delete('/messaging-center/messages/restore/' . $id);
+
+        $this->assertResponseCode(302);
+        $this->assertEquals($expected, $this->MessagesTable->get($id)->toArray());
     }
 }
