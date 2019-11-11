@@ -91,7 +91,7 @@ class NotifyBehaviorTest extends TestCase
 
         $expected = [
             'subject' => 'Article: New Article',
-            'content' => 'Article record <a href="/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n",
+            'content' => htmlspecialchars('Article record <a href="/articles/view/' . $result->id . '">New Article</a> has been assinged to you via \'Author\' field.' . "\n"),
             'from_user' => Configure::readOrFail('MessagingCenter.systemUser.id'),
             'sender' => Configure::readOrFail('MessagingCenter.systemUser.name'),
         ];
@@ -126,7 +126,7 @@ class NotifyBehaviorTest extends TestCase
 
         $expected = [
             'subject' => 'Article: Modified Article',
-            'content' => 'Article <a href="/articles/view/' . $result->id . '">Modified Article</a> has been modified.' . "\n\n" . '* <strong>Title</strong>: changed from \'First Article\' to \'Modified Article\'.' . "\n" . '* <strong>Body</strong>: changed from \'First Article Body\' to \'Modified Article Body\'.' . "\n"
+            'content' => htmlspecialchars('Article <a href="/articles/view/' . $result->id . '">Modified Article</a> has been modified.' . "\n\n" . '* <strong>Title</strong>: changed from \'First Article\' to \'Modified Article\'.' . "\n" . '* <strong>Body</strong>: changed from \'First Article Body\' to \'Modified Article Body\'.' . "\n")
         ];
 
         $table = TableRegistry::get('MessagingCenter.Messages');

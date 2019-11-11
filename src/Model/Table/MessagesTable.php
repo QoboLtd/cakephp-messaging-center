@@ -488,9 +488,10 @@ class MessagesTable extends Table
     public function beforeSave(Event $event, EntityInterface $entity, ArrayObject $options)
     {
         $content = (string)$entity->get('content');
-        /** @see https://codex.wordpress.org/Function_Reference/wp_strip_all_tags */
-        $content = (string)preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $content);
-
-        $entity->set('content', $content);
+        if ($entity->isDirty('content')) {
+            /** @see https://codex.wordpress.org/Function_Reference/wp_strip_all_tags */
+            $content = (string)preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', htmlspecialchars($content));
+            $entity->set('content', $content);
+        }
     }
 }
