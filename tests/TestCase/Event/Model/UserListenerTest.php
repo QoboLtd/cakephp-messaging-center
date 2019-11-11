@@ -75,7 +75,7 @@ class UserListenerTest extends TestCase
          * @var \MessagingCenter\Model\Entity\Message $entity
          */
         $entity = $table->find()->limit(1)->where(['subject' => $subject])->first();
-        $this->assertEquals(htmlspecialchars($content), $entity->get('content'));
+        $this->assertEquals($content, $entity->get('content'));
 
         $this->assertEquals($expected, $table->find()->count());
     }
