@@ -31,8 +31,6 @@ class MessageFactory
         $messages = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         Assert::isInstanceOf($messages, MessagesTable::class);
 
-        $content = !empty($incomingMail->textPlain) ? $incomingMail->textPlain : $incomingMail->textHtml;
-
         /**
          * Retrieve initialStatus for local saved email from configuration.
          * @TODO Put this into database while setting up mailbox
@@ -41,10 +39,10 @@ class MessageFactory
         $initialStatus = (string)Configure::read('MessagingCenter.local_mailbox_messages.initialStatus', 'new');
 
         $headers = Convert::objectToArray($incomingMail->headers);
-
         $entity = $messages->newEntity([
             'subject' => $incomingMail->subject,
-            'content' => $content,
+            'content' => !empty($incomingMail->textHtml) ? $incomingMail->textHtml : $incomingMail->textPlain,
+            'content_text' => $incomingMail->textPlain,
             'status' => $initialStatus,
             'date_sent' => self::extractDateTime($incomingMail),
             'from_user' => '',
