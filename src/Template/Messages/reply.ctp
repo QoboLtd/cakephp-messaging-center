@@ -38,11 +38,17 @@ $username = $this->element('MessagingCenter.user', [
         <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><?= __('Reply to: {0}', [$message->subject]) ?></h3>
+                    <h3 class="box-title"><?= __('Reply to: {0}', $username) ?></h3>
                 </div>
                 <?= $this->Form->create($message); ?>
                 <div class="box-body">
                 <?php
+                echo $this->Form->control('to_user', [
+                    'value' => $message->get('fromUser')->get('id'),
+                    'label' => false,
+                    'readonly' => true,
+                    'type' => 'hidden'
+                ]);
                 echo $this->Form->control('to_user_label', [
                     'value' => $username,
                     'label' => false,

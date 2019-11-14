@@ -156,7 +156,7 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => ['Folders']
+            'contain' => ['Folders', 'ToUser', 'FromUser']
         ]);
 
         $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
@@ -184,14 +184,29 @@ class MessagesController extends AppController
             $data = $this->request->getData();
             Assert::isArray($data);
 
-            $data['to_user'] = $message->get('from_user');
             $data['from_user'] = $this->Auth->user('id');
+            $data['to_user'] = $message->get('from_user');
             $data['status'] = $this->Messages->getNewStatus();
             $data['date_sent'] = $this->Messages->getDateSent();
             $data['related_id'] = $id;
-            $newMessage = $this->Messages->patchEntity($newMessage, $data);
-            if ($this->Messages->save($newMessage)) {
+
+            $message = $this->Messages->patchEntity($newMessage, $data);
+            $saveMessage = $this->Messages->save($message);
+
+            if ($saveMessage) {
                 $this->Flash->success((string)__('The message has been sent.'));
+
+                $this->Messages->processMessages(
+                    $this->Auth->user('id'),
+                    $mailbox->get('folders')
+                );
+
+                $event = new Event((string)EventName::SEND_EMAIL(), $this, [
+                    'mailbox' => $mailbox,
+                    'data' => $data
+                ]);
+                EventManager::instance()->dispatch($event);
+                $result = $event->result;
 
                 return $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')]);
             } else {
