@@ -328,7 +328,7 @@ class MessagesControllerTest extends IntegrationTestCase
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $expected = $this->MessagesTable->find('all')->count();
-        $response = $this->put('/messaging-center/messages/reply/' . $id, []);
+        $this->put('/messaging-center/messages/reply/' . $id, []);
 
         $this->assertResponseCode(500);
         $this->assertSession('The message could not be sent. Please, try again.', 'Flash.flash.0.message');
@@ -350,7 +350,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'status' => 'Enforce custom message status',
             'date_sent' => 'Enforce custom date sent',
         ];
-        $response = $this->put('/messaging-center/messages/reply/' . $id, $data);
+        $this->put('/messaging-center/messages/reply/' . $id, $data);
 
         $this->assertResponseCode(302);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
