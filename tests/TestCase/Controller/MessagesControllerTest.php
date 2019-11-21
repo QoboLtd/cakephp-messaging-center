@@ -225,7 +225,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertFalse($this->viewVariable('message')->isNew());
     }
 
-    public function testReplyPut(): void
+    public function testReplyPost(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $mailboxId = '00000000-0000-0000-0000-000000000001';
@@ -242,7 +242,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'to_user' => $entity->get('from_user')
         ];
 
-        $this->put('/messaging-center/messages/reply/' . $id, $data);
+        $this->post('/messaging-center/messages/reply/' . $id, $data);
 
         $this->assertResponseCode(302);
 
@@ -297,7 +297,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertSame($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutSameUser(): void
+    public function testReplyPostSameUser(): void
     {
         $this->markTestSkipped('Skip this test till refactoring will be completed');
 
@@ -310,7 +310,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'subject' => 'testReplyPut message',
             'content' => 'Bla bla bla'
         ];
-        $this->put('/messaging-center/messages/reply/' . $id, $data);
+        $this->post('/messaging-center/messages/reply/' . $id, $data);
 
         $this->assertResponseCode(302);
 
@@ -324,18 +324,18 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutNoData(): void
+    public function testReplyPostNoData(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $expected = $this->MessagesTable->find('all')->count();
-        $this->put('/messaging-center/messages/reply/' . $id, []);
+        $this->post('/messaging-center/messages/reply/' . $id, []);
 
-        $this->assertResponseCode(500);
+        $this->assertResponseCode(200);
         $this->assertSession('The message could not be sent. Please, try again.', 'Flash.flash.0.message');
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutEnforceData(): void
+    public function testReplyPostEnforceData(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $mailboxId = '00000000-0000-0000-0000-000000000001';
@@ -350,7 +350,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'status' => 'Enforce custom message status',
             'date_sent' => 'Enforce custom date sent',
         ];
-        $this->put('/messaging-center/messages/reply/' . $id, $data);
+        $this->post('/messaging-center/messages/reply/' . $id, $data);
 
         $this->assertResponseCode(302);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());

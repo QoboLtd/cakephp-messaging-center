@@ -40,7 +40,7 @@ $username = $this->element('MessagingCenter.user', [
                 <div class="box-header with-border">
                     <h3 class="box-title"><?= __('Reply to: {0}', $username) ?></h3>
                 </div>
-                <?= $this->Form->create($message); ?>
+                <?= $this->Form->create($message, ['type' => 'post']); ?>
                 <div class="box-body">
                 <?php
                 echo $this->Form->control('to_user', [

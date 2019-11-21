@@ -24,6 +24,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
 use MessagingCenter\Model\Entity\Folder;
+use MessagingCenter\Model\Entity\Mailbox;
+use MessagingCenter\Model\Entity\Message;
 use Webmozart\Assert\Assert;
 
 /**
@@ -436,6 +438,38 @@ class MessagesTable extends Table
         }
 
         return true;
+    }
+
+    /**
+     * createMessage description
+     * @param  Mailbox $mailbox         Current Mailbox
+     * @param  Message|null $originalMessage Original Message for reply
+     * @param  mixed[]|null $data Original Message for reply
+     * @return \Cake\Http\Response|void|null Redirects on successful reply, renders view otherwise.
+     */
+    public function createMessage(Mailbox $mailbox, ?Message $originalMessage = null, array $data)
+    {
+        Assert::isArray($data);
+
+        $entity = $this->newEntity();
+        $this->patchEntity($entity, $data);
+
+        if (!empty($originalMessage)) {
+            $data['to_user'] = $originalMessage->get('from_user');
+            $data['related_id'] = $originalMessage->get('id');
+        }
+        $message = $this->save($entity);
+
+        if ($message) {
+            $this->processMessages(
+                $userId,
+                $mailbox->get('folders')
+            );
+        } else {
+            return false;
+        }
+
+        return $message;
     }
 
     /**
