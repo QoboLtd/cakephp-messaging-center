@@ -172,28 +172,15 @@ class MessagesController extends AppController
         }
 
         if ($this->request->is('post')) {
-            $newMessage = $this->Messages->newEntity();
             $data = $this->request->getData();
             Assert::isArray($data);
 
-            $data['from_user'] = $this->Auth->user('id');
-            $data['status'] = $this->Messages->getNewStatus();
-            $data['date_sent'] = $this->Messages->getDateSent();
+            $userId = $this->Auth->user('id');
 
-            if (!empty($originalMessage)) {
-                $data['to_user'] = $originalMessage->get('from_user');
-                $data['related_id'] = $originalMessage->get('id');
-            }
-            $message = $this->Messages->patchEntity($newMessage, $data);
-            $message = $this->Messages->save($message);
+            $result = $this->Messages->createMessage($mailbox, $originalMessage, $data, $userId);
 
-            if ($message) {
+            if ($result) {
                 $this->Flash->success((string)__('The message has been sent.'));
-
-                $this->Messages->processMessages(
-                    $this->Auth->user('id'),
-                    $mailbox->get('folders')
-                );
 
                 $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')]);
             } else {

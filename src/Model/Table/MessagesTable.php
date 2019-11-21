@@ -444,32 +444,38 @@ class MessagesTable extends Table
      * createMessage description
      * @param  Mailbox $mailbox         Current Mailbox
      * @param  Message|null $originalMessage Original Message for reply
-     * @param  mixed[]|null $data Original Message for reply
-     * @return \Cake\Http\Response|void|null Redirects on successful reply, renders view otherwise.
+     * @param  mixed[] $data Original Message for reply
+     * @param  string $userId Current Auth User Id
+     * @return bool Redirects on successful reply, renders view otherwise.
      */
-    public function createMessage(Mailbox $mailbox, ?Message $originalMessage = null, array $data)
+    public function createMessage(Mailbox $mailbox, ?Message $originalMessage = null, array $data, string $userId): bool
     {
         Assert::isArray($data);
 
-        $entity = $this->newEntity();
-        $this->patchEntity($entity, $data);
+        $newMessage = $this->newEntity();
+
+        $data['from_user'] = $userId;
+        $data['status'] = $this->getNewStatus();
+        $data['date_sent'] = $this->getDateSent();
 
         if (!empty($originalMessage)) {
             $data['to_user'] = $originalMessage->get('from_user');
             $data['related_id'] = $originalMessage->get('id');
         }
-        $message = $this->save($entity);
+
+        $message = $this->patchEntity($newMessage, $data);
+        $message = $this->save($message);
 
         if ($message) {
             $this->processMessages(
                 $userId,
                 $mailbox->get('folders')
             );
+
+            return true;
         } else {
             return false;
         }
-
-        return $message;
     }
 
     /**
