@@ -113,5 +113,6 @@ class FoldersTableTest extends TestCase
 
         $this->assertNotEmpty($result, 'Cannot create default folders!');
         $this->assertTrue(is_array($result), 'Created folders are not in array!');
+        $this->assertCount(4, $result);
     }
 }

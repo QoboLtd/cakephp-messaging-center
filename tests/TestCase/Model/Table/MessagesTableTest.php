@@ -195,4 +195,116 @@ class MessagesTableTest extends TestCase
         $recipientAddresses = $message->get('recipient_addresses');
         $this->assertEquals([], $recipientAddresses);
     }
+
+    public function testGetNewStatus() : void
+    {
+        $this->assertSame('new', $this->Messages->getNewStatus());
+    }
+
+    public function testGetReadStatus() : void
+    {
+        $this->assertSame('read', $this->Messages->getReadStatus());
+    }
+
+    public function testGetDeletedStatus() : void
+    {
+        $this->assertSame('deleted', $this->Messages->getDeletedStatus());
+    }
+
+    public function testGetArchivedStatus() : void
+    {
+        $this->assertSame('archived', $this->Messages->getArchivedStatus());
+    }
+
+    public function testGetSentFolder() : void
+    {
+        $this->assertSame('Sent', $this->Messages->getSentFolder());
+    }
+
+    public function testGetDefaultFolder() : void
+    {
+        $this->assertSame('Inbox', $this->Messages->getDefaultFolder());
+    }
+
+    public function testGetDefaultFolders() : void
+    {
+        $this->assertSame(['Inbox', 'Archived', 'Sent', 'Trash'], $this->Messages->getDefaultFolders());
+    }
+
+    public function testFolderExists() : void
+    {
+        $this->assertTrue($this->Messages->folderExists('Inbox'));
+
+        $this->assertFalse($this->Messages->folderExists('non-existing-folder'));
+        $this->assertFalse($this->Messages->folderExists(''));
+        $this->assertFalse($this->Messages->folderExists());
+    }
+
+    public function testGetFoldersWithMessage() : void
+    {
+        $message = $this->Messages->get('00000000-0000-0000-0000-000000000001');
+
+        $resultSet = $this->Messages->getFolders($message);
+        $this->assertCount(4, $resultSet);
+
+        foreach ($resultSet as $folder) {
+            $this->assertSame('00000000-0000-0000-0000-000000000001', $folder->get('mailbox_id'));
+        }
+    }
+
+    public function testGetFoldersWithoutMessage() : void
+    {
+        $this->assertSame(['Inbox', 'Archived', 'Sent', 'Trash'], $this->Messages->getFolders(null));
+    }
+
+    public function testGetFolderByName() : void
+    {
+        $message = $this->Messages->get('00000000-0000-0000-0000-000000000001');
+        $folder = $this->Messages->getFolderByName($message, 'Inbox');
+
+        $this->assertSame('00000000-0000-0000-0000-000000000002', $folder->get('id'));
+    }
+
+    public function testGetFolderByNameWithInvalidName() : void
+    {
+        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+
+        $message = $this->Messages->get('00000000-0000-0000-0000-000000000001');
+        $this->Messages->getFolderByName($message, 'non-existing-folder');
+    }
+
+    public function testGetConditionsByFolder() : void
+    {
+        $userId = '00000000-0000-0000-0000-000000000001';
+
+        $this->assertSame(
+            ['to_user' => $userId, 'status' => 'archived'],
+            $this->Messages->getConditionsByFolder($userId, 'archived')
+        );
+
+        $this->assertSame(
+            ['from_user' => $userId],
+            $this->Messages->getConditionsByFolder($userId, 'sent')
+        );
+
+        $this->assertSame(
+            ['to_user' => $userId, 'status' => 'deleted'],
+            $this->Messages->getConditionsByFolder($userId, 'trash')
+        );
+
+        $this->assertSame(
+            ['to_user' => $userId, 'status IN' => ['read', 'new']],
+            $this->Messages->getConditionsByFolder($userId, 'inbox')
+        );
+
+        $this->assertSame(
+            ['to_user' => $userId, 'status IN' => ['read', 'new']],
+            $this->Messages->getConditionsByFolder($userId)
+        );
+
+        $this->assertSame(
+            ['to_user' => $userId, 'status IN' => ['read', 'new']],
+            $this->Messages->getConditionsByFolder($userId, 'non-existing-folder')
+        );
+    }
 }
