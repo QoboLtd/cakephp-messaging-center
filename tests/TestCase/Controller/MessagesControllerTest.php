@@ -407,7 +407,7 @@ class MessagesControllerTest extends IntegrationTestCase
         ];
     }
 
-    public function testDeleteMustFailForNonSystemMailboxes() : void
+    public function testDeleteMustFailForNonSystemMailboxes(): void
     {
         $id = '00000000-0000-0000-0000-000000000007';
         $expected = $this->MessagesTable->get($id)->toArray();
@@ -456,7 +456,7 @@ class MessagesControllerTest extends IntegrationTestCase
         ];
     }
 
-    public function testArchiveMustFailForNonSystemMailboxes() : void
+    public function testArchiveMustFailForNonSystemMailboxes(): void
     {
         $id = '00000000-0000-0000-0000-000000000007';
         $expected = $this->MessagesTable->get($id)->toArray();
@@ -505,7 +505,7 @@ class MessagesControllerTest extends IntegrationTestCase
         ];
     }
 
-    public function testRestoreMustFailForNonSystemMailboxes() : void
+    public function testRestoreMustFailForNonSystemMailboxes(): void
     {
         $id = '00000000-0000-0000-0000-000000000007';
         $expected = $this->MessagesTable->get($id)->toArray();

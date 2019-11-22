@@ -19,7 +19,7 @@ class FoldersControllerTest extends IntegrationTestCase
         'plugin.messaging_center.mailboxes',
     ];
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -34,7 +34,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testAdd() : void
+    public function testAdd(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
@@ -54,7 +54,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testEdit() : void
+    public function testEdit(): void
     {
         $folderId = '00000000-0000-0000-0000-000000000001';
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
@@ -73,7 +73,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testDelete() : void
+    public function testDelete(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
@@ -86,7 +86,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testView() : void
+    public function testView(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 
@@ -99,7 +99,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testIndex() : void
+    public function testIndex(): void
     {
         $this->session(['Auth.User.id' => '00000000-0000-0000-0000-000000000002']);
 

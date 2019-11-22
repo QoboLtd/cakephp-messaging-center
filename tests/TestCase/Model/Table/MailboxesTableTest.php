@@ -106,7 +106,7 @@ class MailboxesTableTest extends TestCase
      *
      * @return void
      */
-    public function testCreateDefaultMailbox() : void
+    public function testCreateDefaultMailbox(): void
     {
         $userTable = TableRegistry::getTableLocator()->get('Users');
         $user = $userTable->get('00000000-0000-0000-0000-000000000001');
@@ -122,7 +122,7 @@ class MailboxesTableTest extends TestCase
      *
      * @return void
      */
-    public function testGetSystemMailbox() : void
+    public function testGetSystemMailbox(): void
     {
         $userTable = TableRegistry::getTableLocator()->get('Users');
         $user = $userTable->get('00000000-0000-0000-0000-000000000002');
@@ -134,21 +134,21 @@ class MailboxesTableTest extends TestCase
         $this->assertEquals($result->get('type'), 'system', 'Fetched mailbox is not system');
     }
 
-    public function testCountUnreadMessages() : void
+    public function testCountUnreadMessages(): void
     {
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $unreadCount = $this->Mailboxes->countUnreadMessages($mailbox);
         $this->assertEquals(4, $unreadCount);
     }
 
-    public function testGetUnreadMessages() : void
+    public function testGetUnreadMessages(): void
     {
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $unread = $this->Mailboxes->getUnreadMessages($mailbox);
         $this->assertEquals(4, count($unread));
     }
 
-    public function testGetUnreadMessagesWithLimit() : void
+    public function testGetUnreadMessagesWithLimit(): void
     {
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $limit = 1;
@@ -156,7 +156,7 @@ class MailboxesTableTest extends TestCase
         $this->assertEquals($limit, count($unread));
     }
 
-    public function testGetFolders() : void
+    public function testGetFolders(): void
     {
         $mailbox = $this->Mailboxes->get('00000000-0000-0000-0000-000000000001');
         $folders = $this->Mailboxes->getFolders($mailbox);

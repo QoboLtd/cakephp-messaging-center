@@ -110,7 +110,7 @@ class MessagesTableTest extends TestCase
      *
      * @return void
      */
-    public function testProcessMessages() : void
+    public function testProcessMessages(): void
     {
         $userId = '00000000-0000-0000-0000-000000000001';
 
@@ -126,7 +126,7 @@ class MessagesTableTest extends TestCase
      *
      * @return mixed[]
      */
-    protected function getDefaultFolders() : array
+    protected function getDefaultFolders(): array
     {
         $mailboxId = '00000000-0000-0000-0000-000000000001';
 
@@ -145,7 +145,7 @@ class MessagesTableTest extends TestCase
         return $folders;
     }
 
-    public function testSystemValidations() : void
+    public function testSystemValidations(): void
     {
         $entity = $this->Messages->newEntity([
             'type' => 'system',
@@ -157,7 +157,7 @@ class MessagesTableTest extends TestCase
         $this->assertTrue(array_key_exists('to_user', $entity->getErrors()));
     }
 
-    public function testEmailValidations() : void
+    public function testEmailValidations(): void
     {
         $entity = $this->Messages->newEntity([
             'type' => 'email',
@@ -196,42 +196,42 @@ class MessagesTableTest extends TestCase
         $this->assertEquals([], $recipientAddresses);
     }
 
-    public function testGetNewStatus() : void
+    public function testGetNewStatus(): void
     {
         $this->assertSame('new', $this->Messages->getNewStatus());
     }
 
-    public function testGetReadStatus() : void
+    public function testGetReadStatus(): void
     {
         $this->assertSame('read', $this->Messages->getReadStatus());
     }
 
-    public function testGetDeletedStatus() : void
+    public function testGetDeletedStatus(): void
     {
         $this->assertSame('deleted', $this->Messages->getDeletedStatus());
     }
 
-    public function testGetArchivedStatus() : void
+    public function testGetArchivedStatus(): void
     {
         $this->assertSame('archived', $this->Messages->getArchivedStatus());
     }
 
-    public function testGetSentFolder() : void
+    public function testGetSentFolder(): void
     {
         $this->assertSame('Sent', $this->Messages->getSentFolder());
     }
 
-    public function testGetDefaultFolder() : void
+    public function testGetDefaultFolder(): void
     {
         $this->assertSame('Inbox', $this->Messages->getDefaultFolder());
     }
 
-    public function testGetDefaultFolders() : void
+    public function testGetDefaultFolders(): void
     {
         $this->assertSame(['Inbox', 'Archived', 'Sent', 'Trash'], $this->Messages->getDefaultFolders());
     }
 
-    public function testFolderExists() : void
+    public function testFolderExists(): void
     {
         $this->assertTrue($this->Messages->folderExists('Inbox'));
 
@@ -240,7 +240,7 @@ class MessagesTableTest extends TestCase
         $this->assertFalse($this->Messages->folderExists());
     }
 
-    public function testGetFoldersWithMessage() : void
+    public function testGetFoldersWithMessage(): void
     {
         $message = $this->Messages->get('00000000-0000-0000-0000-000000000001');
 
@@ -252,12 +252,12 @@ class MessagesTableTest extends TestCase
         }
     }
 
-    public function testGetFoldersWithoutMessage() : void
+    public function testGetFoldersWithoutMessage(): void
     {
         $this->assertSame(['Inbox', 'Archived', 'Sent', 'Trash'], $this->Messages->getFolders(null));
     }
 
-    public function testGetFolderByName() : void
+    public function testGetFolderByName(): void
     {
         $message = $this->Messages->get('00000000-0000-0000-0000-000000000001');
         $folder = $this->Messages->getFolderByName($message, 'Inbox');
@@ -265,7 +265,7 @@ class MessagesTableTest extends TestCase
         $this->assertSame('00000000-0000-0000-0000-000000000002', $folder->get('id'));
     }
 
-    public function testGetFolderByNameWithInvalidName() : void
+    public function testGetFolderByNameWithInvalidName(): void
     {
         $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
 
@@ -273,7 +273,7 @@ class MessagesTableTest extends TestCase
         $this->Messages->getFolderByName($message, 'non-existing-folder');
     }
 
-    public function testGetConditionsByFolder() : void
+    public function testGetConditionsByFolder(): void
     {
         $userId = '00000000-0000-0000-0000-000000000001';
 
