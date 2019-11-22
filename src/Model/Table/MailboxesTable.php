@@ -157,7 +157,7 @@ class MailboxesTable extends Table
      *
      * @return mixed[]
      */
-    public static function getDefaultFolders() : array
+    public static function getDefaultFolders(): array
     {
         return [
             self::FOLDER_INBOX,
@@ -174,7 +174,7 @@ class MailboxesTable extends Table
      * @return \Cake\Datasource\EntityInterface
      * @throws \InvalidArgumentException in case of no mailbox is created
      */
-    public function createDefaultMailbox(array $user) : EntityInterface
+    public function createDefaultMailbox(array $user): EntityInterface
     {
         $options = (array)Configure::read('MessagingCenter.Mailbox.default');
 
@@ -222,7 +222,7 @@ class MailboxesTable extends Table
      * @return string
      * @throws InvalidArgumentException in case of no Inbox folder found in the mailbox
      */
-    public function getInboxFolder(EntityInterface $mailbox) : string
+    public function getInboxFolder(EntityInterface $mailbox): string
     {
         deprecationWarning('MailboxesTable::getInboxFolder is deprecated. Use getFolderByName instead.');
 
@@ -260,7 +260,7 @@ class MailboxesTable extends Table
      * @return \Cake\Datasource\EntityInterface[]
      * @throws InvalidArgumentException in case of no Inbox folder found in the mailbox
      */
-    public function getFolders(EntityInterface $mailbox) : array
+    public function getFolders(EntityInterface $mailbox): array
     {
         $query = $this->find()
             ->where([
@@ -285,7 +285,7 @@ class MailboxesTable extends Table
      * @param mixed[] $user to find system mailbox
      * @return \Cake\Datasource\EntityInterface
      */
-    public function getSystemMailbox(array $user) : EntityInterface
+    public function getSystemMailbox(array $user): EntityInterface
     {
         $query = $this->find()
             ->enableHydration(true)

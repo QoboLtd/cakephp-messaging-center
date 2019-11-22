@@ -96,7 +96,7 @@ class FetchMailShell extends Shell
      * @param int|null $limit How many emails to fetch
      * @return void
      */
-    protected function processMailbox(Mailbox $mailbox, ?int $since, ?int $limit) : void
+    protected function processMailbox(Mailbox $mailbox, ?int $since, ?int $limit): void
     {
         // SINCE 01-Jan-2000
         $search_criteria = empty($since) ? 'ALL' : 'SINCE ' . date('d-M-Y', $since);

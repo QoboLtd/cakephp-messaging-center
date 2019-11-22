@@ -27,7 +27,7 @@ class SendEmailListener implements EventListenerInterface
      *
      * @return mixed[]
      */
-    public function implementedEvents() : array
+    public function implementedEvents(): array
     {
         return [
             (string)EventName::SEND_EMAIL() => 'sendEmail',
@@ -42,7 +42,7 @@ class SendEmailListener implements EventListenerInterface
      * @param mixed[] $data to build email
      * @return void
      */
-    public function sendEmail(Event $event, EntityInterface $mailbox, array $data) : void
+    public function sendEmail(Event $event, EntityInterface $mailbox, array $data): void
     {
         if ($mailbox->get('type') !== 'email') {
             return;
