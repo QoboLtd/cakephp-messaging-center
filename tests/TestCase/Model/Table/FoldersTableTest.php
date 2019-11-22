@@ -103,7 +103,7 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    public function testCreateDefaultFolders() : void
+    public function testCreateDefaultFolders(): void
     {
         $config = TableRegistry::getTableLocator()->exists('Mailboxes') ? [] : ['className' => MailboxesTable::class];
         $mailboxTable = TableRegistry::getTableLocator()->get('Mailboxes', $config);

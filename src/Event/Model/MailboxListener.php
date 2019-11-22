@@ -33,7 +33,7 @@ class MailboxListener implements EventListenerInterface
      *
      * @return mixed[]
      */
-    public function implementedEvents() : array
+    public function implementedEvents(): array
     {
         return [
             (string)EventName::CAKE_ORM_MODEL_AFTER_SAFE() => [
@@ -51,7 +51,7 @@ class MailboxListener implements EventListenerInterface
      * @param \ArrayObject $options options.
      * @return void
      */
-    public function createFolders(Event $event, EntityInterface $entity, ArrayObject $options) : void
+    public function createFolders(Event $event, EntityInterface $entity, ArrayObject $options): void
     {
         if (!$entity->isNew() || $entity->getSource() != self::MAILBOX_TABLE_NAME) {
             return;
@@ -73,7 +73,7 @@ class MailboxListener implements EventListenerInterface
      * @param mixed[] $folders to move message
      * @return bool
      */
-    protected function processMessages(string $userId, array $folders) : bool
+    protected function processMessages(string $userId, array $folders): bool
     {
         $messagesTable = TableRegistry::getTableLocator()->get(self::MESSAGES_TABLE_NAME);
         Assert::isInstanceOf($messagesTable, MessagesTable::class);

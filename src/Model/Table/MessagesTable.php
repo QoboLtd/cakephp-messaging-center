@@ -156,7 +156,7 @@ class MessagesTable extends Table
     /**
      * {@inheritDoc}
      */
-    public function buildRules(RulesChecker $rules) : RulesChecker
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn('folder_id', 'Folders'));
 
@@ -274,7 +274,7 @@ class MessagesTable extends Table
      * @param string $userId current user id
      * @return \Cake\Datasource\EntityInterface folder
      */
-    public function getFolderByMessage(EntityInterface $message, string $userId) : EntityInterface
+    public function getFolderByMessage(EntityInterface $message, string $userId): EntityInterface
     {
         $table = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
         Assert::isInstanceOf($table, FoldersTable::class);
@@ -400,7 +400,7 @@ class MessagesTable extends Table
      * @param mixed[] $folders to move message
      * @return bool
      */
-    public function processMessages(string $userId, array $folders) : bool
+    public function processMessages(string $userId, array $folders): bool
     {
         $query = $this->find()
             ->where([
@@ -486,7 +486,7 @@ class MessagesTable extends Table
      * @param string $folderType to copy message
      * @return bool
      */
-    protected function copyMessage(array $data, string $userId, string $folderType) : bool
+    protected function copyMessage(array $data, string $userId, string $folderType): bool
     {
         unset($data['id']);
 

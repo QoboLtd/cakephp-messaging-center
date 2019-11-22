@@ -59,7 +59,7 @@ class Message extends Entity
      * @param string $field field prefix value
      * @return string
      */
-    protected function getUser(string $field) : string
+    protected function getUser(string $field): string
     {
         $user = $this->has($field . 'User') ? $this->get($field . 'User') : $this->get($field . '_user');
         $systemUser = Configure::readOrFail('MessagingCenter.systemUser');
@@ -95,7 +95,7 @@ class Message extends Entity
      * @param string $field field prefix value
      * @return string[]
      */
-    protected function getEmailAddresses(string $field) : array
+    protected function getEmailAddresses(string $field): array
     {
         $user = $this->has($field . 'User') ? $this->get($field . 'User') : $this->get($field . '_user');
         $systemUser = Configure::readOrFail('MessagingCenter.systemUser');
@@ -174,6 +174,7 @@ class Message extends Entity
      * Moves this message to the specified folder
      *
      * @param \MessagingCenter\Model\Entity\Folder $folder Folder to move the message under
+     * @return  void
      */
     public function moveToFolder(Folder $folder): void
     {
@@ -182,6 +183,7 @@ class Message extends Entity
 
     /**
      * Marks the message as read
+     * @return void
      */
     public function markAsRead(): void
     {

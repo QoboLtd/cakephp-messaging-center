@@ -117,7 +117,7 @@ class FoldersTable extends Table
      * @param \Cake\Datasource\EntityInterface $mailbox entity.
      * @return \MessagingCenter\Model\Entity\Folder[]
      */
-    public function createDefaultFolders(EntityInterface $mailbox) : array
+    public function createDefaultFolders(EntityInterface $mailbox): array
     {
         $list = [];
         $order = 0;
