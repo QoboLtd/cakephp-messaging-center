@@ -225,19 +225,24 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertFalse($this->viewVariable('message')->isNew());
     }
 
-    public function testReplyPut(): void
+    public function testReplyPost(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $mailboxId = '00000000-0000-0000-0000-000000000001';
-        $entity = $this->MessagesTable->get($id);
+        $entity = $this->MessagesTable->get($id, [
+            'contain' => ['Folders', 'ToUser', 'FromUser']
+        ]);
 
-        $expected = 1 + $this->MessagesTable->find('all')->count();
+        $expected = 2 + $this->MessagesTable->find('all')->count();
 
         $data = [
-            'subject' => 'testReplyPut message',
-            'content' => 'Bla bla bla'
+            'subject' => 'testReplyPut message ' . rand(),
+            'content' => 'Bla bla bla' . rand(),
+            'content_text' => 'Bla bla bla' . rand(),
+            'to_user' => $entity->get('from_user')
         ];
-        $this->put('/messaging-center/messages/reply/' . $id, $data);
+
+        $this->post('/messaging-center/messages/reply/' . $id, $data);
 
         $this->assertResponseCode(302);
 
@@ -250,13 +255,15 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
-        $query = $this->MessagesTable->find()->limit(1)->where(['subject' => $data['subject']]);
+        $query = $this->MessagesTable->find()->where(['subject' => $data['subject']]);
+        $this->assertEquals(2, $query->count());
         /**
          * @var \MessagingCenter\Model\Entity\Message $newEntity
          */
         $newEntity = $query->first();
-        $this->assertEquals($entity->get('from_user'), $newEntity->to_user);
-        $this->assertEquals($data['content'], $newEntity->content);
+        $this->assertEquals($entity->get('from_user'), $newEntity->get('to_user'));
+        $this->assertEquals($data['content'], $newEntity->get('content'));
+        $this->assertEquals($data['content_text'], $newEntity->get('content_text'));
         /**
          * @var \Cake\Http\Session $session
          */
@@ -266,7 +273,11 @@ class MessagesControllerTest extends IntegrationTestCase
         $time = new Time();
         $this->assertEquals($time->i18nFormat(), $newEntity->date_sent->i18nFormat());
         // verify existing message was not affected.
-        $this->assertEquals($entity->toArray(), $this->MessagesTable->get($id)->toArray());
+        $entityVerify = $this->MessagesTable->get($id, [
+            'contain' => ['Folders', 'ToUser', 'FromUser']
+        ]);
+        $this->assertEquals($entity->toArray(), $entityVerify->toArray());
+        $this->assertSession('The message has been sent.', 'Flash.flash.0.message');
     }
 
     public function testReplyMustFailForNonSystemMailboxes(): void
@@ -286,7 +297,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertSame($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutSameUser(): void
+    public function testReplyPostSameUser(): void
     {
         $this->markTestSkipped('Skip this test till refactoring will be completed');
 
@@ -299,7 +310,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'subject' => 'testReplyPut message',
             'content' => 'Bla bla bla'
         ];
-        $this->put('/messaging-center/messages/reply/' . $id, $data);
+        $this->post('/messaging-center/messages/reply/' . $id, $data);
 
         $this->assertResponseCode(302);
 
@@ -313,25 +324,25 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutNoData(): void
+    public function testReplyPostNoData(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $expected = $this->MessagesTable->find('all')->count();
-        $this->put('/messaging-center/messages/reply/' . $id);
+        $this->post('/messaging-center/messages/reply/' . $id, []);
 
-        $this->assertResponseOk();
+        $this->assertResponseCode(200);
         $this->assertSession('The message could not be sent. Please, try again.', 'Flash.flash.0.message');
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
     }
 
-    public function testReplyPutEnforceData(): void
+    public function testReplyPostEnforceData(): void
     {
         $id = '00000000-0000-0000-0000-000000000001';
         $mailboxId = '00000000-0000-0000-0000-000000000001';
-        $expected = 1 + $this->MessagesTable->find('all')->count();
+        $expected = 2 + $this->MessagesTable->find('all')->count();
 
         $data = [
-            'subject' => 'testComposePost message',
+            'subject' => 'testComposePost message ' . rand(),
             'content' => 'Bla bla bla',
             // try to enforce protected data
             'to_user' => 'Enforce other user id',
@@ -339,20 +350,13 @@ class MessagesControllerTest extends IntegrationTestCase
             'status' => 'Enforce custom message status',
             'date_sent' => 'Enforce custom date sent',
         ];
-        $this->put('/messaging-center/messages/reply/' . $id, $data);
+        $this->post('/messaging-center/messages/reply/' . $id, $data);
 
         $this->assertResponseCode(302);
-
-        $url = [
-            'plugin' => 'MessagingCenter',
-            'controller' => 'Mailboxes',
-            'action' => 'view',
-            $mailboxId
-        ];
-        $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
 
-        $query = $this->MessagesTable->find()->limit(1)->where(['subject' => $data['subject']]);
+        $query = $this->MessagesTable->find()->limit(1)->where(['subject' => $data['subject'], 'id <> ' > $id]);
+
         /**
          * @var \MessagingCenter\Model\Entity\Message $entity
          */
@@ -361,6 +365,8 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertNotEquals($data['from_user'], $entity->from_user);
         $this->assertNotEquals($data['status'], $entity->status);
         $this->assertNotEquals($data['date_sent'], $entity->date_sent);
+
+        $this->assertSession('The message has been sent.', 'Flash.flash.0.message');
     }
 
     /**

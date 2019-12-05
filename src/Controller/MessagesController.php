@@ -19,6 +19,7 @@ use MessagingCenter\Enum\MailboxType;
 use MessagingCenter\Event\EventName;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Mailbox;
+use MessagingCenter\Model\Entity\Message;
 use MessagingCenter\Model\Table\MailboxesTable;
 use Webmozart\Assert\Assert;
 
@@ -100,45 +101,17 @@ class MessagesController extends AppController
      */
     public function compose(string $mailboxId)
     {
+        /**
+         * @var \MessagingCenter\Model\Entity\Mailbox $mailbox
+         */
         $mailbox = $this->getMailbox($mailboxId);
-        if (MailboxType::SYSTEM !== $mailbox->get('type')) {
-            $this->Flash->error(
-                sprintf((string)__('Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
-            );
 
-            return $this->redirect($this->referer());
-        }
+        /**
+         * @var \MessagingCenter\Model\Entity\Message $message
+         */
+        $this->createMessage($mailbox);
 
         $message = $this->Messages->newEntity();
-        if ($this->request->is('post')) {
-            $data = $this->request->getData();
-            Assert::isArray($data);
-
-            $data['from_user'] = $this->Auth->user('id');
-            $data['status'] = $this->Messages->getNewStatus();
-            $data['date_sent'] = $this->Messages->getDateSent();
-
-            $message = $this->Messages->patchEntity($message, $data);
-            if ($this->Messages->save($message)) {
-                $this->Flash->success((string)__('The message has been sent.'));
-
-                $this->Messages->processMessages(
-                    $this->Auth->user('id'),
-                    $mailbox->get('folders')
-                );
-
-                $event = new Event((string)EventName::SEND_EMAIL(), $this, [
-                    'mailbox' => $mailbox,
-                    'data' => $data
-                ]);
-                EventManager::instance()->dispatch($event);
-                $result = $event->result;
-
-                return $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailboxId]);
-            } else {
-                $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
-            }
-        }
 
         $this->set('message', $message);
         $this->set('mailbox', $mailbox);
@@ -156,14 +129,33 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => ['Folders']
+            'contain' => ['Folders', 'ToUser', 'FromUser']
         ]);
 
         $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
+
+        /**
+         * @var \MessagingCenter\Model\Entity\Mailbox $mailbox
+         */
         $mailbox = $mailboxes->get($message->get('folder')->get('mailbox_id'), [
             'contain' => ['Folders']
         ]);
 
+        $this->createMessage($mailbox, $message);
+
+        $this->set('message', $message);
+        $this->set('mailbox', $mailbox);
+        $this->set('_serialize', ['message', 'mailbox']);
+    }
+
+    /**
+     * createMessage description
+     * @param  Mailbox $mailbox         Current Mailbox
+     * @param  Message|null $originalMessage Original Message for reply
+     * @return \Cake\Http\Response|void|null Redirects on successful reply, renders view otherwise.
+     */
+    public function createMessage(Mailbox $mailbox, ?Message $originalMessage = null)
+    {
         if (MailboxType::SYSTEM !== $mailbox->get('type')) {
             $this->Flash->error(
                 sprintf((string)__('Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
@@ -173,35 +165,28 @@ class MessagesController extends AppController
         }
 
         // current user's sent message
-        if ($mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') === $message->get('from_user')) {
+        if ($originalMessage && $mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') === $originalMessage->get('from_user')) {
             $this->Flash->error((string)__('You cannot reply to a sent message.'));
 
-            return $this->redirect(['action' => 'view', $id]);
+            return $this->redirect(['action' => 'view', $originalMessage->get('id')]);
         }
 
-        if ($this->request->is('put')) {
-            $newMessage = $this->Messages->newEntity();
+        if ($this->request->is('post')) {
             $data = $this->request->getData();
             Assert::isArray($data);
 
-            $data['to_user'] = $message->get('from_user');
-            $data['from_user'] = $this->Auth->user('id');
-            $data['status'] = $this->Messages->getNewStatus();
-            $data['date_sent'] = $this->Messages->getDateSent();
-            $data['related_id'] = $id;
-            $newMessage = $this->Messages->patchEntity($newMessage, $data);
-            if ($this->Messages->save($newMessage)) {
+            $userId = $this->Auth->user('id');
+
+            $result = $this->Messages->createMessage($mailbox, $originalMessage, $data, $userId);
+
+            if ($result) {
                 $this->Flash->success((string)__('The message has been sent.'));
 
-                return $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')]);
+                $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')]);
             } else {
                 $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
             }
         }
-
-        $this->set('message', $message);
-        $this->set('mailbox', $mailbox);
-        $this->set('_serialize', ['message', 'mailbox']);
     }
 
     /**
