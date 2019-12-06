@@ -8,7 +8,7 @@ $outgoingTransports = (array)Configure::read('MessagingCenter.outgoingTransports
 <?= $this->Form->create($mailbox) ?>
 <div class="box box-solid">
     <div class="box-header with-border">
-        <h3 class="box-title"><?= __('Details');?></h3>
+        <h3 class="box-title"><?= __d('Qobo/MessagingCenter', 'Details');?></h3>
     </div>
     <div class="box-body">
         <div class="row">
@@ -41,7 +41,7 @@ $outgoingTransports = (array)Configure::read('MessagingCenter.outgoingTransports
 </div>
 <div class="box box-solid">
     <div class="box-header with-border">
-        <h3 class="box-title"><?= __('Incoming Settings');?></h3>
+        <h3 class="box-title"><?= __d('Qobo/MessagingCenter', 'Incoming Settings');?></h3>
     </div>
     <div class="box-body">
         <div class="row">
@@ -98,7 +98,7 @@ $outgoingTransports = (array)Configure::read('MessagingCenter.outgoingTransports
 </div>
 <div class="box box-solid">
     <div class="box-header with-border">
-        <h3 class="box-title"><?= __('Outgoing Settings');?></h3>
+        <h3 class="box-title"><?= __d('Qobo/MessagingCenter', 'Outgoing Settings');?></h3>
     </div>
     <div class="box-body">
         <div class="row">
@@ -140,8 +140,8 @@ $outgoingTransports = (array)Configure::read('MessagingCenter.outgoingTransports
         </div>
     </div>
 </div>
-<?= $this->Form->button(__('Submit')) ?>&nbsp;
-<?= $this->Html->link(__('Cancel'), [
+<?= $this->Form->button(__d('Qobo/MessagingCenter', 'Submit')) ?>&nbsp;
+<?= $this->Html->link(__d('Qobo/MessagingCenter', 'Cancel'), [
     'plugin' => 'MessagingCenter',
     'controller' => 'Mailboxes',
     'action' => 'index'

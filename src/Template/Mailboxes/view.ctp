@@ -20,7 +20,7 @@ $userField = MailboxesTable::FOLDER_SENT === $folderName ? 'to' : 'from';
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4>
-                <a href="/messaging-center/mailboxes/"><?= __('Mailboxes') ?></a>
+                <a href="/messaging-center/mailboxes/"><?= __d('Qobo/MessagingCenter', 'Mailboxes') ?></a>
                 »
                 <?= $mailbox->get('name') ?>
                 <?= $this->element('unread_count'); ?>
@@ -68,8 +68,8 @@ $userField = MailboxesTable::FOLDER_SENT === $folderName ? 'to' : 'from';
                             <thead>
                                 <th></th>
                                 <th><?= Inflector::humanize($userField); ?></th>
-                                <th><?= __('Subject') ?></th>
-                                <th><?= __('Date') ?></th>
+                                <th><?= __d('Qobo/MessagingCenter', 'Subject') ?></th>
+                                <th><?= __d('Qobo/MessagingCenter', 'Date') ?></th>
                             </thead>
                             <tbody>
                             <?php foreach ($messages as $message) : ?>
@@ -109,7 +109,7 @@ $userField = MailboxesTable::FOLDER_SENT === $folderName ? 'to' : 'from';
                         </table>
                     </div>
                     <?php else : ?>
-                    <p class="text-muted text-center"><?= __('You don\'t have any messages here...') ?></p>
+                    <p class="text-muted text-center"><?= __d('Qobo/MessagingCenter', 'You don\'t have any messages here...') ?></p>
                     <?php endif; ?>
                 </div>
                 <div class="box-footer no-padding">

@@ -15,49 +15,49 @@ use MessagingCenter\Model\Table\MailboxesTable;
 $replySmBtn = $this->Html->link(
     '<i class="fa fa-reply"></i>',
     ['action' => 'reply', $message->id],
-    ['title' => __('Reply'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Reply'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
 );
 $deleteSmBtn = $this->Form->postLink(
     '<i class="fa fa-trash-o"></i>',
     ['action' => 'delete', $message->id],
-    ['title' => __('Delete'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Delete'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
 );
 $archiveSmBtn = $this->Form->postLink(
     '<i class="fa fa-archive"></i>',
     ['action' => 'archive', $message->id],
-    ['title' => __('Archive'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Archive'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
 );
 $restoreSmBtn = $this->Form->postLink(
     '<i class="fa fa-undo"></i>',
     ['action' => 'restore', $message->id],
-    ['title' => __('Restore'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Restore'), 'class' => 'btn btn-default btn-sm', 'escape' => false]
 );
 $replyBtn = $this->Html->link(
-    '<i class="fa fa-reply"></i> ' . __('Reply'),
+    '<i class="fa fa-reply"></i> ' . __d('Qobo/MessagingCenter', 'Reply'),
     ['action' => 'reply', $message->id],
-    ['title' => __('Reply'), 'class' => 'btn btn-default', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Reply'), 'class' => 'btn btn-default', 'escape' => false]
 );
 $deleteBtn = $this->Form->postLink(
-    '<i class="fa fa-trash-o"></i> ' . __('Delete'),
+    '<i class="fa fa-trash-o"></i> ' . __d('Qobo/MessagingCenter', 'Delete'),
     ['action' => 'delete', $message->id],
-    ['title' => __('Delete'), 'class' => 'btn btn-default', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Delete'), 'class' => 'btn btn-default', 'escape' => false]
 );
 $archiveBtn = $this->Form->postLink(
-    '<i class="fa fa-archive"></i> ' . __('Archive'),
+    '<i class="fa fa-archive"></i> ' . __d('Qobo/MessagingCenter', 'Archive'),
     ['action' => 'archive', $message->id],
-    ['title' => __('Archive'), 'class' => 'btn btn-default', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Archive'), 'class' => 'btn btn-default', 'escape' => false]
 );
 $restoreBtn = $this->Form->postLink(
-    '<i class="fa fa-undo"></i> ' . __('Restore'),
+    '<i class="fa fa-undo"></i> ' . __d('Qobo/MessagingCenter', 'Restore'),
     ['action' => 'restore', $message->id],
-    ['title' => __('Restore'), 'class' => 'btn btn-default', 'escape' => false]
+    ['title' => __d('Qobo/MessagingCenter', 'Restore'), 'class' => 'btn btn-default', 'escape' => false]
 );
 ?>
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4>
-                <a href="/messaging-center/mailboxes/"><?= __('Mailboxes') ?></a>
+                <a href="/messaging-center/mailboxes/"><?= __d('Qobo/MessagingCenter', 'Mailboxes') ?></a>
                 »
                 <?= $mailbox->get('name') ?>
                 <?= $this->element('unread_count'); ?>

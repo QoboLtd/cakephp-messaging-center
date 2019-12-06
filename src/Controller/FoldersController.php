@@ -55,12 +55,12 @@ class FoldersController extends AppController
             $this->Folders->patchEntity($folder, $data);
 
             if ($this->Folders->save($folder)) {
-                $this->Flash->success((string)__('The folder has been saved.'));
+                $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The folder has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
 
-            $this->Flash->error((string)__('The folder could not be saved. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The folder could not be saved. Please, try again.'));
         }
         $this->set(compact('folder'));
     }
@@ -85,11 +85,11 @@ class FoldersController extends AppController
             $data = $this->request->getData();
             $folder = $this->Folders->patchEntity($folder, $data);
             if ($this->Folders->save($folder)) {
-                $this->Flash->success((string)__('The folder has been saved.'));
+                $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The folder has been saved.'));
 
                 return $this->redirect(['action' => 'view', $id]);
             }
-            $this->Flash->error((string)__('The folder could not be saved. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The folder could not be saved. Please, try again.'));
         }
 
         $this->set(compact('folder'));
@@ -108,9 +108,9 @@ class FoldersController extends AppController
         $folder = $this->Folders->get($id);
 
         if ($this->Folders->delete($folder)) {
-            $this->Flash->success((string)__('The folder has been deleted.'));
+            $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The folder has been deleted.'));
         } else {
-            $this->Flash->error((string)__('The folder could not be deleted. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The folder could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

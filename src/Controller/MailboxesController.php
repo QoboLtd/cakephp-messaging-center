@@ -98,11 +98,11 @@ class MailboxesController extends AppController
 
             $mailbox = $this->Mailboxes->patchEntity($mailbox, $data);
             if ($this->Mailboxes->save($mailbox)) {
-                $this->Flash->success((string)__('The mailbox has been saved.'));
+                $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The mailbox has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error((string)__('The mailbox could not be saved. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The mailbox could not be saved. Please, try again.'));
         }
 
         $types = (array)Configure::read('MessagingCenter.Mailbox.types');
@@ -145,11 +145,11 @@ class MailboxesController extends AppController
 
             $mailbox = $this->Mailboxes->patchEntity($mailbox, $data);
             if ($this->Mailboxes->save($mailbox)) {
-                $this->Flash->success((string)__('The mailbox has been saved.'));
+                $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The mailbox has been saved.'));
 
                 return $this->redirect(['action' => 'view', $id]);
             }
-            $this->Flash->error((string)__('The mailbox could not be saved. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The mailbox could not be saved. Please, try again.'));
         }
 
         $types = (array)Configure::read('MessagingCenter.Mailbox.types');
@@ -178,9 +178,9 @@ class MailboxesController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $mailbox = $this->Mailboxes->get($id);
         if ($this->Mailboxes->delete($mailbox)) {
-            $this->Flash->success((string)__('The mailbox has been deleted.'));
+            $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The mailbox has been deleted.'));
         } else {
-            $this->Flash->error((string)__('The mailbox could not be deleted. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The mailbox could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

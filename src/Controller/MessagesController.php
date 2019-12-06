@@ -158,7 +158,7 @@ class MessagesController extends AppController
     {
         if (MailboxType::SYSTEM !== $mailbox->get('type')) {
             $this->Flash->error(
-                sprintf((string)__('Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+                sprintf((string)__d('Qobo/MessagingCenter', 'Composing messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
             );
 
             return $this->redirect($this->referer());
@@ -166,7 +166,7 @@ class MessagesController extends AppController
 
         // current user's sent message
         if ($originalMessage && $mailbox->get('type') === MailboxType::SYSTEM && $this->Auth->user('id') === $originalMessage->get('from_user')) {
-            $this->Flash->error((string)__('You cannot reply to a sent message.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'You cannot reply to a sent message.'));
 
             return $this->redirect(['action' => 'view', $originalMessage->get('id')]);
         }
@@ -180,11 +180,11 @@ class MessagesController extends AppController
             $result = $this->Messages->createMessage($mailbox, $originalMessage, $data, $userId);
 
             if ($result) {
-                $this->Flash->success((string)__('The message has been sent.'));
+                $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The message has been sent.'));
 
                 $this->redirect(['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'view', $mailbox->get('id')]);
             } else {
-                $this->Flash->error((string)__('The message could not be sent. Please, try again.'));
+                $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The message could not be sent. Please, try again.'));
             }
         }
     }
@@ -271,7 +271,7 @@ class MessagesController extends AppController
         $mailbox = $this->loadModel('MessagingCenter.Mailboxes')->get($folder->get('mailbox_id'));
         if (MailboxType::SYSTEM !== $mailbox->get('type')) {
             $this->Flash->error(
-                sprintf((string)__('Moving messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
+                sprintf((string)__d('Qobo/MessagingCenter', 'Moving messages for "%s" mailbox is not supported.'), $mailbox->get('type'))
             );
 
             return $this->redirect($this->referer());
@@ -280,11 +280,11 @@ class MessagesController extends AppController
         $message->moveToFolder($folder);
 
         if ($this->Messages->save($message)) {
-            $this->Flash->success((string)__('The message has been moved to {0}.', $folder->get('name')));
+            $this->Flash->success((string)__d('Qobo/MessagingCenter', 'The message has been moved to {0}.', $folder->get('name')));
 
             return $this->redirect(['controller' => 'mailboxes', 'action' => 'view', $folder->get('mailbox_id'), $folder->get('id')]);
         } else {
-            $this->Flash->error((string)__('The message could not be moved. Please, try again.'));
+            $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The message could not be moved. Please, try again.'));
         }
     }
 

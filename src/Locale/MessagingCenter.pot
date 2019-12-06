@@ -1,0 +1,217 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2019-12-06 12:41+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "The folder has been saved."
+msgstr ""
+
+msgid "The folder could not be saved. Please, try again."
+msgstr ""
+
+msgid "The folder has been deleted."
+msgstr ""
+
+msgid "The folder could not be deleted. Please, try again."
+msgstr ""
+
+msgid "The mailbox has been saved."
+msgstr ""
+
+msgid "The mailbox could not be saved. Please, try again."
+msgstr ""
+
+msgid "The mailbox has been deleted."
+msgstr ""
+
+msgid "The mailbox could not be deleted. Please, try again."
+msgstr ""
+
+msgid "Composing messages for \"%s\" mailbox is not supported."
+msgstr ""
+
+msgid "You cannot reply to a sent message."
+msgstr ""
+
+msgid "The message has been sent."
+msgstr ""
+
+msgid "The message could not be sent. Please, try again."
+msgstr ""
+
+msgid "Moving messages for \"%s\" mailbox is not supported."
+msgstr ""
+
+msgid "The message has been moved to {0}."
+msgstr ""
+
+msgid "The message could not be moved. Please, try again."
+msgstr ""
+
+msgid "User "
+msgstr ""
+
+msgid "Compose"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "Incoming Settings"
+msgstr ""
+
+msgid "Outgoing Settings"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "new messages"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "List Folders"
+msgstr ""
+
+msgid "Add Folder"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Are you sure you want to delete # {0}?"
+msgstr ""
+
+msgid "List Qobo Folders"
+msgstr ""
+
+msgid "Edit Qobo Folder"
+msgstr ""
+
+msgid "New Folder"
+msgstr ""
+
+msgid "Folders"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "first"
+msgstr ""
+
+msgid "previous"
+msgstr ""
+
+msgid "next"
+msgstr ""
+
+msgid "last"
+msgstr ""
+
+msgid "Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total"
+msgstr ""
+
+msgid "Folder"
+msgstr ""
+
+msgid "Are you sure you want to delete # {0}"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Messages"
+msgstr ""
+
+msgid "Create {0}"
+msgstr ""
+
+msgid "Edit {0}"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "View Mailboxes & Results"
+msgstr ""
+
+msgid "Mailboxes"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "You don't have any messages here..."
+msgstr ""
+
+msgid "Message Box"
+msgstr ""
+
+msgid "Back to inbox"
+msgstr ""
+
+msgid "Compose New {0}"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid "Back to message"
+msgstr ""
+
+msgid "Reply to: {0}"
+msgstr ""
+
+msgid "Reply"
+msgstr ""
+
+msgid "Archive"
+msgstr ""
+
+msgid "Restore"
+msgstr ""
+

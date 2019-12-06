@@ -13,7 +13,7 @@
 <section class="content-header">
     <div class="row">
         <div class="col-xs-12 col-md-6">
-            <h4><?= __('Create {0}', ['Mailbox']);?></h4>
+            <h4><?= __d('Qobo/MessagingCenter', 'Create {0}', ['Mailbox']);?></h4>
         </div>
     </div>
 </section>

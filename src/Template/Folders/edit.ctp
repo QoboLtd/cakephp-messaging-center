@@ -6,20 +6,20 @@
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
+        <li class="heading"><?= __d('Qobo/MessagingCenter', 'Actions') ?></li>
         <li><?= $this->Form->postLink(
-                __('Delete'),
+                __d('Qobo/MessagingCenter', 'Delete'),
                 ['action' => 'delete', $folder->get('id')],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $folder->get('id'))]
+                ['confirm' => __d('Qobo/MessagingCenter', 'Are you sure you want to delete # {0}?', $folder->get('id'))]
             )
         ?></li>
-        <li><?= $this->Html->link(__('List Qobo Folders'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__d('Qobo/MessagingCenter', 'List Qobo Folders'), ['action' => 'index']) ?></li>
     </ul>
 </nav>
 <div class="qoboFolders form large-9 medium-8 columns content">
     <?= $this->Form->create($folder) ?>
     <fieldset>
-        <legend><?= __('Edit Qobo Folder') ?></legend>
+        <legend><?= __d('Qobo/MessagingCenter', 'Edit Qobo Folder') ?></legend>
         <?php
             echo $this->Form->control('mailbox_id');
             echo $this->Form->control('parent_id');
@@ -27,6 +27,6 @@
             echo $this->Form->control('type');
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->button(__d('Qobo/MessagingCenter', 'Submit')) ?>
     <?= $this->Form->end() ?>
 </div>
