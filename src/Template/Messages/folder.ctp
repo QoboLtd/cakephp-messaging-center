@@ -17,7 +17,7 @@ use Cake\Utility\Inflector;
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4>
-                <?= __('Message Box') ?>
+                <?= __d('Qobo/MessagingCenter', 'Message Box') ?>
                 <?= $this->element('unread_count'); ?>
             </h4>
         </div>
@@ -28,7 +28,7 @@ use Cake\Utility\Inflector;
     <div class="row">
         <div class="col-md-3">
             <?= $this->Html->link(
-                '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __('Compose'),
+                '<i class="fa fa-pencil" aria-hidden="true"></i> ' . __d('Qobo/MessagingCenter', 'Compose'),
                 ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'compose'],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ); ?>
@@ -69,9 +69,9 @@ use Cake\Utility\Inflector;
                         <table id="folder-table" class="table table-hover table-striped">
                             <thead>
                                 <th></th>
-                                <th><?= 'sent' === $folder ? __('To') : __('From') ?></th>
-                                <th><?= __('Subject') ?></th>
-                                <th><?= __('Date') ?></th>
+                                <th><?= 'sent' === $folder ? __d('Qobo/MessagingCenter', 'To') : __('From') ?></th>
+                                <th><?= __d('Qobo/MessagingCenter', 'Subject') ?></th>
+                                <th><?= __d('Qobo/MessagingCenter', 'Date') ?></th>
                             </thead>
                             <tbody>
                             <?php foreach ($messages as $message) : ?>
@@ -111,7 +111,7 @@ use Cake\Utility\Inflector;
                         </table>
                     </div>
                     <?php else : ?>
-                    <p class="text-muted text-center"><?= __('You don\'t have any messages here...') ?></p>
+                    <p class="text-muted text-center"><?= __d('Qobo/MessagingCenter', 'You don\'t have any messages here...') ?></p>
                     <?php endif; ?>
                 </div>
                 <div class="box-footer no-padding">

@@ -18,7 +18,7 @@ $username = $this->element('MessagingCenter.user', [
     <div class="row">
         <div class="col-xs-12 col-md-6">
             <h4>
-                <?= __('Message Box') ?>
+                <?= __d('Qobo/MessagingCenter', 'Message Box') ?>
                 <?= $this->element('unread_count'); ?>
             </h4>
         </div>
@@ -28,7 +28,7 @@ $username = $this->element('MessagingCenter.user', [
     <div class="row">
         <div class="col-md-3">
             <?= $this->Html->link(
-                '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __('Back to message'),
+                '<i class="fa fa-envelope-o" aria-hidden="true"></i> ' . __d('Qobo/MessagingCenter', 'Back to message'),
                 ['plugin' => 'MessagingCenter', 'controller' => 'Messages', 'action' => 'view', $message->id],
                 ['class' => 'btn btn-primary btn-block margin-bottom', 'escape' => false]
             ) ?>
@@ -38,7 +38,7 @@ $username = $this->element('MessagingCenter.user', [
         <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><?= __('Reply to: {0}', $username) ?></h3>
+                    <h3 class="box-title"><?= __d('Qobo/MessagingCenter', 'Reply to: {0}', $username) ?></h3>
                 </div>
                 <?= $this->Form->create($message, ['type' => 'post']); ?>
                 <div class="box-body">
@@ -68,11 +68,11 @@ $username = $this->element('MessagingCenter.user', [
                 </div>
                 <div class="box-footer">
                     <div class="pull-right">
-                        <?= $this->Form->button('<i class="fa fa-envelope-o"></i> ' . __('Send'), [
+                        <?= $this->Form->button('<i class="fa fa-envelope-o"></i> ' . __d('Qobo/MessagingCenter', 'Send'), [
                             'class' => 'btn btn-primary'
                         ]); ?>
                     </div>
-                    <?= $this->Form->button('<i class="fa fa-times"></i> ' . __('Discard'), [
+                    <?= $this->Form->button('<i class="fa fa-times"></i> ' . __d('Qobo/MessagingCenter', 'Discard'), [
                         'class' => 'btn btn-default',
                         'type' => 'reset'
                     ]); ?>

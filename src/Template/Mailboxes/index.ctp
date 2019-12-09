@@ -20,7 +20,7 @@ $options['title'] = 'Mailboxes';
             <div class="pull-right">
                 <div class="btn-group btn-group-sm">
                 <?= $this->Html->link(
-                    '<i class="fa fa-plus"></i>' . __('Add'),
+                    '<i class="fa fa-plus"></i>' . __d('Qobo/MessagingCenter', 'Add'),
                     ['plugin' => 'MessagingCenter', 'controller' => 'Mailboxes', 'action' => 'add'],
                     ['class' => 'btn btn-default', 'escape' => false]
                 );?>
@@ -40,7 +40,7 @@ $options['title'] = 'Mailboxes';
                             <th scope="col"><?= $this->Paginator->sort('type') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('active') ?></th>
                             <th scope="col"><?= $this->Paginator->sort('created') ?></th>
-                            <th scope="col" class="actions"><?= __('Actions') ?></th>
+                            <th scope="col" class="actions"><?= __d('Qobo/MessagingCenter', 'Actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,16 +48,16 @@ $options['title'] = 'Mailboxes';
                         <tr>
                             <td><?= h($mailbox->get('name')) ?></td>
                             <td><?= h($mailbox->get('type')) ?></td>
-                            <td><?= h($mailbox->active ? __('Yes') : __('No')) ?></td>
+                            <td><?= h($mailbox->active ? __d('Qobo/MessagingCenter', 'Yes') : __('No')) ?></td>
                             <td><?= h($mailbox->created->i18nFormat('yyyy-MM-dd HH:mm')) ?></td>
                             <td class="actions btn-group btn-group-xs" role="group">
                                 <?= $this->Html->link(
                                     '<i class="fa fa-eye"></i>',
                                     ['action' => 'view', $mailbox->get('id')],
-                                    ['class' => 'btn btn-default', 'escape' => false, 'title' => __('View Mailboxes & Results')]
+                                    ['class' => 'btn btn-default', 'escape' => false, 'title' => __d('Qobo/MessagingCenter', 'View Mailboxes & Results')]
                                 )?>
                                 <?= $this->Html->link('<i class="fa fa-pencil"></i>', ['action' => 'edit', $mailbox->get('id')], ['class' => 'btn btn-default', 'escape' => false]) ?>
-                                <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $mailbox->get('id')], ['class' => 'btn btn-default', 'escape' => false, 'confirm' => __('Are you sure you want to delete # {0}?', $mailbox->get('id'))]) ?>
+                                <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $mailbox->get('id')], ['class' => 'btn btn-default', 'escape' => false, 'confirm' => __d('Qobo/MessagingCenter', 'Are you sure you want to delete # {0}?', $mailbox->get('id'))]) ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -66,13 +66,13 @@ $options['title'] = 'Mailboxes';
             </div>
             <div class="paginator">
                 <ul class="pagination">
-                    <?= $this->Paginator->first('<< ' . __('first')) ?>
-                    <?= $this->Paginator->prev('< ' . __('previous')) ?>
+                    <?= $this->Paginator->first('<< ' . __d('Qobo/MessagingCenter', 'first')) ?>
+                    <?= $this->Paginator->prev('< ' . __d('Qobo/MessagingCenter', 'previous')) ?>
                     <?= $this->Paginator->numbers() ?>
-                    <?= $this->Paginator->next(__('next') . ' >') ?>
-                    <?= $this->Paginator->last(__('last') . ' >>') ?>
+                    <?= $this->Paginator->next(__d('Qobo/MessagingCenter', 'next') . ' >') ?>
+                    <?= $this->Paginator->last(__d('Qobo/MessagingCenter', 'last') . ' >>') ?>
                 </ul>
-                <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+                <p><?= $this->Paginator->counter(['format' => __d('Qobo/MessagingCenter', 'Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
             </div>
         </div>
     </div>

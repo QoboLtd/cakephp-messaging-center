@@ -293,7 +293,7 @@ class MailboxesTable extends Table
                 'user_id' => $user['id']
             ]);
         $mailbox = $query->first();
-        Assert::isInstanceOf($mailbox, EntityInterface::class, (string)__('User ' . $user['username'] . ' does not have system mailbox!'));
+        Assert::isInstanceOf($mailbox, EntityInterface::class, (string)__d('Qobo/MessagingCenter', 'User {0} does not have system mailbox!', $user['username']));
 
         return $mailbox;
     }
