@@ -79,6 +79,7 @@ class InboxCell extends Cell
      *
      * @param  int $limit query limit
      * @param  int $contentLength content excerpt length
+     * @param  \Cake\Datasource\EntityInterface|null $mailbox Mailbox instance or null
      * @return void
      */
     public function unreadMessages(int $limit = 10, int $contentLength = 100, ?EntityInterface $mailbox = null): void

@@ -58,7 +58,7 @@ class Notifier implements NotifierInterface
         'from',
         'to',
         'subject',
-        'message'
+        'message',
     ];
 
     /**

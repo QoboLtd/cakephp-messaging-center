@@ -58,7 +58,7 @@ class MailboxesFixture extends TestFixture
                 'outgoing_settings' => 'default',
                 'active' => 1,
                 'created' => '2019-01-07 20:34:29',
-                'modified' => '2019-01-07 20:34:29'
+                'modified' => '2019-01-07 20:34:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000002',
@@ -71,7 +71,7 @@ class MailboxesFixture extends TestFixture
                 'outgoing_settings' => '{"host":"smtp.yandex.ru","port":"465","username":"test2019me@ya.ru","password":"XXXX"}',
                 'active' => 1,
                 'created' => '2019-01-07 20:34:29',
-                'modified' => '2019-01-07 20:34:29'
+                'modified' => '2019-01-07 20:34:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000003',
@@ -84,7 +84,7 @@ class MailboxesFixture extends TestFixture
                 'outgoing_settings' => 'default',
                 'active' => 1,
                 'created' => '2019-01-07 20:34:29',
-                'modified' => '2019-01-07 20:34:29'
+                'modified' => '2019-01-07 20:34:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000004',
@@ -97,7 +97,7 @@ class MailboxesFixture extends TestFixture
                 'outgoing_settings' => 'default',
                 'active' => 0,
                 'created' => '2019-01-07 20:34:29',
-                'modified' => '2019-01-07 20:34:29'
+                'modified' => '2019-01-07 20:34:29',
             ],
         ];
         parent::init();

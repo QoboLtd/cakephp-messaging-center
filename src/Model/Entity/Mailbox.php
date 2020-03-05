@@ -46,7 +46,7 @@ class Mailbox extends Entity
         'active' => true,
         'created' => true,
         'modified' => true,
-        'user' => true
+        'user' => true,
     ];
 
     protected $_virtual = ['imap_connection'];

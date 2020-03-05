@@ -53,7 +53,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 10,
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000002',
@@ -63,7 +63,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 1,
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000003',
@@ -73,7 +73,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 2,
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000004',
@@ -83,7 +83,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 3,
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000005',
@@ -93,7 +93,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 11,
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000006',
@@ -103,7 +103,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 13,
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000007',
@@ -113,7 +113,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 12,
                 'created' => '2019-01-07 20:47:29',
-                'modified' => '2019-01-07 20:47:29'
+                'modified' => '2019-01-07 20:47:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000008',
@@ -123,7 +123,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 23,
                 'created' => '2019-10-16 16:14:29',
-                'modified' => '2019-10-16 16:14:29'
+                'modified' => '2019-10-16 16:14:29',
             ],
             [
                 'id' => '00000000-0000-0000-0000-000000000009',
@@ -133,7 +133,7 @@ class FoldersFixture extends TestFixture
                 'type' => 'default',
                 'order_no' => 17,
                 'created' => '2019-10-16 16:28:29',
-                'modified' => '2019-10-16 16:28:29'
+                'modified' => '2019-10-16 16:28:29',
             ],
         ];
         parent::init();

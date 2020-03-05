@@ -59,12 +59,12 @@ class MailboxesTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'CakeDC/Users.Users'
+            'className' => 'CakeDC/Users.Users',
         ]);
 
         $this->hasMany('Folders', [
             'className' => 'MessagingCenter.Folders',
-            'foreignKey' => 'mailbox_id'
+            'foreignKey' => 'mailbox_id',
         ]);
     }
 
@@ -184,7 +184,7 @@ class MailboxesTable extends Table
             ->enableHydration(true)
             ->where([
                 'name' => $mailboxName,
-                'user_id' => $user['id']
+                'user_id' => $user['id'],
             ]);
 
         $result = $query->first();
@@ -201,7 +201,7 @@ class MailboxesTable extends Table
             'incoming_settings' => $options['incoming_settings'],
             'outgoing_transport' => $options['outgoing_transport'],
             'outgoing_settings' => $options['outgoing_settings'],
-            'active' => true
+            'active' => true,
         ]);
         $result = $this->save($mailbox);
 
@@ -274,7 +274,7 @@ class MailboxesTable extends Table
         $query = $this->find()
             ->enableHydration(true)
             ->where([
-                'user_id' => $user['id']
+                'user_id' => $user['id'],
             ]);
         $mailbox = $query->first();
         Assert::isInstanceOf($mailbox, EntityInterface::class, (string)__d('Qobo/MessagingCenter', 'User {0} does not have system mailbox!', $user['username']));
@@ -338,7 +338,7 @@ class MailboxesTable extends Table
                         'mailbox_id' => $mailboxId,
                         'name' => MailboxesTable::FOLDER_INBOX,
                     ]);
-                }
+                },
             ]);
         Assert::isInstanceOf($query, Query::class);
 
@@ -385,12 +385,12 @@ class MailboxesTable extends Table
         $mailboxId = $mailbox->get('id');
         $query = $table->find()
             ->where([
-                'message_id' => $messageId
+                'message_id' => $messageId,
             ])
             ->contain([
                 'Folders' => function ($q) use ($mailboxId) {
                     return $q->where(['mailbox_id' => $mailboxId]);
-                }
+                },
             ]);
 
         Assert::isInstanceOf($query, Query::class);

@@ -39,6 +39,6 @@ class Folder extends Entity
         'modified' => true,
         'mailbox' => true,
         'parent_qobo_folder' => true,
-        'child_qobo_folders' => true
+        'child_qobo_folders' => true,
     ];
 }

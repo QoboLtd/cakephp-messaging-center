@@ -44,7 +44,7 @@ class UserListener implements EventListenerInterface
              (string)EventName::CAKE_ORM_MODEL_AFTER_SAFE() => [
                 'callable' => 'afterSave',
                 'priority' => 12,
-             ]
+             ],
         ];
     }
 
@@ -104,7 +104,7 @@ class UserListener implements EventListenerInterface
         $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
             'table' => TableRegistry::get('Messages'),
             'entity' => $entity,
-            'data' => $data
+            'data' => $data,
         ]);
         $this->getEventManager()->dispatch($event);
         $data = !empty($event->result) ? $event->result : $data;

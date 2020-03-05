@@ -171,7 +171,7 @@ class MessagesFixture extends TestFixture
                         ],
                     ],
                     'toaddress' => 'foo@bar.com',
-                    'fromaddress' => 'Test2019'
+                    'fromaddress' => 'Test2019',
                 ]),
                 'message_id' => 'message-id-001',
             ],
@@ -236,7 +236,7 @@ class MessagesFixture extends TestFixture
                 'headers' => json_encode([
                     'to' => [
                         0 => [
-                            'mailbox' => 'Undisclosed recipients'
+                            'mailbox' => 'Undisclosed recipients',
                         ],
                     ],
                     'Date' => 'Thu, 1 Aug 2019 16:08:44 +0300',
@@ -249,7 +249,7 @@ class MessagesFixture extends TestFixture
                         ],
                     ],
                     'toaddress' => 'Undisclosed recipients: ;',
-                    'fromaddress' => 'Test2019'
+                    'fromaddress' => 'Test2019',
                 ]),
                 'message_id' => 'message-id-100',
             ],

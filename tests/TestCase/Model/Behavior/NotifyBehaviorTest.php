@@ -36,10 +36,10 @@ class NotifyBehaviorTest extends TestCase
         $this->Articles->setDisplayField('title');
         $this->Articles->belongsTo('Users', [
             'foreignKey' => 'author',
-            'className' => 'Users'
+            'className' => 'Users',
         ]);
         $this->Articles->addBehavior('MessagingCenter.Notify', [
-            'ignoredFields' => ['id']
+            'ignoredFields' => ['id'],
         ]);
 
         /**
@@ -80,7 +80,7 @@ class NotifyBehaviorTest extends TestCase
         $data = [
             'author' => '00000000-0000-0000-0000-000000000001',
             'title' => 'New Article',
-            'body' => 'New Article Body'
+            'body' => 'New Article Body',
         ];
 
         // triggers behavior
@@ -112,7 +112,7 @@ class NotifyBehaviorTest extends TestCase
     {
         $data = [
             'title' => 'Modified Article',
-            'body' => 'Modified Article Body'
+            'body' => 'Modified Article Body',
         ];
 
         $entity = $this->Articles->get('00000000-0000-0000-0000-000000000001');
@@ -126,7 +126,7 @@ class NotifyBehaviorTest extends TestCase
 
         $expected = [
             'subject' => 'Article: Modified Article',
-            'content' => 'Article <a href="/articles/view/' . $result->id . '">Modified Article</a> has been modified.' . "\n\n" . '* <strong>Title</strong>: changed from \'First Article\' to \'Modified Article\'.' . "\n" . '* <strong>Body</strong>: changed from \'First Article Body\' to \'Modified Article Body\'.' . "\n"
+            'content' => 'Article <a href="/articles/view/' . $result->id . '">Modified Article</a> has been modified.' . "\n\n" . '* <strong>Title</strong>: changed from \'First Article\' to \'Modified Article\'.' . "\n" . '* <strong>Body</strong>: changed from \'First Article Body\' to \'Modified Article Body\'.' . "\n",
         ];
 
         $table = TableRegistry::get('MessagingCenter.Messages');
