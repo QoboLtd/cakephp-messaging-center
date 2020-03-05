@@ -39,7 +39,7 @@ class MailboxListener implements EventListenerInterface
             (string)EventName::CAKE_ORM_MODEL_AFTER_SAFE() => [
                 'callable' => 'createFolders',
                 'priority' => 8,
-            ]
+            ],
         ];
     }
 

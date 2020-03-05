@@ -33,7 +33,7 @@ class FoldersController extends AppController
     public function view(string $id = null)
     {
         $folder = $this->Folders->get($id, [
-            'contain' => ['Messages']
+            'contain' => ['Messages'],
         ]);
 
         $this->set('folder', $folder);
@@ -75,7 +75,7 @@ class FoldersController extends AppController
     public function edit(string $id = null)
     {
         $folder = $this->Folders->get($id, [
-            'contain' => []
+            'contain' => [],
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {

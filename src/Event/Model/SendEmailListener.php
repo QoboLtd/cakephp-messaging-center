@@ -55,7 +55,7 @@ class SendEmailListener implements EventListenerInterface
             'port' => $outgoingSettings['port'],
             'username' => $outgoingSettings['username'],
             'password' => $outgoingSettings['password'],
-            'className' => Inflector::camelize($mailbox->get('outgoing_transport'))
+            'className' => Inflector::camelize($mailbox->get('outgoing_transport')),
         ]);
 
         /**

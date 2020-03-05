@@ -169,7 +169,7 @@ class NotifyBehavior extends Behavior
             }
             $result[$k] = [
                 'oldValue' => $v,
-                'newValue' => $entity->{$k}
+                'newValue' => $entity->{$k},
             ];
         }
 
@@ -262,7 +262,7 @@ class NotifyBehavior extends Behavior
         $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
             'table' => $this->getTable(),
             'entity' => $entity,
-            'data' => $data
+            'data' => $data,
         ]);
         $this->getEventManager()->dispatch($event);
         $data = !empty($event->result) ? $event->result : $data;
@@ -295,7 +295,7 @@ class NotifyBehavior extends Behavior
             'recordId' => $entity->get($primaryKey),
             'recordName' => $entity->get($table->getDisplayField()),
             'field' => Inflector::humanize($field),
-            'modifiedFields' => $modifiedFields
+            'modifiedFields' => $modifiedFields,
         ];
     }
 }

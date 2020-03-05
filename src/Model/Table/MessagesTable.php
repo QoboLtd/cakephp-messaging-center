@@ -63,19 +63,19 @@ class MessagesTable extends Table
         $this->belongsTo('Folders', [
             'foreignKey' => 'folder_id',
             'joinType' => 'INNER',
-            'className' => 'MessagingCenter.Folders'
+            'className' => 'MessagingCenter.Folders',
         ]);
 
         $this->belongsTo('FromUser', [
             'foreignKey' => 'from_user',
             'className' => 'CakeDC/Users.Users',
-            'propertyName' => 'fromUser'
+            'propertyName' => 'fromUser',
         ]);
 
         $this->belongsTo('ToUser', [
             'foreignKey' => 'to_user',
             'className' => 'CakeDC/Users.Users',
-            'propertyName' => 'toUser'
+            'propertyName' => 'toUser',
         ]);
 
         $this->hasMany('attachments', [
@@ -246,7 +246,7 @@ class MessagesTable extends Table
             static::FOLDER_INBOX,
             static::FOLDER_ARCHIVED,
             static::FOLDER_SENT,
-            static::FOLDER_TRASH
+            static::FOLDER_TRASH,
         ];
 
         return $result;
@@ -350,7 +350,7 @@ class MessagesTable extends Table
             case 'archived':
                 $result = [
                     'to_user' => $userId,
-                    'status' => $this->getArchivedStatus()
+                    'status' => $this->getArchivedStatus(),
                 ];
                 break;
 
@@ -361,7 +361,7 @@ class MessagesTable extends Table
             case 'trash':
                 $result = [
                     'to_user' => $userId,
-                    'status' => $this->getDeletedStatus()
+                    'status' => $this->getDeletedStatus(),
                 ];
                 break;
 
@@ -369,7 +369,7 @@ class MessagesTable extends Table
             default:
                 $result = [
                     'to_user' => $userId,
-                    'status IN' => [$this->getReadStatus(), $this->getNewStatus()]
+                    'status IN' => [$this->getReadStatus(), $this->getNewStatus()],
                 ];
                 break;
         }
@@ -407,7 +407,7 @@ class MessagesTable extends Table
                 'OR' => [
                     'from_user' => $userId,
                     'to_user' => $userId,
-                ]
+                ],
             ]);
         $query->execute();
 
@@ -427,7 +427,7 @@ class MessagesTable extends Table
             }
 
             $this->patchEntity($message, [
-                'folder_id' => $folder->get('id')
+                'folder_id' => $folder->get('id'),
             ]);
 
             $this->save($message);

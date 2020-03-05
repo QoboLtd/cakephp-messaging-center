@@ -48,19 +48,19 @@ class FoldersTable extends Table
         $this->belongsTo('Mailboxes', [
             'foreignKey' => 'mailbox_id',
             'joinType' => 'INNER',
-            'className' => 'MessagingCenter.Mailboxes'
+            'className' => 'MessagingCenter.Mailboxes',
         ]);
         $this->belongsTo('ParentFolders', [
             'className' => 'MessagingCenter.Folders',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_id',
         ]);
         $this->hasMany('ChildFolders', [
             'className' => 'MessagingCenter.Folders',
-            'foreignKey' => 'parent_id'
+            'foreignKey' => 'parent_id',
         ]);
         $this->hasMany('Messages', [
             'className' => 'MessagingCenter.Messages',
-            'foreignKey' => 'folder_id'
+            'foreignKey' => 'folder_id',
         ]);
     }
 

@@ -43,9 +43,9 @@ class MailboxesController extends AppController
         $mailbox = $this->Mailboxes->get($id, [
             'contain' => [
                 'Folders' => [
-                    'sort' => ['Folders.order_no' => 'ASC']
-                ]
-            ]
+                    'sort' => ['Folders.order_no' => 'ASC'],
+                ],
+            ],
         ]);
 
         $folderId = $folderId ?? $this->request->getQuery('folder_id');
@@ -65,13 +65,13 @@ class MailboxesController extends AppController
 
         $this->paginate = [
             'conditions' => [
-                'folder_id' => $folder->get('id')
+                'folder_id' => $folder->get('id'),
             ],
             'contain' => [
                 'FromUser',
                 'ToUser',
             ],
-            'order' => ['Messages.date_sent' => 'DESC']
+            'order' => ['Messages.date_sent' => 'DESC'],
         ];
         $messages = $this->paginate($this->Messages);
 
@@ -112,7 +112,7 @@ class MailboxesController extends AppController
         $usersTable = TableRegistry::getTableLocator()->get('Users');
         $users = $usersTable->find('list')
             ->where([
-                'active' => true
+                'active' => true,
             ]);
         $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports', 'users'));
     }
@@ -129,9 +129,9 @@ class MailboxesController extends AppController
         $mailbox = $this->Mailboxes->get($id, [
             'contain' => [
                 'Folders' => [
-                    'sort' => ['Folders.order_no' => 'ASC']
-                ]
-            ]
+                    'sort' => ['Folders.order_no' => 'ASC'],
+                ],
+            ],
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -159,7 +159,7 @@ class MailboxesController extends AppController
         $usersTable = TableRegistry::getTableLocator()->get('Users');
         $users = $usersTable->find('list')
             ->where([
-                'active' => true
+                'active' => true,
             ]);
         $this->set(compact('mailbox', 'types', 'incomingTransports', 'outgoingTransports', 'users'));
     }
