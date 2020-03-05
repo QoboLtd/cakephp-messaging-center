@@ -231,32 +231,6 @@ class MessagesTableTest extends TestCase
         $this->assertSame(['Inbox', 'Archived', 'Sent', 'Trash'], $this->Messages->getDefaultFolders());
     }
 
-    public function testFolderExists(): void
-    {
-        $this->assertTrue($this->Messages->folderExists('Inbox'));
-
-        $this->assertFalse($this->Messages->folderExists('non-existing-folder'));
-        $this->assertFalse($this->Messages->folderExists(''));
-        $this->assertFalse($this->Messages->folderExists());
-    }
-
-    public function testGetFoldersWithMessage(): void
-    {
-        $message = $this->Messages->get('00000000-0000-0000-0000-000000000001');
-
-        $resultSet = $this->Messages->getFolders($message);
-        $this->assertCount(4, $resultSet);
-
-        foreach ($resultSet as $folder) {
-            $this->assertSame('00000000-0000-0000-0000-000000000001', $folder->get('mailbox_id'));
-        }
-    }
-
-    public function testGetFoldersWithoutMessage(): void
-    {
-        $this->assertSame(['Inbox', 'Archived', 'Sent', 'Trash'], $this->Messages->getFolders(null));
-    }
-
     public function testGetFolderByName(): void
     {
         $message = $this->Messages->get('00000000-0000-0000-0000-000000000001');

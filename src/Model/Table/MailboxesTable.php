@@ -214,22 +214,6 @@ class MailboxesTable extends Table
     }
 
     /**
-     * Returns the inbox folder for this Mailbox.
-     *
-     * The folder ID is returned.
-     *
-     * @param \Cake\Datasource\EntityInterface $mailbox to get default folder for
-     * @return string
-     * @throws InvalidArgumentException in case of no Inbox folder found in the mailbox
-     */
-    public function getInboxFolder(EntityInterface $mailbox): string
-    {
-        deprecationWarning('MailboxesTable::getInboxFolder is deprecated. Use getFolderByName instead.');
-
-        return $this->getFolderByName($mailbox, self::FOLDER_INBOX)->get('id');
-    }
-
-    /**
      * Returns the Folder with the specified name, under a particular Mailbox
      *
      * @param \Cake\Datasource\EntityInterface $mailbox Mailbox entity
