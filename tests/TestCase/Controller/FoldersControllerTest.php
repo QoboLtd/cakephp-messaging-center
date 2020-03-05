@@ -44,7 +44,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->post('/messaging-center/folders/add', [
             'name' => 'Test',
             'type' => 'system',
-            'mailbox_id' => '00000000-0000-0000-0000-000000000001'
+            'mailbox_id' => '00000000-0000-0000-0000-000000000001',
         ]);
         $this->assertRedirect(['action' => 'index']);
     }
@@ -63,7 +63,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
 
         $this->post("/messaging-center/folders/edit/$folderId", [
-            'name' => 'New Folder Name'
+            'name' => 'New Folder Name',
         ]);
         $this->assertRedirect(['action' => 'view', $folderId]);
     }

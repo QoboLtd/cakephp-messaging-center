@@ -66,6 +66,7 @@ class MessageFactory
      *
      * @param \Cake\Datasource\EntityInterface $message Message to be associated with attachmetns
      * @param \PhpImap\IncomingMailAttachment[] $attachments Attachments to be saved
+     * @return void
      */
     protected static function saveAttachments(EntityInterface $message, array $attachments): void
     {
@@ -78,7 +79,7 @@ class MessageFactory
                     'name' => $attachment->name,
                     'type' => null,
                     'size' => null,
-                ]
+                ],
             ]);
 
             $storage = $storageTable->patchEntity($storage, [

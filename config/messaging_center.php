@@ -4,23 +4,23 @@ return [
     'MessagingCenter' => [
         'systemUser' => [
             'id' => '00000000-0000-0000-0000-000000000000',
-            'name' => 'SYSTEM'
+            'name' => 'SYSTEM',
         ],
         'welcomeMessage' => [
             'enabled' => true,
             'projectName' => 'Project Name',
         ],
         'incomingTransports' => [
-            'imap4' => 'IMAP'
+            'imap4' => 'IMAP',
         ],
         'outgoingTransports' => [
-            'smtp' => 'SMTP'
+            'smtp' => 'SMTP',
         ],
         'remote_mailbox_messages' => [
-            'markAsSeen' => false
+            'markAsSeen' => false,
         ],
         'local_mailbox_messages' => [
-            'initialStatus' => 'new'
+            'initialStatus' => 'new',
         ],
         'Mailbox' => [
             'default' => [
@@ -31,7 +31,7 @@ return [
                     'password' => '',
                     'host' => 'localhost',
                     'port' => 993,
-                    'protocol' => 'imap'
+                    'protocol' => 'imap',
                 ],
                 'outgoing_transport' => 'internal',
                 'outgoing_settings' => [
@@ -39,7 +39,7 @@ return [
                     'password' => '',
                     'host' => 'localhost',
                     'port' => 465,
-                    'protocol' => 'smtp'
+                    'protocol' => 'smtp',
                 ],
                 'mailbox_postfix' => '@system',
             ],
@@ -50,5 +50,5 @@ return [
         'Folder' => [
             'defaultType' => 'default',
         ],
-    ]
+    ],
 ];

@@ -25,7 +25,7 @@ class MessagesControllerTest extends IntegrationTestCase
         'plugin.messaging_center.messages',
         'plugin.messaging_center.folders',
         'plugin.messaging_center.mailboxes',
-        'plugin.Burzum/FileStorage.FileStorage'
+        'plugin.Burzum/FileStorage.FileStorage',
     ];
 
     /**
@@ -127,7 +127,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $data = [
             'to_user' => '00000000-0000-0000-0000-000000000002',
             'subject' => 'testComposePost message',
-            'content' => 'Bla bla bla'
+            'content' => 'Bla bla bla',
         ];
         $this->post('/messaging-center/messages/compose/' . $mailboxId, $data);
 
@@ -137,7 +137,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'plugin' => 'MessagingCenter',
             'controller' => 'Mailboxes',
             'action' => 'view',
-            $mailboxId
+            $mailboxId,
         ];
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
@@ -170,7 +170,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->post('/messaging-center/messages/compose/' . $mailboxId, [
             'to_user' => '00000000-0000-0000-0000-000000000002',
             'subject' => 'testComposePost message',
-            'content' => 'Bla bla bla'
+            'content' => 'Bla bla bla',
         ]);
         $this->assertResponseCode(302);
 
@@ -230,7 +230,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $id = '00000000-0000-0000-0000-000000000001';
         $mailboxId = '00000000-0000-0000-0000-000000000001';
         $entity = $this->MessagesTable->get($id, [
-            'contain' => ['Folders', 'ToUser', 'FromUser']
+            'contain' => ['Folders', 'ToUser', 'FromUser'],
         ]);
 
         $expected = 2 + $this->MessagesTable->find('all')->count();
@@ -239,7 +239,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'subject' => 'testReplyPut message ' . rand(),
             'content' => 'Bla bla bla' . rand(),
             'content_text' => 'Bla bla bla' . rand(),
-            'to_user' => $entity->get('from_user')
+            'to_user' => $entity->get('from_user'),
         ];
 
         $this->post('/messaging-center/messages/reply/' . $id, $data);
@@ -250,7 +250,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'plugin' => 'MessagingCenter',
             'controller' => 'Mailboxes',
             'action' => 'view',
-            $mailboxId
+            $mailboxId,
         ];
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());
@@ -274,7 +274,7 @@ class MessagesControllerTest extends IntegrationTestCase
         $this->assertEquals($time->i18nFormat(), $newEntity->date_sent->i18nFormat());
         // verify existing message was not affected.
         $entityVerify = $this->MessagesTable->get($id, [
-            'contain' => ['Folders', 'ToUser', 'FromUser']
+            'contain' => ['Folders', 'ToUser', 'FromUser'],
         ]);
         $this->assertEquals($entity->toArray(), $entityVerify->toArray());
         $this->assertSession('The message has been sent.', 'Flash.flash.0.message');
@@ -290,7 +290,7 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $this->put('/messaging-center/messages/reply/' . $messageId, [
             'subject' => 'testReplyPut message',
-            'content' => 'Bla bla bla'
+            'content' => 'Bla bla bla',
         ]);
         $this->assertResponseCode(302);
 
@@ -308,7 +308,7 @@ class MessagesControllerTest extends IntegrationTestCase
 
         $data = [
             'subject' => 'testReplyPut message',
-            'content' => 'Bla bla bla'
+            'content' => 'Bla bla bla',
         ];
         $this->post('/messaging-center/messages/reply/' . $id, $data);
 
@@ -318,7 +318,7 @@ class MessagesControllerTest extends IntegrationTestCase
             'plugin' => 'MessagingCenter',
             'controller' => 'Mailboxes',
             'action' => 'view',
-            $mailboxId
+            $mailboxId,
         ];
         $this->assertRedirect($url);
         $this->assertEquals($expected, $this->MessagesTable->find('all')->count());

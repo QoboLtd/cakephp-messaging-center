@@ -67,12 +67,12 @@ class MessagesController extends AppController
         $message = $this->Messages->get($id, [
             'contain' => [
                 'Folders' => [
-                    'Mailboxes'
+                    'Mailboxes',
                 ],
                 'FromUser',
                 'ToUser',
-                'attachments'
-            ]
+                'attachments',
+            ],
         ]);
 
         $folder = $this->Messages->getFolderByMessage($message, $this->Auth->user('id'));
@@ -129,7 +129,7 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Message $message
          */
         $message = $this->Messages->get($id, [
-            'contain' => ['Folders', 'ToUser', 'FromUser']
+            'contain' => ['Folders', 'ToUser', 'FromUser'],
         ]);
 
         $mailboxes = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
@@ -138,7 +138,7 @@ class MessagesController extends AppController
          * @var \MessagingCenter\Model\Entity\Mailbox $mailbox
          */
         $mailbox = $mailboxes->get($message->get('folder')->get('mailbox_id'), [
-            'contain' => ['Folders']
+            'contain' => ['Folders'],
         ]);
 
         $this->createMessage($mailbox, $message);
@@ -301,9 +301,9 @@ class MessagesController extends AppController
         $mailbox = $mailboxes->get($mailboxId, [
             'contain' => [
                 'Folders' => [
-                    'sort' => ['Folders.order_no' => 'ASC']
-                ]
-            ]
+                    'sort' => ['Folders.order_no' => 'ASC'],
+                ],
+            ],
         ]);
         Assert::isInstanceOf($mailbox, Mailbox::class);
 
@@ -323,7 +323,7 @@ class MessagesController extends AppController
         $folder = $folders->find()
             ->where([
                 'name' => $folderName,
-                'mailbox_id' => $mailboxId
+                'mailbox_id' => $mailboxId,
             ])
             ->enableHydration(true)
             ->first();
