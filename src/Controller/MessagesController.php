@@ -30,29 +30,6 @@ use Webmozart\Assert\Assert;
  */
 class MessagesController extends AppController
 {
-
-    /**
-     * Folder method
-     * @param string $folderName Folder name
-     * @return \Cake\Http\Response|void|null
-     */
-    public function folder(string $folderName = MailboxesTable::FOLDER_INBOX)
-    {
-        deprecationWarning('Action Messages::folder is no longer supported. Please, use Mailboxes::view instead.');
-
-        /** @var MailboxesTable $mailboxesTable */
-        $mailboxesTable = TableRegistry::getTableLocator()->get('MessagingCenter.Mailboxes');
-        $mailbox = $mailboxesTable->createDefaultMailbox($this->Auth->user());
-        $folder = $mailboxesTable->getFolderByName($mailbox, $folderName);
-
-        return $this->redirect([
-            'controller' => 'Mailboxes',
-            'action' => 'view',
-            $mailbox->get('id'),
-            $folder->get('id'),
-        ]);
-    }
-
     /**
      * View method
      *
@@ -187,66 +164,6 @@ class MessagesController extends AppController
                 $this->Flash->error((string)__d('Qobo/MessagingCenter', 'The message could not be sent. Please, try again.'));
             }
         }
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Message id.
-     * @return \Cake\Http\Response|void|null
-     */
-    public function delete(string $id = null)
-    {
-        deprecationWarning('Action delete is deprecated. Please, use move instead.');
-
-        /**
-         * @var \MessagingCenter\Model\Entity\Message $message
-         */
-        $message = $this->Messages->get($id);
-
-        $folder = $this->Messages->getFolderByName($message, MailboxesTable::FOLDER_TRASH);
-
-        return $this->setAction('move', $id, $folder->get('id'));
-    }
-
-    /**
-     * Archive method
-     *
-     * @param string|null $id Message id.
-     * @return \Cake\Http\Response|void|null
-     */
-    public function archive(string $id = null)
-    {
-        deprecationWarning('Action archive is deprecated. Please, use move instead.');
-
-        /**
-         * @var \MessagingCenter\Model\Entity\Message $message
-         */
-        $message = $this->Messages->get($id);
-
-        $folder = $this->Messages->getFolderByName($message, MailboxesTable::FOLDER_ARCHIVE);
-
-        return $this->setAction('move', $id, $folder->get('id'));
-    }
-
-    /**
-     * Restore method
-     *
-     * @param string|null $id Message id.
-     * @return \Cake\Http\Response|void|null
-     */
-    public function restore(string $id = null)
-    {
-        deprecationWarning('Action restore is deprecated. Please, use move instead.');
-
-        /**
-         * @var \MessagingCenter\Model\Entity\Message $message
-         */
-        $message = $this->Messages->get($id);
-
-        $folder = $this->Messages->getFolderByName($message, MailboxesTable::FOLDER_INBOX);
-
-        return $this->setAction('move', $id, $folder->get('id'));
     }
 
     /**

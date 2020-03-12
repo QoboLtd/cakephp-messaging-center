@@ -253,21 +253,6 @@ class MessagesTable extends Table
     }
 
     /**
-     * Check if folder exists.
-     * @param  string $folder folder name
-     * @return bool
-     */
-    public function folderExists(string $folder = ''): bool
-    {
-        deprecationWarning('Method MessagesTable::folderExists is deprecated');
-        if (!in_array($folder, $this->getDefaultFolders())) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Get message's folder based on http referer, if not
      * matched get it from user id and message status.
      * @param \Cake\Datasource\EntityInterface $message Message enity
@@ -309,33 +294,6 @@ class MessagesTable extends Table
         Assert::isInstanceOf($folder, Folder::class);
 
         return $folder;
-    }
-
-    /**
-     * Finds and returns the folders under the same Mailbox
-     *
-     * @param \Cake\Datasource\EntityInterface $message Message Entity
-     * @return \Cake\Datasource\ResultSetInterface|array
-     */
-    public function getFolders(?EntityInterface $message)
-    {
-        if (empty($message)) {
-            deprecationWarning('MessagesTable::getFolders is deprecated. Use getDefaultFolders instead');
-
-            return $this->getDefaultFolders();
-        }
-
-        $folder = $this->getFolderByMessage($message, '');
-
-        $foldersTable = TableRegistry::getTableLocator()->get('MessagingCenter.Folders');
-        $query = $foldersTable
-            ->find()
-            ->where([
-                'mailbox_id' => $folder->get('mailbox_id'),
-            ]);
-        Assert::isInstanceOf($query, QueryInterface::class);
-
-        return $query->all();
     }
 
     /**
