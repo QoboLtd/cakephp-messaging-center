@@ -11,12 +11,17 @@
  */
 namespace MessagingCenter\Notifier;
 
+use Cake\Event\Event;
+use Cake\Event\EventDispatcherTrait;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
+use MessagingCenter\Event\EventName;
 use Webmozart\Assert\Assert;
 
 class MessageNotifier extends Notifier
 {
+    use EventDispatcherTrait;
+
     /**
      * Messages Table instance.
      *
@@ -137,7 +142,14 @@ class MessageNotifier extends Notifier
         $data = $this->getMessageData();
         $entity = $this->_table->patchEntity($entity, $data);
 
-        $this->_table->save($entity);
+        if ($this->_table->save($entity)) {
+            $event = new Event((string)EventName::NEW_NOTIFICATION_RECEIVED(), $this, [
+                'table' => $this->_table,
+                'entity' => $entity,
+                'data' => $data,
+            ]);
+            $this->getEventManager()->dispatch($event);
+        }
     }
 
     /**
