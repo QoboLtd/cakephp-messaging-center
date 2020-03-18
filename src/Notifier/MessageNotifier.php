@@ -142,8 +142,6 @@ class MessageNotifier extends Notifier
         $data = $this->getMessageData();
         $entity = $this->_table->patchEntity($entity, $data);
 
-        $this->_table->save($entity);
-
         if ($this->_table->save($entity)) {
             $event = new Event((string)EventName::NEW_NOTIFICATION_RECEIVED(), $this, [
                 'table' => $this->_table,
