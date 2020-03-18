@@ -2,6 +2,7 @@
 namespace MessagingCenter\Test\TestCase\Model\Behavior;
 
 use Cake\Core\Configure;
+use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -48,6 +49,7 @@ class NotifyBehaviorTest extends TestCase
         $behavior = $this->Articles->behaviors()->get('Notify');
         $this->Behavior = $behavior;
 
+        EventManager::instance()->setEventList(new EventList());
         EventManager::instance()->on(new MailboxListener());
     }
 
@@ -106,6 +108,22 @@ class NotifyBehaviorTest extends TestCase
         $this->assertEquals($expected['content'], $entity->get('content'));
         $this->assertEquals($expected['from_user'], $entity->get('from_user'));
         $this->assertEquals($expected['sender'], $entity->get('sender'));
+    }
+
+    public function testNotificationEvent(): void
+    {
+        $data = [
+            'author' => '00000000-0000-0000-0000-000000000001',
+            'title' => 'New Article',
+            'body' => 'New Article Body',
+        ];
+
+        /**
+         * @var \MessagingCenter\Test\App\Model\Entity\Article $result
+         */
+        $result = $this->Articles->save($this->Articles->newEntity($data));
+
+        $this->assertEventFired('MessagingCenter.Notify.notificationReceived');
     }
 
     public function testAfterSaveModified(): void
