@@ -78,46 +78,45 @@ class MailboxesTable extends Table
     {
         $validator
             ->uuid('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->scalar('name')
             ->maxLength('name', 255)
             ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->notEmptyString('name');
 
         $validator
             ->scalar('type')
             ->maxLength('type', 255)
             ->requirePresence('type', 'create')
-            ->notEmpty('type');
+            ->notEmptyString('type');
 
         $validator
             ->scalar('incoming_transport')
             ->maxLength('incoming_transport', 255)
             ->requirePresence('incoming_transport', 'create')
-            ->notEmpty('incoming_transport');
+            ->notEmptyString('incoming_transport');
 
         $validator
             ->isArray('incoming_settings')
             ->requirePresence('incoming_settings', 'create')
-            ->notEmpty('incoming_settings');
+            ->notEmptyArray('incoming_settings');
 
         $validator
             ->scalar('outgoing_transport')
             ->maxLength('outgoing_transport', 255)
             ->requirePresence('outgoing_transport', 'create')
-            ->notEmpty('outgoing_transport');
+            ->notEmptyString('outgoing_transport');
 
         $validator
             ->isArray('outgoing_settings')
             ->requirePresence('outgoing_settings', 'create')
-            ->notEmpty('outgoing_settings');
+            ->notEmptyArray('outgoing_settings');
 
         $validator
             ->boolean('active')
-            ->requirePresence('active', 'create')
-            ->notEmpty('active');
+            ->requirePresence('active', 'create');
 
         return $validator;
     }

@@ -88,7 +88,7 @@ class MessageNotifier extends Notifier
         /**
          * @var \MessagingCenter\Model\Table\MessagesTable $table
          */
-        $table = TableRegistry::get('MessagingCenter.Messages');
+        $table = TableRegistry::getTableLocator()->get('MessagingCenter.Messages');
         $this->_table = $table;
 
         // set properties

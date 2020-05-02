@@ -16,6 +16,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Mailer\Email;
+use Cake\Mailer\TransportFactory;
 use Cake\Utility\Inflector;
 use MessagingCenter\Event\EventName;
 use Webmozart\Assert\Assert;
@@ -50,7 +51,7 @@ class SendEmailListener implements EventListenerInterface
 
         $outgoingSettings = $mailbox->get('outgoing_settings');
 
-        Email::configTransport('custom', [
+        TransportFactory::setConfig('custom', [
             'host' => (!empty($outgoingSettings['use_ssl']) ? 'ssl://' : '') . $outgoingSettings['host'],
             'port' => $outgoingSettings['port'],
             'username' => $outgoingSettings['username'],
@@ -65,9 +66,9 @@ class SendEmailListener implements EventListenerInterface
         Assert::isInstanceOf($email, Email::class);
 
         $email->setTransport('custom');
-        $email->from($outgoingSettings['username']);
-        $email->to($data['to_user']);
-        $email->subject($data['subject']);
+        $email->setFrom($outgoingSettings['username']);
+        $email->setTo($data['to_user']);
+        $email->setSubject($data['subject']);
 
         $result = $email->send($data['content']);
     }

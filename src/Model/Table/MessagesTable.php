@@ -111,44 +111,44 @@ class MessagesTable extends Table
     {
         $validator
             ->uuid('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('from_user', 'create')
-            ->notEmpty('from_user', null, function ($context) {
+            ->notEmptyString('from_user', null, function ($context) {
                 return !empty($context['data']['type']) && $context['data']['type'] === 'system';
             });
         $validator
             ->requirePresence('to_user', 'create')
-            ->notEmpty('to_user', null, function ($context) {
+            ->notEmptyString('to_user', null, function ($context) {
                 return !empty($context['data']['type']) && $context['data']['type'] === 'system';
             });
 
         $validator
             ->requirePresence('subject', 'create')
-            ->allowEmpty('subject');
+            ->allowEmptyString('subject');
 
         $validator
             ->requirePresence('content', 'create')
-            ->notEmpty('content');
+            ->notEmptyString('content');
 
         $validator
             ->dateTime('date_sent')
-            ->allowEmpty('date_sent');
+            ->allowEmptyDateTime('date_sent');
 
         $validator
             ->requirePresence('status', 'create')
-            ->notEmpty('status');
+            ->notEmptyString('status');
 
         $validator
-            ->allowEmpty('related_model');
+            ->allowEmptyString('related_model');
 
         $validator
-            ->allowEmpty('related_id');
+            ->allowEmptyString('related_id');
 
         $validator
             ->uuid('folder_id')
-            ->notEmpty('folder_id');
+            ->notEmptyString('folder_id');
 
         return $validator;
     }

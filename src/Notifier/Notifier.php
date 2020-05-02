@@ -129,7 +129,6 @@ class Notifier implements NotifierInterface
             $View->setPlugin($plugin);
         }
 
-        $View->hasRendered = false;
         $View->setTemplatePath('Notifier');
         $View->setLayoutPath('Notifier');
 

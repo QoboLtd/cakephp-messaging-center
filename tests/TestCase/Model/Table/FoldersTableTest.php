@@ -26,8 +26,8 @@ class FoldersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.messaging_center.mailboxes',
-        'plugin.messaging_center.folders',
+        'plugin.MessagingCenter.Mailboxes',
+        'plugin.MessagingCenter.Folders',
     ];
 
     /**

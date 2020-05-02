@@ -27,10 +27,10 @@ class MessagesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.CakeDC/Users.users',
-        'plugin.messaging_center.mailboxes',
-        'plugin.messaging_center.folders',
-        'plugin.messaging_center.messages',
+        'plugin.CakeDC/Users.Users',
+        'plugin.MessagingCenter.Mailboxes',
+        'plugin.MessagingCenter.Folders',
+        'plugin.MessagingCenter.Messages',
     ];
 
     /**
