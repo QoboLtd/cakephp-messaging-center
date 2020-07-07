@@ -22,7 +22,7 @@
         "optimize-autoloader": true
     },
     "require": {
-        "php-imap/php-imap": "~3.0.0",
+        "php-imap/php-imap": "~4.1.0",
         "qobo/cakephp-utils": "^13.0"
     },
     "require-dev": {
