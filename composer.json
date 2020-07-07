@@ -21,15 +21,9 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
-	"repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/QoboLtd/cakephp-utils.git"
-        }
-    ],
     "require": {
         "php-imap/php-imap": "~3.0.0",
-        "qobo/cakephp-utils": "dev-cakephp-v38"
+        "qobo/cakephp-utils": "^13.0"
     },
     "require-dev": {
         "qobo/cakephp-composer-dev": "^v1.0"
