@@ -11,8 +11,8 @@ use MessagingCenter\Event\Model\MailboxListener;
 class NotifyBehaviorTest extends TestCase
 {
     public $fixtures = [
-        'plugin.MessagingCenter.articles',
-        'plugin.CakeDC/Users.users',
+        'plugin.MessagingCenter.Articles',
+        'plugin.CakeDC/Users.Users',
     ];
 
     /**

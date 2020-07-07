@@ -74,24 +74,24 @@ class FoldersTable extends Table
     {
         $validator
             ->uuid('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->scalar('name')
             ->maxLength('name', 255)
             ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->notEmptyString('name');
 
         $validator
             ->scalar('type')
             ->maxLength('type', 255)
             ->requirePresence('type', 'create')
-            ->notEmpty('type');
+            ->notEmptyString('type');
 
         $validator
             ->uuid('mailbox_id')
             ->requirePresence('mailbox_id', 'create')
-            ->notEmpty('mailbox_id');
+            ->notEmptyString('mailbox_id');
 
         return $validator;
     }

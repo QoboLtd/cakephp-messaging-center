@@ -21,14 +21,8 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
-	"repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/QoboLtd/cakephp-file-storage.git"
-        }
-    ],
     "require": {
-        "php-imap/php-imap": "^3.0",
+        "php-imap/php-imap": "~3.0.0",
         "qobo/cakephp-utils": "^13.0"
     },
     "require-dev": {
@@ -61,6 +55,5 @@
         "test": "Runs phpcs and phpunit without coverage",
         "test-coverage": "Runs phpcs and phpunit with coverage enabled"
     },
-    "prefer-stable": true,
-    "minimum-stability": "dev"
+    "prefer-stable": true
 }

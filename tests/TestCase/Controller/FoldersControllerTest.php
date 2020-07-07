@@ -14,9 +14,9 @@ class FoldersControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.messaging_center.folders',
-        'plugin.messaging_center.messages',
-        'plugin.messaging_center.mailboxes',
+        'plugin.MessagingCenter.Folders',
+        'plugin.MessagingCenter.Messages',
+        'plugin.MessagingCenter.Mailboxes',
     ];
 
     public function setUp(): void

@@ -102,7 +102,7 @@ class UserListener implements EventListenerInterface
 
         // broadcast event for modifying message data before passing them to the Notifier
         $event = new Event((string)EventName::NOTIFY_BEFORE_RENDER(), $this, [
-            'table' => TableRegistry::get('Messages'),
+            'table' => TableRegistry::getTableLocator()->get('Messages'),
             'entity' => $entity,
             'data' => $data,
         ]);

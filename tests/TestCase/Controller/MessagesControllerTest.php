@@ -21,10 +21,10 @@ class MessagesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.CakeDC/Users.users',
-        'plugin.messaging_center.messages',
-        'plugin.messaging_center.folders',
-        'plugin.messaging_center.mailboxes',
+        'plugin.CakeDC/Users.Users',
+        'plugin.MessagingCenter.Messages',
+        'plugin.MessagingCenter.Folders',
+        'plugin.MessagingCenter.Mailboxes',
         'plugin.Burzum/FileStorage.FileStorage',
     ];
 

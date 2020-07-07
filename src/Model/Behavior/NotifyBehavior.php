@@ -88,7 +88,7 @@ class NotifyBehavior extends Behavior
 
         $this->_fromUser = Configure::readOrFail('MessagingCenter.systemUser.id');
         // get users table
-        $this->_usersTable = TableRegistry::get('Users');
+        $this->_usersTable = TableRegistry::getTableLocator()->get('Users');
 
         $this->Notifier = new MessageNotifier();
     }
@@ -150,9 +150,9 @@ class NotifyBehavior extends Behavior
     protected function _getModifiedFields(EntityInterface $entity): array
     {
         if ($entity->isNew()) {
-            $fields = $entity->extractOriginal($entity->visibleProperties());
+            $fields = $entity->extractOriginal($entity->getVisible());
         } else {
-            $fields = $entity->extractOriginalChanged($entity->visibleProperties());
+            $fields = $entity->extractOriginalChanged($entity->getVisible());
         }
 
         $diff = array_diff(array_keys($fields), $this->_ignoredModifyFields);
@@ -186,7 +186,7 @@ class NotifyBehavior extends Behavior
     {
         $result = [];
         foreach ($table->associations() as $association) {
-            if ($association->className() !== $this->_usersTable->getAlias()) {
+            if ($association->getClassName() !== $this->_usersTable->getAlias()) {
                 continue;
             }
 

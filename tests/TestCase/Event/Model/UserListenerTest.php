@@ -12,10 +12,10 @@ use MessagingCenter\Event\Model\UserListener;
 class UserListenerTest extends TestCase
 {
     public $fixtures = [
-        'plugin.CakeDC/Users.users',
-        'plugin.MessagingCenter.folders',
-        'plugin.MessagingCenter.mailboxes',
-        'plugin.MessagingCenter.messages',
+        'plugin.CakeDC/Users.Users',
+        'plugin.MessagingCenter.Folders',
+        'plugin.MessagingCenter.Mailboxes',
+        'plugin.MessagingCenter.Messages',
     ];
 
     /**

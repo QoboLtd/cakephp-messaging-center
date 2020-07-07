@@ -12,11 +12,8 @@
 namespace MessagingCenter\Controller;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
-use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use MessagingCenter\Enum\MailboxType;
-use MessagingCenter\Event\EventName;
 use MessagingCenter\Model\Entity\Folder;
 use MessagingCenter\Model\Entity\Mailbox;
 use MessagingCenter\Model\Entity\Message;
