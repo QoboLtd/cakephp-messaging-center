@@ -55,6 +55,5 @@
         "test": "Runs phpcs and phpunit without coverage",
         "test-coverage": "Runs phpcs and phpunit with coverage enabled"
     },
-    "prefer-stable": true,
-    "minimum-stability": "dev"
+    "prefer-stable": true
 }
