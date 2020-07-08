@@ -13,6 +13,7 @@ class RenameMessages extends AbstractMigration
     public function change()
     {
         $this->table('messages')
-            ->rename('qobo_messages');
+            ->rename('qobo_messages')
+            ->save();
     }
 }
