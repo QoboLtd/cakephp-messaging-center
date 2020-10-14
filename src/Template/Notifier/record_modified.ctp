@@ -15,7 +15,12 @@ use Cake\Utility\Inflector;
 list($plugin, $controller) = pluginSplit($registryAlias);
 
 $url = $this->Html->link($recordName ?: 'record', [
-    'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $recordId, '_full' => true
+    'plugin' => $plugin,
+    'controller' => $controller,
+    'action' => 'view',
+    $recordId,
+    'prefix' => false,
+    '_full' => true
 ]);
 $text = '* <strong>%s</strong>: changed from \'%s\' to \'%s\'.';
 ?>
