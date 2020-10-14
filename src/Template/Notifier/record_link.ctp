@@ -13,7 +13,13 @@
 list($plugin, $controller) = pluginSplit($registryAlias);
 
 $url = $this->Html->link($recordName, [
-    'plugin' => $plugin, 'controller' => $controller, 'action' => 'view', $recordId, '_full' => true
+    'plugin' => $plugin,
+    'controller' => $controller,
+    'action' => 'view',
+    $recordId,
+    'prefix' => false,
+    '_full' => true
 ]);
+
 ?>
 <?= $modelName ?> record <?= $url ?> has been assinged to you via '<?= $field ?>' field.
